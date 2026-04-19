@@ -1,0 +1,105 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2026-04-18 14:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "company",
+  "country",
+  "default_einvoice_adapter",
+  "taxpayer_registration_id",
+  "zatca_reporting_phase",
+  "require_e_invoice_for_sales_invoice",
+  "remarks"
+ ],
+ "fields": [
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "description": "Optional ISO 3166-1 alpha-2 code (e.g. EG, SA).",
+   "fieldname": "country",
+   "fieldtype": "Data",
+   "label": "Country Code"
+  },
+  {
+   "default": "einvoice_stub",
+   "fieldname": "default_einvoice_adapter",
+   "fieldtype": "Select",
+   "label": "Default E-Invoice Adapter",
+   "options": "einvoice_stub\neinvoice_eta\neinvoice_zatca",
+   "reqd": 1
+  },
+  {
+   "description": "Taxpayer registration / national ID required by ETA and similar authorities.",
+   "fieldname": "taxpayer_registration_id",
+   "fieldtype": "Data",
+   "label": "Taxpayer Registration ID (RIN)"
+  },
+  {
+   "depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_zatca\"",
+   "fieldname": "zatca_reporting_phase",
+   "fieldtype": "Select",
+   "label": "ZATCA Reporting Phase",
+   "options": "\nphase1\nphase2"
+  },
+  {
+   "default": "0",
+   "description": "When enabled, Sales Invoice cannot be submitted until an E Invoice Submission exists in Queued or Completed state for this invoice.",
+   "fieldname": "require_e_invoice_for_sales_invoice",
+   "fieldtype": "Check",
+   "label": "Require E-Invoice Before Sales Invoice Submit"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-18 14:00:00",
+ "modified_by": "Administrator",
+ "module": "Omnexa Einvoice",
+ "name": "Tax Authority Profile",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 0,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

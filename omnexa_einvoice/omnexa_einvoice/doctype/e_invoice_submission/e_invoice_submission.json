@@ -1,0 +1,162 @@
+{
+ "actions": [],
+ "allow_rename": 0,
+ "autoname": "hash",
+ "creation": "2026-04-18 12:00:00",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "reference_section",
+  "company",
+  "reference_doctype",
+  "reference_name",
+  "adapter_section",
+  "adapter_name",
+  "document_type",
+  "operation",
+  "status",
+  "extra_json",
+  "result_section",
+  "provider_reference",
+  "integration_message",
+  "result_data"
+ ],
+ "fields": [
+  {
+   "fieldname": "reference_section",
+   "fieldtype": "Section Break",
+   "label": "Reference"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "reference_doctype",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Reference DocType",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "reference_name",
+   "fieldtype": "Dynamic Link",
+   "in_list_view": 1,
+   "label": "Reference Name",
+   "options": "reference_doctype",
+   "reqd": 1
+  },
+  {
+   "fieldname": "adapter_section",
+   "fieldtype": "Section Break",
+   "label": "Integration"
+  },
+  {
+   "default": "einvoice_stub",
+   "fieldname": "adapter_name",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Adapter",
+   "options": "einvoice_stub\neinvoice_eta\neinvoice_zatca",
+   "reqd": 1
+  },
+  {
+   "default": "invoice",
+   "fieldname": "document_type",
+   "fieldtype": "Data",
+   "label": "Document Type",
+   "reqd": 1
+  },
+  {
+   "default": "submit",
+   "fieldname": "operation",
+   "fieldtype": "Select",
+   "label": "Operation",
+   "options": "submit\ncancel\ndownload",
+   "reqd": 1
+  },
+  {
+   "default": "Draft",
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Status",
+   "options": "Draft\nQueued\nFailed\nCompleted",
+   "read_only": 1
+  },
+  {
+   "description": "JSON object merged into the adapter payload (e.g. taxpayer_rin, signer_mode, csid_reference, authority_uuid, phase).",
+   "fieldname": "extra_json",
+   "fieldtype": "Code",
+   "label": "Extra Payload (JSON)",
+   "options": "JSON"
+  },
+  {
+   "fieldname": "result_section",
+   "fieldtype": "Section Break",
+   "label": "Result"
+  },
+  {
+   "fieldname": "provider_reference",
+   "fieldtype": "Data",
+   "label": "Provider Reference",
+   "read_only": 1
+  },
+  {
+   "fieldname": "integration_message",
+   "fieldtype": "Small Text",
+   "label": "Integration Message",
+   "read_only": 1
+  },
+  {
+   "fieldname": "result_data",
+   "fieldtype": "Code",
+   "label": "Result Data (JSON)",
+   "options": "JSON",
+   "read_only": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-04-18 12:00:00",
+ "modified_by": "Administrator",
+ "module": "Omnexa Einvoice",
+ "name": "E Invoice Submission",
+ "naming_rule": "Random",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  },
+  {
+   "create": 1,
+   "delete": 0,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "Accounts Manager",
+   "share": 0,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": [],
+ "track_changes": 1
+}

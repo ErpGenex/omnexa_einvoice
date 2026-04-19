@@ -48,7 +48,7 @@ omnexa_register_integration_hub = [
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+doctype_js = {"E Invoice Submission": "public/js/e_invoice_submission.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -142,13 +142,11 @@ omnexa_register_integration_hub = [
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-# 	"*": {
-# 		"on_update": "method",
-# 		"on_cancel": "method",
-# 		"on_trash": "method"
-# 	}
-# }
+doc_events = {
+	"Sales Invoice": {
+		"before_submit": "omnexa_einvoice.e_invoice_hooks.sales_invoice_before_submit",
+	}
+}
 
 # Scheduled Tasks
 # ---------------

@@ -1,6 +1,6 @@
 {
  "charts": [],
- "content": "[{\"id\":\"omx-einv-h1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>E-Invoice</b></span>\",\"col\":12}},{\"id\":\"omx-einv-c1\",\"type\":\"card\",\"data\":{\"card_name\":\"Submissions & documents\",\"col\":4}},{\"id\":\"omx-einv-c2\",\"type\":\"card\",\"data\":{\"card_name\":\"Authority & signing\",\"col\":4}},{\"id\":\"omx-einv-c3\",\"type\":\"card\",\"data\":{\"card_name\":\"Related sales\",\"col\":4}}]",
+ "content": "[{\"id\":\"omx-einv-h1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>E-Invoice</b></span>\",\"col\":12}},{\"id\":\"omx-einv-c1\",\"type\":\"card\",\"data\":{\"card_name\":\"Submissions\",\"col\":4}},{\"id\":\"omx-einv-c2\",\"type\":\"card\",\"data\":{\"card_name\":\"Company setup\",\"col\":4}},{\"id\":\"omx-einv-c3\",\"type\":\"card\",\"data\":{\"card_name\":\"Related accounting\",\"col\":4}}]",
  "custom_blocks": [],
  "docstatus": 0,
  "doctype": "Workspace",
@@ -14,7 +14,7 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Submissions & documents",
+   "label": "Submissions",
    "link_count": 0,
    "onboard": 0,
    "type": "Card Break"
@@ -22,9 +22,9 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "E-Document Submission",
+   "label": "E Invoice Submission",
    "link_count": 0,
-   "link_to": "E-Document Submission",
+   "link_to": "E Invoice Submission",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"
@@ -32,7 +32,7 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Authority & signing",
+   "label": "Company setup",
    "link_count": 0,
    "onboard": 0,
    "type": "Card Break"
@@ -60,7 +60,7 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Related sales",
+   "label": "Related accounting",
    "link_count": 0,
    "onboard": 0,
    "type": "Card Break"
