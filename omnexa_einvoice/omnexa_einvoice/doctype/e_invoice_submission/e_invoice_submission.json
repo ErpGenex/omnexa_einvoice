@@ -6,10 +6,13 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "reference_section",
   "company",
   "reference_doctype",
   "reference_name",
+  "compliance_section",
+  "submission_channel",
   "adapter_section",
   "adapter_name",
   "document_type",
@@ -19,9 +22,17 @@
   "result_section",
   "provider_reference",
   "integration_message",
-  "result_data"
+  "acknowledgement_code",
+  "result_data",
+  "control_section",
+  "external_reference"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Identity"
+  },
   {
    "fieldname": "reference_section",
    "fieldtype": "Section Break",
@@ -48,6 +59,18 @@
    "label": "Reference Name",
    "options": "reference_doctype",
    "reqd": 1
+  },
+  {
+   "fieldname": "compliance_section",
+   "fieldtype": "Section Break",
+   "label": "Compliance"
+  },
+  {
+   "default": "API",
+   "fieldname": "submission_channel",
+   "fieldtype": "Select",
+   "label": "Submission Channel",
+   "options": "API\nPortal\nManual"
   },
   {
    "fieldname": "adapter_section",
@@ -112,11 +135,27 @@
    "read_only": 1
   },
   {
+   "fieldname": "acknowledgement_code",
+   "fieldtype": "Data",
+   "label": "Acknowledgement Code",
+   "read_only": 1
+  },
+  {
    "fieldname": "result_data",
    "fieldtype": "Code",
    "label": "Result Data (JSON)",
    "options": "JSON",
    "read_only": 1
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "external_reference",
+   "fieldtype": "Data",
+   "label": "External Reference"
   }
  ],
  "grid_page_length": 50,

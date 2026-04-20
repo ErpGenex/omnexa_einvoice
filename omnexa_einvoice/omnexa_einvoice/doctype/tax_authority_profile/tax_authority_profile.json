@@ -6,15 +6,24 @@
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
+  "identity_section",
   "company",
   "country",
+  "adapter_section",
   "default_einvoice_adapter",
   "taxpayer_registration_id",
   "zatca_reporting_phase",
+  "control_section",
+  "tax_authority_name",
   "require_e_invoice_for_sales_invoice",
   "remarks"
  ],
  "fields": [
+  {
+   "fieldname": "identity_section",
+   "fieldtype": "Section Break",
+   "label": "Authority Identity"
+  },
   {
    "fieldname": "company",
    "fieldtype": "Link",
@@ -28,6 +37,11 @@
    "fieldname": "country",
    "fieldtype": "Data",
    "label": "Country Code"
+  },
+  {
+   "fieldname": "adapter_section",
+   "fieldtype": "Section Break",
+   "label": "Adapter Configuration"
   },
   {
    "default": "einvoice_stub",
@@ -49,6 +63,16 @@
    "fieldtype": "Select",
    "label": "ZATCA Reporting Phase",
    "options": "\nphase1\nphase2"
+  },
+  {
+   "fieldname": "control_section",
+   "fieldtype": "Section Break",
+   "label": "Control"
+  },
+  {
+   "fieldname": "tax_authority_name",
+   "fieldtype": "Data",
+   "label": "Tax Authority Name"
   },
   {
    "default": "0",
