@@ -25,6 +25,7 @@ class EInvoiceSubmission(Document):
 		self._merge_company_defaults()
 		if not self.adapter_name:
 			frappe.throw(_("Adapter is required."))
+		self._validate_lifecycle_controls()
 		if self.extra_json and str(self.extra_json).strip():
 			try:
 				parsed = json.loads(self.extra_json)
@@ -32,6 +33,16 @@ class EInvoiceSubmission(Document):
 				raise frappe.ValidationError(_("Extra Payload must be valid JSON.")) from exc
 			if not isinstance(parsed, dict):
 				raise frappe.ValidationError(_("Extra Payload must be a JSON object."))
+
+	def _validate_lifecycle_controls(self):
+		if not self.company:
+			frappe.throw(_("Company is mandatory for e-invoice submission."), title=_("Compliance"))
+		if not self.submission_channel:
+			frappe.throw(_("Submission Channel is mandatory."), title=_("Compliance"))
+		if self.operation in {"submit", "cancel"} and not self.reference_name:
+			frappe.throw(_("Reference Name is mandatory for submit/cancel operations."), title=_("Reference"))
+		if self.status == "Completed" and not self.provider_reference:
+			frappe.throw(_("Provider Reference is mandatory when status is Completed."), title=_("Result"))
 
 	def _merge_company_defaults(self) -> None:
 		"""Fill adapter / extra_json from Tax Authority Profile + Signing Profile (setdefault semantics)."""

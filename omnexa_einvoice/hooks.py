@@ -87,8 +87,8 @@ doctype_js = {"E Invoice Submission": "public/js/e_invoice_submission.js"}
 # Installation
 # ------------
 
-# before_install = "omnexa_einvoice.install.before_install"
-# after_install = "omnexa_einvoice.install.after_install"
+before_install = "omnexa_einvoice.install.enforce_supported_frappe_version"
+before_migrate = "omnexa_einvoice.install.enforce_supported_frappe_version"
 
 # Uninstallation
 # ------------
