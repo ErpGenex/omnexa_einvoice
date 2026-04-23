@@ -1,7 +1,7 @@
 [project]
 name = "omnexa_einvoice"
 authors = [
-    { name = "Omnexa", email = "dev@omnexa.com"}
+    { name = "ErpGenEx", email = "dev@erpgenex.com"}
 ]
 description = "Egypt e-Invoice and e-Receipt integrations"
 requires-python = ">=3.10"
