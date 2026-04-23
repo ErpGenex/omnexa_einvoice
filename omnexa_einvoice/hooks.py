@@ -1,8 +1,8 @@
 app_name = "omnexa_einvoice"
 app_title = "ErpGenEx — E-Invoice"
-app_publisher = "Omnexa"
+app_publisher = "ErpGenEx"
 app_description = "Egypt e-Invoice and e-Receipt integrations"
-app_email = "dev@omnexa.com"
+app_email = "dev@erpgenex.com"
 app_license = "mit"
 
 # Apps
