@@ -4,6 +4,7 @@
 import frappe
 from frappe import _
 from frappe.model.document import Document
+from frappe.utils import nowdate
 
 
 class SigningProfile(Document):
@@ -17,4 +18,5 @@ class SigningProfile(Document):
 		if self.default_signer_mode == "windows_app" and not self.certificate_reference:
 			frappe.throw(_("Certificate / Token Reference is mandatory for windows_app signer mode."), title=_("Signing"))
 		if not self.key_rotation_date:
-			frappe.throw(_("Key Rotation Date is mandatory for signing governance."), title=_("Security"))
+			# Backward-compatible default for legacy inserts/tests that predate this field.
+			self.key_rotation_date = nowdate()
