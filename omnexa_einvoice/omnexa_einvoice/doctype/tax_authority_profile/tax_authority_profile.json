@@ -11,6 +11,10 @@
 		"adapter_section",
 		"default_einvoice_adapter",
 		"taxpayer_registration_id",
+		"eta_environment",
+		"eta_base_url",
+		"eta_client_id",
+		"eta_client_secret",
 		"zatca_reporting_phase",
 		"tax_authority_name",
 		"require_e_invoice_for_sales_invoice",
@@ -49,6 +53,32 @@
 			"fieldname": "taxpayer_registration_id",
 			"fieldtype": "Data",
 			"label": "Taxpayer Registration ID (RIN)"
+		},
+		{
+			"default": "preprod",
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_environment",
+			"fieldtype": "Select",
+			"label": "ETA Environment",
+			"options": "preprod\nprod"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_base_url",
+			"fieldtype": "Data",
+			"label": "ETA Base URL"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_client_id",
+			"fieldtype": "Data",
+			"label": "ETA Client ID"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_client_secret",
+			"fieldtype": "Password",
+			"label": "ETA Client Secret"
 		},
 		{
 			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_zatca\"",

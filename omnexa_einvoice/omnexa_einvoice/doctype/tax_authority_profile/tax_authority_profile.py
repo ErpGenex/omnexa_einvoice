@@ -16,6 +16,11 @@ class TaxAuthorityProfile(Document):
 	def _validate_policy_controls(self):
 		if self.default_einvoice_adapter in {"einvoice_eta", "einvoice_zatca"} and not self.taxpayer_registration_id:
 			frappe.throw(_("Taxpayer Registration ID is mandatory for ETA/ZATCA adapters."), title=_("Compliance"))
+		if self.default_einvoice_adapter == "einvoice_eta":
+			if not self.eta_base_url:
+				frappe.throw(_("ETA Base URL is mandatory for ETA adapter."), title=_("Compliance"))
+			if not self.eta_client_id or not self.eta_client_secret:
+				frappe.throw(_("ETA Client ID and Secret are mandatory for ETA adapter."), title=_("Compliance"))
 		if self.default_einvoice_adapter == "einvoice_zatca" and not self.zatca_reporting_phase:
 			frappe.throw(_("ZATCA Reporting Phase is mandatory for ZATCA adapter."), title=_("Compliance"))
 		if self.require_e_invoice_for_sales_invoice and not self.default_einvoice_adapter:

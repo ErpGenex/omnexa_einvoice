@@ -10,6 +10,7 @@
 		"company",
 		"reference_doctype",
 		"reference_name",
+		"submission_kind",
 		"compliance_section",
 		"submission_channel",
 		"adapter_section",
@@ -17,11 +18,16 @@
 		"document_type",
 		"operation",
 		"status",
+		"eta_uuid",
+		"canonical_hash",
+		"signature_value",
 		"extra_json",
 		"result_section",
 		"provider_reference",
+		"authority_uuid",
 		"integration_message",
 		"acknowledgement_code",
+		"eta_error_code",
 		"result_data",
 		"external_reference"
 	],
@@ -51,6 +57,15 @@
 			"in_list_view": 1,
 			"label": "Reference Name",
 			"options": "reference_doctype",
+			"reqd": 1
+		},
+		{
+			"default": "E-Invoice",
+			"fieldname": "submission_kind",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"label": "Submission Kind",
+			"options": "E-Invoice\nE-Receipt",
 			"reqd": 1
 		},
 		{
@@ -100,7 +115,26 @@
 			"fieldtype": "Select",
 			"in_list_view": 1,
 			"label": "Status",
-			"options": "Draft\nQueued\nFailed\nCompleted",
+			"options": "Draft\nSigned\nQueued\nFailed\nCompleted",
+			"read_only": 1
+		},
+		{
+			"fieldname": "eta_uuid",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "UUID",
+			"read_only": 1
+		},
+		{
+			"fieldname": "canonical_hash",
+			"fieldtype": "Data",
+			"label": "Canonical Hash",
+			"read_only": 1
+		},
+		{
+			"fieldname": "signature_value",
+			"fieldtype": "Long Text",
+			"label": "Signature Value",
 			"read_only": 1
 		},
 		{
@@ -122,6 +156,12 @@
 			"read_only": 1
 		},
 		{
+			"fieldname": "authority_uuid",
+			"fieldtype": "Data",
+			"label": "Authority UUID",
+			"read_only": 1
+		},
+		{
 			"fieldname": "integration_message",
 			"fieldtype": "Small Text",
 			"label": "Integration Message",
@@ -131,6 +171,12 @@
 			"fieldname": "acknowledgement_code",
 			"fieldtype": "Data",
 			"label": "Acknowledgement Code",
+			"read_only": 1
+		},
+		{
+			"fieldname": "eta_error_code",
+			"fieldtype": "Data",
+			"label": "ETA Error Code",
 			"read_only": 1
 		},
 		{

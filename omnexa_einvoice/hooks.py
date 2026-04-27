@@ -48,7 +48,10 @@ omnexa_register_integration_hub = [
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-doctype_js = {"E Invoice Submission": "public/js/e_invoice_submission.js"}
+doctype_js = {
+	"E Invoice Submission": "public/js/e_invoice_submission.js",
+	"Sales Invoice": "public/js/sales_invoice_einvoice.js",
+}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -145,6 +148,7 @@ before_migrate = "omnexa_einvoice.install.enforce_supported_frappe_version"
 doc_events = {
 	"Sales Invoice": {
 		"before_submit": "omnexa_einvoice.e_invoice_hooks.sales_invoice_before_submit",
+		"on_submit": "omnexa_einvoice.e_invoice_hooks.sales_invoice_on_submit",
 	}
 }
 

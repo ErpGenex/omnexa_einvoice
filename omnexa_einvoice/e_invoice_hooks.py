@@ -8,6 +8,10 @@ from __future__ import annotations
 import frappe
 from frappe import _
 
+from omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission import (
+	ensure_submission_for_document,
+)
+
 
 def sales_invoice_before_submit(doc, method=None) -> None:
 	"""Block Sales Invoice submit when company policy requires a dispatched e-invoice submission."""
@@ -44,3 +48,17 @@ def sales_invoice_before_submit(doc, method=None) -> None:
 			"Create an E Invoice Submission linked to this document, dispatch it, then submit again."
 		)
 	)
+
+
+def sales_invoice_on_submit(doc, method=None) -> None:
+	"""Auto-create review queue row for ETA e-invoice."""
+	if doc.doctype != "Sales Invoice":
+		return
+	ensure_submission_for_document("Sales Invoice", doc.name)
+
+
+def pos_invoice_on_submit(doc, method=None) -> None:
+	"""Auto-create review queue row for ETA e-receipt."""
+	if doc.doctype != "POS Invoice":
+		return
+	ensure_submission_for_document("POS Invoice", doc.name)
