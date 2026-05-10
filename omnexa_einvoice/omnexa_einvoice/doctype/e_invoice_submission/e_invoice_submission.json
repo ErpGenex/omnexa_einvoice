@@ -6,13 +6,16 @@
 	"doctype": "DocType",
 	"engine": "InnoDB",
 	"field_order": [
+		"tab_break_overview",
 		"reference_section",
 		"company",
 		"reference_doctype",
 		"reference_name",
 		"submission_kind",
+		"tab_break_1",
 		"compliance_section",
 		"submission_channel",
+		"tab_break_2",
 		"adapter_section",
 		"adapter_name",
 		"document_type",
@@ -22,6 +25,7 @@
 		"canonical_hash",
 		"signature_value",
 		"extra_json",
+		"tab_break_3",
 		"result_section",
 		"provider_reference",
 		"authority_uuid",
@@ -32,6 +36,26 @@
 		"external_reference"
 	],
 	"fields": [
+		{
+			"fieldname": "tab_break_overview",
+			"fieldtype": "Tab Break",
+			"label": "Overview"
+		},
+		{
+			"fieldname": "tab_break_1",
+			"fieldtype": "Tab Break",
+			"label": "Details"
+		},
+		{
+			"fieldname": "tab_break_2",
+			"fieldtype": "Tab Break",
+			"label": "Further"
+		},
+		{
+			"fieldname": "tab_break_3",
+			"fieldtype": "Tab Break",
+			"label": "Posting"
+		},
 		{
 			"fieldname": "reference_section",
 			"fieldtype": "Section Break",
@@ -195,7 +219,7 @@
 	"grid_page_length": 50,
 	"index_web_pages_for_search": 1,
 	"links": [],
-	"modified": "2026-04-18 12:00:00",
+	"modified": "2026-05-07 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Einvoice",
 	"name": "E Invoice Submission",
