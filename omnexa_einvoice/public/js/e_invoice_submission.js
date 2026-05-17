@@ -1,5 +1,81 @@
 // Copyright (c) 2026, Omnexa and contributors
 // License: MIT. See license.txt
+/* global frappe */
+
+/** E-Invoice USB signing v2 — sign_session (PIN fetched by agent from ERP). E-Receipt unchanged. */
+const OMNEXA_EINV_SIGN_SESSION =
+	"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.create_usb_sign_session";
+
+async function omnexaPostAgentSignBody(msg) {
+	const base = ((msg && msg.agent_url) || "http://127.0.0.1:5002").replace(/\/$/, "");
+	const body = (msg && msg.agent_body) || {};
+	if (!body.sign_session) {
+		frappe.throw(
+			__(
+				"Signing session missing. Run bench update + build omnexa_einvoice, clear cache, Ctrl+Shift+R."
+			)
+		);
+	}
+	if (!body.erp_base_url) {
+		body.erp_base_url = window.location.origin;
+	}
+	const health = await fetch(`${base}/health`, { method: "GET" });
+	if (!health.ok) {
+		frappe.throw(__("Signing agent not reachable at {0}", [base]));
+	}
+	const res = await fetch(`${base}/sign`, {
+		method: "POST",
+		headers: { "Content-Type": "application/json" },
+		body: JSON.stringify(body),
+	});
+	let parsed = {};
+	try {
+		parsed = await res.json();
+	} catch (e) {
+		parsed = {};
+	}
+	if (!res.ok || !parsed.success) {
+		frappe.throw(parsed.message || parsed.error || __("Signing agent failed"));
+	}
+	const sigs = parsed.signatures || [];
+	if (sigs[0] && sigs[0].value) {
+		return sigs[0].value;
+	}
+	if (parsed.signature) {
+		return parsed.signature;
+	}
+	frappe.throw(__("Signing agent returned no signature"));
+}
+
+async function omnexaSignEInvoiceViaAgent(submissionName) {
+	const prep = await frappe.call({
+		method: OMNEXA_EINV_SIGN_SESSION,
+		args: { name: submissionName, for_send: 0 },
+		freeze: true,
+		freeze_message: __("Signing E-Invoice…"),
+	});
+	const signature = await omnexaPostAgentSignBody(prep.message || {});
+	return frappe.call({
+		method:
+			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.sign_submission",
+		args: { name: submissionName, client_signature: signature },
+	});
+}
+
+async function omnexaSendEInvoiceViaAgent(submissionName) {
+	const prep = await frappe.call({
+		method: OMNEXA_EINV_SIGN_SESSION,
+		args: { name: submissionName, for_send: 1 },
+		freeze: true,
+		freeze_message: __("Signing before ETA send…"),
+	});
+	const signature = await omnexaPostAgentSignBody(prep.message || {});
+	return frappe.call({
+		method:
+			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.send_submission_to_eta",
+		args: { name: submissionName, client_signature: signature },
+	});
+}
 
 frappe.ui.form.on("E Invoice Submission", {
 	refresh(frm) {
@@ -48,15 +124,7 @@ frappe.ui.form.on("E Invoice Submission", {
 					});
 				} else {
 					try {
-						await frappe.require("/assets/omnexa_einvoice/js/einvoice_usb_agent.js");
-						if (!omnexa.einvoice?.signEInvoiceSubmission) {
-							frappe.throw(
-								__(
-									"Signing scripts outdated. bench build --app omnexa_einvoice, clear cache, Ctrl+Shift+R."
-								)
-							);
-						}
-						const r = await omnexa.einvoice.signEInvoiceSubmission(frm.doc.name);
+						const r = await omnexaSignEInvoiceViaAgent(frm.doc.name);
 						if (r?.message?.signer_method) {
 							frappe.show_alert({
 								message: __("Signed via {0}", [r.message.signer_method]),
@@ -88,8 +156,7 @@ frappe.ui.form.on("E Invoice Submission", {
 							freeze_message: __("Sending..."),
 						});
 					} else {
-						await frappe.require("/assets/omnexa_einvoice/js/einvoice_usb_agent.js");
-						r = await omnexa.einvoice.sendEInvoiceSubmission(frm.doc.name);
+						r = await omnexaSendEInvoiceViaAgent(frm.doc.name);
 					}
 					if (r?.message) {
 						const m = r.message;

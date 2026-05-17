@@ -280,6 +280,97 @@ def _client_signing_secrets(branch: str) -> dict:
 	}
 
 
+USB_SIGN_CACHE_PREFIX = "omnexa_usb_sign:"
+USB_SIGN_SESSION_SEC = 180
+
+
+def _store_usb_sign_session(branch: str) -> str:
+	"""One-time session id; PIN never sent to browser (agent pulls from ERP)."""
+	plain_pin = _branch_usb_pin_for_client(branch)
+	if not plain_pin:
+		frappe.throw(
+			_("USB Token PIN is missing on Branch {0}. Enter it under Egypt ETA → USB Token PIN and Save.").format(
+				branch
+			),
+			title=_("Signing Agent"),
+		)
+	session_id = frappe.generate_hash(length=32)
+	frappe.cache().set_value(
+		f"{USB_SIGN_CACHE_PREFIX}{session_id}",
+		{"pin": plain_pin, "user": frappe.session.user, "branch": branch},
+		expires_in_sec=USB_SIGN_SESSION_SEC,
+	)
+	return session_id
+
+
+def build_agent_session_body(
+	unsigned: dict, branch: str, token_type: str, session_id: str
+) -> dict:
+	"""POST /sign body without PIN — epass2003_agent fetches PIN via sign_session (Temp-ETR style)."""
+	unsigned = json.loads(json.dumps(unsigned or {}, ensure_ascii=False))
+	unsigned.pop("signatures", None)
+	return {
+		"invoice": unsigned,
+		"sign_session": session_id,
+		"erp_base_url": frappe.utils.get_url(),
+		"token_type": (token_type or "epass2003").strip() or "epass2003",
+		"use_chilkat": True,
+		"verify": False,
+	}
+
+
+@frappe.whitelist()
+def create_usb_sign_session(name: str, for_send: int = 0) -> dict:
+	"""
+	E-Invoice: create one-time signing session. Browser sends sign_session to local agent;
+	agent calls resolve_usb_sign_session on ERP to read Branch PIN (no PIN in browser JSON).
+	"""
+	doc = frappe.get_doc("E Invoice Submission", name)
+	if doc.submission_kind == "E-Receipt":
+		frappe.throw(_("E-Receipt does not use USB signing."), title=_("E-Receipt"))
+	source = frappe.get_doc(doc.reference_doctype, doc.reference_name)
+	branch = doc.branch or resolve_branch_for_document(source)
+	settings = get_eta_invoice_branch_settings(branch)
+	if not uses_browser_signing_agent(branch):
+		frappe.throw(_("Branch signer mode is not Signing Agent."), title=_("E-Invoice Signing"))
+
+	if int(for_send or 0):
+		payload = json.loads(doc.result_data or "{}")
+		unsigned = prepare_e_invoice_for_send_unsigned(payload)
+	else:
+		unsigned = build_unsigned_e_invoice_document(source, branch)
+
+	token_type = (settings.usb_token_type or "epass2003").strip()
+	session_id = _store_usb_sign_session(branch)
+	agent_body = build_agent_session_body(unsigned, branch, token_type, session_id)
+	return {
+		"ok": True,
+		"branch": branch,
+		"agent_url": (settings.signing_agent_url or "http://127.0.0.1:5002").strip(),
+		"agent_body": agent_body,
+		"sign_session": session_id,
+		"erp_base_url": agent_body["erp_base_url"],
+		"internal_id": unsigned.get("internalID"),
+	}
+
+
+@frappe.whitelist(allow_guest=True)
+def resolve_usb_sign_session(session_id: str) -> dict:
+	"""Called by epass2003_agent on Windows to load Branch PIN (one-time, no browser exposure)."""
+	session_id = (session_id or "").strip()
+	if not session_id:
+		frappe.throw(_("session_id is required."), frappe.PermissionError)
+	key = f"{USB_SIGN_CACHE_PREFIX}{session_id}"
+	data = frappe.cache().get_value(key)
+	if not data:
+		frappe.throw(_("Signing session expired. Click Sign E-Invoice again."), frappe.PermissionError)
+	frappe.cache().delete_value(key)
+	pin = (data.get("pin") or "").strip()
+	if not pin:
+		frappe.throw(_("USB PIN missing in signing session."), frappe.PermissionError)
+	return {"pin": pin, "usb_token_pin": pin}
+
+
 def build_agent_sign_payload(unsigned: dict, branch: str, token_type: str = "epass2003") -> dict:
 	"""
 	Full POST body for epass2003_agent /sign (matches Temp-ETR DirectSigner.sign_with_agent).
@@ -305,6 +396,26 @@ def build_agent_sign_payload(unsigned: dict, branch: str, token_type: str = "epa
 		"token_type": (token_type or "epass2003").strip() or "epass2003",
 		"use_chilkat": True,
 		"verify": False,
+	}
+
+
+@frappe.whitelist()
+def create_usb_sign_session_for_branch_test(branch: str) -> dict:
+	"""Branch USB test — agent_body with sign_session only (no PIN in browser)."""
+	from omnexa_einvoice.eta_invoice import build_usb_signing_test_document
+
+	branch = (branch or "").strip()
+	settings = get_eta_invoice_branch_settings(branch)
+	document = build_usb_signing_test_document(branch)
+	token_type = (settings.usb_token_type or "epass2003").strip()
+	session_id = _store_usb_sign_session(branch)
+	agent_body = build_agent_session_body(document, branch, token_type, session_id)
+	return {
+		"ok": True,
+		"branch": branch,
+		"agent_url": (settings.signing_agent_url or "http://127.0.0.1:5002").strip(),
+		"agent_body": agent_body,
+		"internal_id": document.get("internalID"),
 	}
 
 

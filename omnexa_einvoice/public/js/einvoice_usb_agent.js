@@ -17,13 +17,16 @@ const EINV_AGENT_PAYLOAD_BRANCH_TEST =
 
 omnexa.einvoice.postAgentSignPayload = async function postAgentSignPayload(msg) {
 	const base = ((msg && msg.agent_url) || "http://127.0.0.1:5002").replace(/\/$/, "");
-	const payload = (msg && msg.agent_payload) || {};
-	if (!(payload.pin || payload.usb_token_pin || "").trim()) {
+	const payload = (msg && msg.agent_body) || (msg && msg.agent_payload) || {};
+	if (!payload.sign_session && !(payload.pin || payload.usb_token_pin || "").trim()) {
 		throw new Error(
 			__(
-				"ERP did not include USB PIN in the signing payload. Open Branch → Egypt ETA → USB Token PIN, Save, bench build, Ctrl+Shift+R."
+				"Signing session missing. bench update omnexa_einvoice, build, clear-cache, Ctrl+Shift+R."
 			)
 		);
+	}
+	if (!payload.erp_base_url) {
+		payload.erp_base_url = window.location.origin;
 	}
 	let health;
 	try {
@@ -356,14 +359,11 @@ omnexa.einvoice.testBranchUsbSigning = async function testBranchUsbSigning(branc
 
 omnexa.einvoice.signEInvoiceSubmission = async function signEInvoiceSubmission(name) {
 	const prep = await frappe.call({
-		method: EINV_AGENT_PAYLOAD_SIGN,
+		method:
+			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.create_usb_sign_session",
 		args: { name, for_send: 0 },
 	});
-	const ctx = prep.message || {};
-	let clientSignature = null;
-	if (ctx.agent_payload) {
-		clientSignature = await omnexa.einvoice.postAgentSignPayload(ctx);
-	}
+	const clientSignature = await omnexa.einvoice.postAgentSignPayload(prep.message || {});
 	return frappe.call({
 		method:
 			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.sign_submission",
@@ -373,14 +373,11 @@ omnexa.einvoice.signEInvoiceSubmission = async function signEInvoiceSubmission(n
 
 omnexa.einvoice.sendEInvoiceSubmission = async function sendEInvoiceSubmission(name) {
 	const prep = await frappe.call({
-		method: EINV_AGENT_PAYLOAD_SIGN,
+		method:
+			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.create_usb_sign_session",
 		args: { name, for_send: 1 },
 	});
-	const ctx = prep.message || {};
-	let clientSignature = null;
-	if (ctx.agent_payload) {
-		clientSignature = await omnexa.einvoice.postAgentSignPayload(ctx);
-	}
+	const clientSignature = await omnexa.einvoice.postAgentSignPayload(prep.message || {});
 	return frappe.call({
 		method:
 			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.send_submission_to_eta",

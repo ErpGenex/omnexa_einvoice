@@ -69,6 +69,23 @@ class TestETASigningAgent(unittest.TestCase):
 			ping = [c for c in result["checks"] if c.get("step") == "agent_ping"]
 			self.assertTrue(ping and ping[0].get("ok"))
 
+	def test_usb_sign_session_resolve(self):
+		branch = frappe.db.get_value("Branch", {"eta_einvoice_enabled": 1}, "name")
+		if not branch:
+			self.skipTest("No e-Invoice branch")
+		from omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission import (
+			create_usb_sign_session_for_branch_test,
+			resolve_usb_sign_session,
+		)
+
+		prep = create_usb_sign_session_for_branch_test(branch)
+		session_id = prep.get("agent_body", {}).get("sign_session")
+		self.assertTrue(session_id)
+		resolved = resolve_usb_sign_session(session_id)
+		self.assertTrue((resolved.get("pin") or "").strip())
+		with self.assertRaises(frappe.PermissionError):
+			resolve_usb_sign_session(session_id)
+
 	def test_agent_sign_payload_includes_pin(self):
 		branch = frappe.db.get_value("Branch", {"eta_einvoice_enabled": 1}, "name")
 		if not branch:
