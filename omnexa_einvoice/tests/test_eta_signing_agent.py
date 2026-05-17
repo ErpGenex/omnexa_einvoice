@@ -24,7 +24,7 @@ class TestETASigningAgent(unittest.TestCase):
 			"success": True,
 			"signatures": [{"signatureType": "I", "value": "c2lnbmF0dXJl"}],
 		}
-		with patch("omnexa_einvoice.eta_signing_agent.requests.post", return_value=mock_resp) as post:
+		with patch("omnexa_einvoice.e_invoice.agent_service.requests.post", return_value=mock_resp) as post:
 			sig = sign_invoice_via_signing_agent(doc, agent_url="http://127.0.0.1:5002", pin="1234")
 		self.assertEqual(sig, "c2lnbmF0dXJl")
 		post.assert_called_once()
@@ -38,7 +38,7 @@ class TestETASigningAgent(unittest.TestCase):
 		mock_resp.status_code = 500
 		mock_resp.json.return_value = {"success": False, "message": "Token not found"}
 		mock_resp.text = ""
-		with patch("omnexa_einvoice.eta_signing_agent.requests.post", return_value=mock_resp):
+		with patch("omnexa_einvoice.e_invoice.agent_service.requests.post", return_value=mock_resp):
 			with self.assertRaises(frappe.ValidationError):
 				sign_invoice_via_signing_agent({"internalID": "x"}, agent_url="http://127.0.0.1:5002")
 
@@ -58,8 +58,8 @@ class TestETASigningAgent(unittest.TestCase):
 		branch = frappe.db.get_value("Branch", {"eta_einvoice_enabled": 1}, "name")
 		if not branch:
 			self.skipTest("No e-Invoice branch")
-		with patch("omnexa_einvoice.eta_signing_agent.platform.system", return_value="Linux"):
-			with patch("omnexa_einvoice.eta_signing_agent.signing_agent_health") as health:
+		with patch("omnexa_einvoice.e_invoice.agent_service.platform.system", return_value="Linux"):
+			with patch("omnexa_einvoice.e_invoice.agent_service.signing_agent_health") as health:
 				from omnexa_einvoice.eta_signing_agent import run_branch_usb_signing_test_on_server
 
 				result = run_branch_usb_signing_test_on_server(branch)

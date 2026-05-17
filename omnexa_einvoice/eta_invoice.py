@@ -41,6 +41,20 @@ def eta_invoice_signature_block(signature_value: str) -> list[dict[str, str]]:
 	return [{"signatureType": "I", "value": (signature_value or "").strip()}]
 
 
+def _default_delivery_block() -> dict[str, Any]:
+	"""ETA delivery block aligned with erpnext_egypt_compliance einvoice_schema.Delivery."""
+	return {
+		"approach": "",
+		"packaging": "",
+		"dateValidity": "",
+		"exportPort": "",
+		"countryOfOrigin": "",
+		"grossWeight": 0,
+		"netWeight": 0,
+		"terms": "",
+	}
+
+
 def sanitize_invoice_for_eta(document: dict) -> dict:
 	"""Remove fields rejected by ETA (e.g. internalId alias)."""
 	doc = json.loads(json.dumps(document, ensure_ascii=False))
@@ -237,13 +251,7 @@ def build_eta_invoice_document(source_doc, branch: str | None = None) -> dict:
 			"swiftCode": "",
 			"terms": "C",
 		},
-		"delivery": {
-			"approach": "",
-			"packaging": "",
-			"dateValidity": "",
-			"exportPort": "",
-			"grossWeight": 0,
-		},
+		"delivery": _default_delivery_block(),
 		"invoiceLines": invoice_lines,
 		"totalDiscountAmount": 0.0,
 		"totalSalesAmount": _q5(total_sales),
@@ -508,13 +516,7 @@ def build_usb_signing_test_document(branch: str) -> dict:
 			"swiftCode": "",
 			"terms": "C",
 		},
-		"delivery": {
-			"approach": "",
-			"packaging": "",
-			"dateValidity": "",
-			"exportPort": "",
-			"grossWeight": 0,
-		},
+		"delivery": _default_delivery_block(),
 		"invoiceLines": invoice_lines,
 		"totalDiscountAmount": 0.0,
 		"totalSalesAmount": line_net,

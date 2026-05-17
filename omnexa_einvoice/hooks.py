@@ -168,23 +168,11 @@ doc_events = {
 # Scheduled Tasks
 # ---------------
 
-# scheduler_events = {
-# 	"all": [
-# 		"omnexa_einvoice.tasks.all"
-# 	],
-# 	"daily": [
-# 		"omnexa_einvoice.tasks.daily"
-# 	],
-# 	"hourly": [
-# 		"omnexa_einvoice.tasks.hourly"
-# 	],
-# 	"weekly": [
-# 		"omnexa_einvoice.tasks.weekly"
-# 	],
-# 	"monthly": [
-# 		"omnexa_einvoice.tasks.monthly"
-# 	],
-# }
+scheduler_events = {
+	"hourly_long": [
+		"omnexa_einvoice.e_invoice.auto_submit.autosubmit_einvoice_batch_process",
+	],
+}
 
 # Testing
 # -------

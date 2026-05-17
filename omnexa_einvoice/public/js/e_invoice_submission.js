@@ -38,13 +38,26 @@ async function omnexaPostAgentSignBody(msg) {
 		frappe.throw(parsed.message || parsed.error || __("Signing agent failed"));
 	}
 	const sigs = parsed.signatures || [];
+	let signature = "";
 	if (sigs[0] && sigs[0].value) {
-		return sigs[0].value;
+		signature = sigs[0].value;
+	} else if (parsed.signature) {
+		signature = parsed.signature;
 	}
-	if (parsed.signature) {
-		return parsed.signature;
+	if (!signature) {
+		frappe.throw(__("Signing agent returned no signature"));
 	}
-	frappe.throw(__("Signing agent returned no signature"));
+	if (!parsed.signed_document) {
+		frappe.throw(
+			__(
+				"Agent must return signed_document (update epass2003_agent.py on Windows). ITIDA rejects mismatched JSON."
+			)
+		);
+	}
+	return {
+		signature,
+		signed_document: parsed.signed_document,
+	};
 }
 
 async function omnexaSignEInvoiceViaAgent(submissionName) {
@@ -54,11 +67,15 @@ async function omnexaSignEInvoiceViaAgent(submissionName) {
 		freeze: true,
 		freeze_message: __("Signing E-Invoice…"),
 	});
-	const signature = await omnexaPostAgentSignBody(prep.message || {});
+	const signResult = await omnexaPostAgentSignBody(prep.message || {});
 	return frappe.call({
 		method:
 			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.sign_submission",
-		args: { name: submissionName, client_signature: signature },
+		args: {
+			name: submissionName,
+			client_signature: signResult.signature,
+			agent_signed_document: signResult.signed_document,
+		},
 	});
 }
 
@@ -69,11 +86,15 @@ async function omnexaSendEInvoiceViaAgent(submissionName) {
 		freeze: true,
 		freeze_message: __("Signing before ETA send…"),
 	});
-	const signature = await omnexaPostAgentSignBody(prep.message || {});
+	const signResult = await omnexaPostAgentSignBody(prep.message || {});
 	return frappe.call({
 		method:
 			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.send_submission_to_eta",
-		args: { name: submissionName, client_signature: signature },
+		args: {
+			name: submissionName,
+			client_signature: signResult.signature,
+			agent_signed_document: signResult.signed_document,
+		},
 	});
 }
 
@@ -125,10 +146,23 @@ frappe.ui.form.on("E Invoice Submission", {
 				} else {
 					try {
 						const r = await omnexaSignEInvoiceViaAgent(frm.doc.name);
-						if (r?.message?.signer_method) {
+						const msg = r?.message || {};
+						if (msg.signer_method) {
 							frappe.show_alert({
-								message: __("Signed via {0}", [r.message.signer_method]),
+								message: __("Signed via {0}", [msg.signer_method]),
 								indicator: "green",
+							});
+						}
+						if (msg.browser_live) {
+							await omnexaSendEInvoiceViaAgent(frm.doc.name);
+							frappe.show_alert({
+								message: __("Sent to ETA (Live mode)"),
+								indicator: "green",
+							});
+						} else if (msg.enqueued) {
+							frappe.show_alert({
+								message: __("Queued for ETA send (Live mode)"),
+								indicator: "blue",
 							});
 						}
 					} catch (e) {

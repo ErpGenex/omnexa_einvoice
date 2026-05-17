@@ -253,6 +253,9 @@ def get_eta_invoice_branch_settings(branch: str) -> frappe._dict:
 		"eta_usb_signing_pin",
 		"eta_windows_signer_command",
 		"eta_certificate_reference",
+		"eta_einvoice_submission_mode",
+		"eta_einvoice_batch_size",
+		"eta_einvoice_send_delay_hours",
 	]
 	row = _branch_row(branch, fields)
 	env = normalize_eta_environment(row.get("eta_invoice_environment"))
@@ -278,6 +281,9 @@ def get_eta_invoice_branch_settings(branch: str) -> frappe._dict:
 			"require_einvoice_before_si_submit": int(
 				frappe.db.get_value("Branch", branch, "eta_require_einvoice_before_si_submit") or 0
 			),
+			"submission_mode": (row.get("eta_einvoice_submission_mode") or "Manual").strip(),
+			"batch_size": int(row.get("eta_einvoice_batch_size") or 10),
+			"send_delay_hours": float(row.get("eta_einvoice_send_delay_hours") or 0),
 		}
 	)
 
