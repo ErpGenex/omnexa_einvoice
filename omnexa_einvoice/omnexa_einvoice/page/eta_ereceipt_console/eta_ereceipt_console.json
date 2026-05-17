@@ -1,0 +1,16 @@
+{
+ "content": null,
+ "docstatus": 0,
+ "doctype": "Page",
+ "icon": "receipt",
+ "module": "Omnexa Einvoice",
+ "name": "eta-ereceipt-console",
+ "page_name": "eta-ereceipt-console",
+ "roles": [
+  {"role": "System Manager"},
+  {"role": "Accounts Manager"},
+  {"role": "Accounts User"}
+ ],
+ "standard": "Yes",
+ "title": "ETA E-Receipt Console"
+}

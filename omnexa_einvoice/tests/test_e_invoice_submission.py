@@ -7,7 +7,10 @@ import frappe
 from frappe.exceptions import ValidationError
 from frappe.tests.utils import FrappeTestCase
 
-from omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission import dispatch_submission
+from omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission import (
+	_recover_ereceipt_from_hub_queue,
+	dispatch_submission,
+)
 
 
 class TestEInvoiceSubmission(FrappeTestCase):
@@ -44,35 +47,90 @@ class TestEInvoiceSubmission(FrappeTestCase):
 		with self.assertRaises(ValidationError):
 			dispatch_submission(doc.name)
 
-	def test_merge_company_profiles_into_extra_json(self):
+	def _ereceipt_si_ref(self) -> tuple[str, str] | None:
+		si = frappe.db.get_value(
+			"Sales Invoice", {"docstatus": 1, "eta_billing_type": "E-Receipt"}, "name"
+		)
+		if not si:
+			return None
+		return "Sales Invoice", si
+
+	def test_ereceipt_dispatch_blocked(self):
+		ref = self._ereceipt_si_ref()
+		if not ref:
+			self.skipTest("No submitted E-Receipt Sales Invoice on site")
+		doctype, docname = ref
+		doc = frappe.get_doc(
+			{
+				"doctype": "E Invoice Submission",
+				"reference_doctype": doctype,
+				"reference_name": docname,
+				"adapter_name": "einvoice_eta",
+				"submission_kind": "E-Receipt",
+				"document_type": "receipt",
+				"operation": "submit",
+			}
+		)
+		doc.insert(ignore_permissions=True)
+		self.addCleanup(
+			lambda: frappe.delete_doc("E Invoice Submission", doc.name, force=1, ignore_permissions=True)
+		)
+		with self.assertRaises(ValidationError):
+			dispatch_submission(doc.name)
+
+	def test_recover_ereceipt_from_hub_queue(self):
+		ref = self._ereceipt_si_ref()
+		if not ref:
+			self.skipTest("No submitted E-Receipt Sales Invoice on site")
+		doctype, docname = ref
+		doc = frappe.get_doc(
+			{
+				"doctype": "E Invoice Submission",
+				"reference_doctype": doctype,
+				"reference_name": docname,
+				"adapter_name": "einvoice_eta",
+				"submission_kind": "E-Receipt",
+				"document_type": "receipt",
+				"operation": "submit",
+				"status": "Queued",
+				"provider_reference": "ETA-SUBMIT-RECEIPT-X",
+				"integration_message": "Queued for ETA submit",
+			}
+		)
+		doc.insert(ignore_permissions=True)
+		self.addCleanup(
+			lambda: frappe.delete_doc("E Invoice Submission", doc.name, force=1, ignore_permissions=True)
+		)
+		_recover_ereceipt_from_hub_queue(doc)
+		doc.reload()
+		self.assertEqual(doc.status, "Draft")
+		self.assertEqual(doc.provider_reference, "")
+
+	def test_merge_branch_settings_into_extra_json(self):
 		co = frappe.db.get_value("Company", {}, "name", order_by="creation asc")
-		if not co or not frappe.db.exists("DocType", "Tax Authority Profile"):
+		if not co:
 			return
-
-		def _cleanup_profiles():
-			frappe.db.delete("Tax Authority Profile", {"company": co})
-			frappe.db.delete("Signing Profile", {"company": co})
-
-		self.addCleanup(_cleanup_profiles)
-		_cleanup_profiles()
-
-		frappe.get_doc(
+		branch = frappe.get_doc(
 			{
-				"doctype": "Tax Authority Profile",
+				"doctype": "Branch",
 				"company": co,
-				"default_einvoice_adapter": "einvoice_stub",
-				"taxpayer_registration_id": "EINV-MERGE-TIN",
-				"zatca_reporting_phase": "phase1",
-				"require_e_invoice_for_sales_invoice": 0,
+				"branch_name": "Merge ETA",
+				"branch_code": frappe.generate_hash(length=4).upper()[:4],
+				"status": "Active",
+				"eta_ereceipt_enabled": 1,
+				"eta_receipt_rin": "EINV-MERGE-TIN",
+				"eta_receipt_client_id": "rc",
+				"eta_receipt_client_secret": "rs",
+				"eta_pos_device_serial": "P1",
+				"eta_activity_code": "1",
+				"eta_einvoice_enabled": 1,
+				"eta_invoice_rin": "EINV-MERGE-TIN",
+				"eta_invoice_client_id": "ic",
+				"eta_invoice_client_secret": "is",
+				"eta_signer_mode": "remote",
 			}
 		).insert(ignore_permissions=True)
-		frappe.get_doc(
-			{
-				"doctype": "Signing Profile",
-				"company": co,
-				"default_signer_mode": "remote",
-			}
-		).insert(ignore_permissions=True)
+		self.addCleanup(lambda: frappe.delete_doc("Branch", branch.name, force=1, ignore_permissions=True))
 
 		doc = frappe.get_doc(
 			{
@@ -80,7 +138,8 @@ class TestEInvoiceSubmission(FrappeTestCase):
 				"reference_doctype": "User",
 				"reference_name": frappe.session.user,
 				"company": co,
-				"adapter_name": "einvoice_stub",
+				"branch": branch.name,
+				"adapter_name": "einvoice_eta",
 				"document_type": "invoice",
 				"operation": "submit",
 			}
@@ -89,5 +148,5 @@ class TestEInvoiceSubmission(FrappeTestCase):
 		doc.reload()
 		extra = json.loads(doc.extra_json or "{}")
 		self.assertEqual(extra.get("taxpayer_rin"), "EINV-MERGE-TIN")
-		self.assertEqual(extra.get("phase"), "phase1")
 		self.assertEqual(extra.get("signer_mode"), "remote")
+		self.assertEqual(extra.get("branch"), branch.name)

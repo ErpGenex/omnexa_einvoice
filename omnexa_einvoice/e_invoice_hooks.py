@@ -8,13 +8,15 @@ from __future__ import annotations
 import frappe
 from frappe import _
 
+from omnexa_einvoice.branch_eta import branch_requires_einvoice_before_submit, resolve_branch_for_document
 from omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission import (
 	ensure_submission_for_document,
 )
+from omnexa_einvoice.sales_invoice_eta import ETA_BILLING_EINVOICE, get_eta_billing_type, sales_invoice_is_eta_billing
 
 
 def sales_invoice_before_submit(doc, method=None) -> None:
-	"""Block Sales Invoice submit when company policy requires a dispatched e-invoice submission."""
+	"""Block Sales Invoice submit when branch policy requires e-invoice submission."""
 	if getattr(doc.flags, "ignore_e_invoice_requirement", False):
 		return
 	if not frappe.db.exists("DocType", "Sales Invoice"):
@@ -23,14 +25,10 @@ def sales_invoice_before_submit(doc, method=None) -> None:
 		return
 	if not doc.get("company"):
 		return
-	if not frappe.db.exists("DocType", "Tax Authority Profile"):
+	branch = resolve_branch_for_document(doc)
+	if get_eta_billing_type(doc) != ETA_BILLING_EINVOICE:
 		return
-	need = frappe.db.get_value(
-		"Tax Authority Profile",
-		{"company": doc.company},
-		"require_e_invoice_for_sales_invoice",
-	)
-	if not need:
+	if not branch or not branch_requires_einvoice_before_submit(branch):
 		return
 	ok = frappe.db.exists(
 		"E Invoice Submission",
@@ -44,15 +42,17 @@ def sales_invoice_before_submit(doc, method=None) -> None:
 		return
 	frappe.throw(
 		_(
-			"Company policy requires an e-invoice submission for this Sales Invoice. "
-			"Create an E Invoice Submission linked to this document, dispatch it, then submit again."
+			"Branch policy requires an e-invoice for this Sales Invoice. "
+			"Open E Invoice Submission, prepare/sign, send to ETA, then submit again."
 		)
 	)
 
 
 def sales_invoice_on_submit(doc, method=None) -> None:
-	"""Auto-create review queue row for ETA e-invoice."""
+	"""Auto-create E Invoice Submission when billing type is ETA."""
 	if doc.doctype != "Sales Invoice":
+		return
+	if not sales_invoice_is_eta_billing(doc):
 		return
 	ensure_submission_for_document("Sales Invoice", doc.name)
 

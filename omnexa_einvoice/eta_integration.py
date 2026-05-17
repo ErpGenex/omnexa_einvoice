@@ -1,10 +1,7 @@
 # Copyright (c) 2026, Omnexa and contributors
 # License: MIT. See license.txt
 
-"""Egypt ETA integration helpers: token cache, poll normalization, E-Document Submission updates.
-
-Live HTTPS calls to ETA (login, submit, poll) are intentionally not implemented here; wire them
-per official SDK (https://sdk.invoicing.eta.gov.eg/) when credentials and endpoints are available.
+"""Egypt ETA integration helpers: OAuth token cache, poll normalization, E-Document Submission updates.
 
 This module lives in the **omnexa_einvoice** app so e-Invoice / e-Receipt logic stays installable
 separately from ``omnexa_core``.
@@ -17,8 +14,11 @@ import time
 from typing import Any
 
 import frappe
+import requests
 from frappe import _
 from frappe.utils import add_to_date, get_datetime, now_datetime
+
+from omnexa_einvoice.eta_receipt import ETA_TOKEN_URLS
 
 from omnexa_core.omnexa_core.constants import (
 	DOC_STATUS_ACCEPTED,
@@ -98,34 +98,101 @@ def exchange_eta_token(
 	client_id: str,
 	client_secret: str,
 	environment: str = "preprod",
+	pos_headers: dict[str, str] | None = None,
 ) -> dict[str, Any]:
-	"""Obtain access token from ETA identity API.
+	"""Obtain access token from ETA identity API (OAuth2 client_credentials).
 
-	When ``omnexa_eta_require_live_token`` is truthy in site config, callers must implement
-	the real HTTP exchange; otherwise a deterministic dev/test token is returned.
+	For e-Receipt (POS), ETA requires ``posserial`` / ``pososversion`` headers on the token request.
 	"""
 	client_id = (client_id or "").strip()
 	client_secret = (client_secret or "").strip()
 	if not client_id or not client_secret:
 		frappe.throw(_("ETA client_id and client_secret are required."), title=_("ETA Auth"))
+	from omnexa_einvoice.branch_eta import _is_masked_secret
 
-	conf = frappe.get_conf() or {}
-	if conf.get("omnexa_eta_require_live_token"):
+	if _is_masked_secret(client_secret):
 		frappe.throw(
-			_("Live ETA token exchange is not implemented; unset omnexa_eta_require_live_token or add HTTP client."),
+			_(
+				"ETA client secret is missing or masked. Open Branch → Egypt ETA, "
+				"type the E-Receipt Client Secret again, and save."
+			),
 			title=_("ETA Auth"),
 		)
 
-	token = frappe.generate_hash(length=24)
-	expires_in = 3500
+	conf = frappe.get_conf() or {}
+	use_stub = bool(conf.get("omnexa_eta_use_stub_token"))
+	if use_stub:
+		token = frappe.generate_hash(length=24)
+		expires_in = 3500
+		expires_at = add_to_date(now_datetime(), seconds=expires_in)
+		return {
+			"access_token": token,
+			"token_type": "Bearer",
+			"expires_in": expires_in,
+			"expires_at_ts": time.time() + expires_in,
+			"expires_at": str(expires_at),
+			"environment": (environment or "preprod").strip(),
+		}
+
+	from omnexa_einvoice.branch_eta import normalize_eta_environment
+
+	env = normalize_eta_environment(environment)
+	token_url = ETA_TOKEN_URLS.get(env, ETA_TOKEN_URLS["preprod"])
+	data = {
+		"grant_type": "client_credentials",
+		"client_id": client_id,
+		"client_secret": client_secret,
+		"scope": "",
+	}
+	headers = {
+		"Content-Type": "application/x-www-form-urlencoded",
+		"Accept": "application/json",
+	}
+	if pos_headers:
+		for key, value in pos_headers.items():
+			headers[key] = "" if value is None else str(value).strip()
+
+	try:
+		res = requests.post(token_url, data=data, headers=headers, timeout=30)
+	except requests.RequestException as exc:
+		frappe.throw(_("ETA token request failed: {0}").format(exc), title=_("ETA Auth"))
+
+	if res.status_code >= 300:
+		body_lower = (res.text or "").lower()
+		hint = ""
+		if pos_headers:
+			if "invalid_client" in body_lower:
+				hint = _(
+					" For e-Receipt: wrong Client ID/Secret, or preprod credentials used on production."
+				)
+			elif "unauthorized_client" in body_lower:
+				hint = _(
+					" Client is valid but not authorized for this POS. Register the POS serial on "
+					"invoicing.eta.gov.eg and use the POS e-Receipt credentials (not B2B invoice credentials)."
+				)
+			else:
+				hint = _(
+					" For e-Receipt: verify Client ID/Secret, environment (prod), and POS Device Serial on Branch."
+				)
+		frappe.throw(
+			_("ETA token exchange failed ({0}): {1}{2}").format(res.status_code, res.text[:500], hint),
+			title=_("ETA Auth"),
+		)
+
+	body = res.json()
+	access_token = (body.get("access_token") or "").strip()
+	if not access_token:
+		frappe.throw(_("ETA token response missing access_token."), title=_("ETA Auth"))
+
+	expires_in = int(body.get("expires_in") or 3600)
 	expires_at = add_to_date(now_datetime(), seconds=expires_in)
 	return {
-		"access_token": token,
-		"token_type": "Bearer",
+		"access_token": access_token,
+		"token_type": body.get("token_type") or "Bearer",
 		"expires_in": expires_in,
 		"expires_at_ts": time.time() + expires_in,
 		"expires_at": str(expires_at),
-		"environment": (environment or "preprod").strip(),
+		"environment": env,
 	}
 
 
@@ -141,6 +208,7 @@ def ensure_eta_access_token(profile_key: str, credentials: dict[str, Any] | None
 		client_id=str(creds.get("client_id") or ""),
 		client_secret=str(creds.get("client_secret") or ""),
 		environment=str(creds.get("environment") or "preprod"),
+		pos_headers=creds.get("pos_headers") if isinstance(creds.get("pos_headers"), dict) else None,
 	)
 	set_cached_eta_token_state(profile_key, token_state)
 	return str(token_state["access_token"])

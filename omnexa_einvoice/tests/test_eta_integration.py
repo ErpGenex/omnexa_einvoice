@@ -20,6 +20,10 @@ from omnexa_einvoice.eta_integration import (
 
 
 class TestETAIntegration(FrappeTestCase):
+	def setUp(self):
+		super().setUp()
+		frappe.conf.omnexa_eta_use_stub_token = 1
+
 	def tearDown(self):
 		super().tearDown()
 		frappe.cache().delete_value(eta_token_cache_key("test-profile"))

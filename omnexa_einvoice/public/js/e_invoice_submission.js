@@ -6,9 +6,17 @@ frappe.ui.form.on("E Invoice Submission", {
 		if (frm.is_new() || frm.doc.docstatus !== 0) {
 			return;
 		}
-		if (frm.doc.status && frm.doc.status !== "Draft") {
+		const is_receipt = frm.doc.submission_kind === "E-Receipt";
+		const allow_sign = ["Draft", "Failed", ...(is_receipt ? ["Queued"] : [])].includes(frm.doc.status);
+		const allow_send = ["Signed", "Draft", "Failed", ...(is_receipt ? ["Queued"] : [])].includes(
+			frm.doc.status
+		);
+		if (!allow_sign && !allow_send) {
 			return;
 		}
+		if (!is_receipt && frm.doc.status && frm.doc.status !== "Draft") {
+			// hub dispatch only from Draft (e-invoice)
+		} else if (!is_receipt && frm.doc.status === "Draft") {
 		frm.add_custom_button(__("Dispatch to authority"), () => {
 			frappe.call({
 				method: "omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.dispatch_submission",
@@ -23,12 +31,16 @@ frappe.ui.form.on("E Invoice Submission", {
 				},
 			});
 		}).addClass("btn-primary");
+		}
 
-		frm.add_custom_button(__("Sign"), async () => {
+		const sign_label =
+			frm.doc.submission_kind === "E-Receipt" ? __("Prepare E-Receipt (UUID)") : __("Sign");
+		if (allow_sign) {
+		frm.add_custom_button(sign_label, async () => {
 			let pin = "";
-			if (frm.doc.submission_kind === "E-Receipt") {
+			if (frm.doc.submission_kind === "E-Invoice") {
 				const values = await frappe.prompt(
-					[{ fieldname: "pin", fieldtype: "Password", label: __("Token PIN"), reqd: 0 }],
+					[{ fieldname: "pin", fieldtype: "Password", label: __("USB Token PIN"), reqd: 0 }],
 					() => {},
 					__("Sign Submission"),
 					__("Sign"),
@@ -39,11 +51,14 @@ frappe.ui.form.on("E Invoice Submission", {
 				method: "omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.sign_submission",
 				args: { name: frm.doc.name, pin },
 				freeze: true,
-				freeze_message: __("Signing..."),
+				freeze_message:
+					frm.doc.submission_kind === "E-Receipt" ? __("Preparing receipt…") : __("Signing…"),
 			});
 			await frm.reload_doc();
 		});
+		}
 
+		if (allow_send) {
 		frm.add_custom_button(__("Send to ETA"), async () => {
 			await frappe.call({
 				method: "omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.send_submission_to_eta",
@@ -53,5 +68,6 @@ frappe.ui.form.on("E Invoice Submission", {
 			});
 			await frm.reload_doc();
 		}).addClass("btn-primary");
+		}
 	},
 });

@@ -51,6 +51,8 @@ omnexa_register_integration_hub = [
 doctype_js = {
 	"E Invoice Submission": "public/js/e_invoice_submission.js",
 	"Sales Invoice": "public/js/sales_invoice_einvoice.js",
+	"POS Invoice": "public/js/pos_invoice_ereceipt.js",
+	"Branch": "public/js/branch_eta_settings.js",
 }
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
@@ -146,10 +148,18 @@ before_migrate = "omnexa_einvoice.install.enforce_supported_frappe_version"
 # Hook on document methods and events
 
 doc_events = {
+	"Branch": {
+		"validate": "omnexa_einvoice.branch_eta.validate_branch_eta_settings",
+	},
 	"Sales Invoice": {
+		"before_validate": "omnexa_einvoice.sales_invoice_eta.normalize_sales_invoice_eta_billing_type_field",
+		"validate": "omnexa_einvoice.sales_invoice_eta.validate_sales_invoice_eta_billing_type",
 		"before_submit": "omnexa_einvoice.e_invoice_hooks.sales_invoice_before_submit",
 		"on_submit": "omnexa_einvoice.e_invoice_hooks.sales_invoice_on_submit",
-	}
+	},
+	"POS Invoice": {
+		"on_submit": "omnexa_einvoice.e_invoice_hooks.pos_invoice_on_submit",
+	},
 }
 
 # Scheduled Tasks

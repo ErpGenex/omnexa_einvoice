@@ -9,6 +9,7 @@
 		"tab_break_overview",
 		"reference_section",
 		"company",
+		"branch",
 		"reference_doctype",
 		"reference_name",
 		"submission_kind",
@@ -66,6 +67,14 @@
 			"fieldtype": "Link",
 			"label": "Company",
 			"options": "Company"
+		},
+		{
+			"fieldname": "branch",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Branch",
+			"options": "Branch",
+			"reqd": 1
 		},
 		{
 			"fieldname": "reference_doctype",

@@ -22,6 +22,16 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "ETA E-Receipt Console",
+   "link_count": 0,
+   "link_to": "eta-ereceipt-console",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "E Invoice Submission",
    "link_count": 0,
    "link_to": "E Invoice Submission",
@@ -52,7 +62,7 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Company setup",
+   "label": "Branch ETA setup",
    "link_count": 0,
    "onboard": 0,
    "type": "Card Break"
@@ -60,19 +70,9 @@
   {
    "hidden": 0,
    "is_query_report": 0,
-   "label": "Tax Authority Profile",
+   "label": "Branch (Egypt ETA tab)",
    "link_count": 0,
-   "link_to": "Tax Authority Profile",
-   "link_type": "DocType",
-   "onboard": 0,
-   "type": "Link"
-  },
-  {
-   "hidden": 0,
-   "is_query_report": 0,
-   "label": "Signing Profile",
-   "link_count": 0,
-   "link_to": "Signing Profile",
+   "link_to": "Branch",
    "link_type": "DocType",
    "onboard": 0,
    "type": "Link"

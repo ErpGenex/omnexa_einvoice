@@ -17,6 +17,23 @@
 		"eta_base_url",
 		"eta_client_id",
 		"eta_client_secret",
+		"eta_receipt_section",
+		"eta_pos_device_serial",
+		"eta_activity_code",
+		"eta_company_trade_name",
+		"eta_branch_code",
+		"eta_pos_os_version",
+		"eta_address_section",
+		"eta_address_country",
+		"eta_address_governate",
+		"eta_address_city",
+		"eta_address_street",
+		"eta_address_building_number",
+		"eta_address_postal_code",
+		"eta_address_floor",
+		"eta_address_room",
+		"eta_address_landmark",
+		"eta_address_additional",
 		"zatca_reporting_phase",
 		"tax_authority_name",
 		"require_e_invoice_for_sales_invoice",
@@ -93,6 +110,116 @@
 			"label": "ETA Client Secret"
 		},
 		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_receipt_section",
+			"fieldtype": "Section Break",
+			"label": "E-Receipt (POS)"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"description": "POS device serial sent as posserial header to ETA.",
+			"fieldname": "eta_pos_device_serial",
+			"fieldtype": "Data",
+			"label": "ETA POS Device Serial"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_activity_code",
+			"fieldtype": "Data",
+			"label": "ETA Activity Code"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_company_trade_name",
+			"fieldtype": "Data",
+			"label": "ETA Company Trade Name"
+		},
+		{
+			"default": "0",
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_branch_code",
+			"fieldtype": "Data",
+			"label": "ETA Branch Code"
+		},
+		{
+			"default": "os",
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"description": "Sent as pososversion (os for preprod, windows for production).",
+			"fieldname": "eta_pos_os_version",
+			"fieldtype": "Select",
+			"label": "ETA POS OS Version",
+			"options": "os\nwindows"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_address_section",
+			"fieldtype": "Section Break",
+			"label": "Seller Branch Address"
+		},
+		{
+			"default": "EG",
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_address_country",
+			"fieldtype": "Data",
+			"label": "Country"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_address_governate",
+			"fieldtype": "Data",
+			"label": "Governate"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_address_city",
+			"fieldtype": "Data",
+			"label": "City"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_address_street",
+			"fieldtype": "Data",
+			"label": "Street"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_address_building_number",
+			"fieldtype": "Data",
+			"label": "Building Number"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_address_postal_code",
+			"fieldtype": "Data",
+			"label": "Postal Code"
+		},
+		{
+			"default": "1",
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_address_floor",
+			"fieldtype": "Data",
+			"label": "Floor"
+		},
+		{
+			"default": "1",
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_address_room",
+			"fieldtype": "Data",
+			"label": "Room"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_address_landmark",
+			"fieldtype": "Data",
+			"label": "Landmark"
+		},
+		{
+			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_eta\"",
+			"fieldname": "eta_address_additional",
+			"fieldtype": "Data",
+			"label": "Additional Address Info"
+		},
+		{
 			"depends_on": "eval:doc.default_einvoice_adapter==\"einvoice_zatca\"",
 			"fieldname": "zatca_reporting_phase",
 			"fieldtype": "Select",
@@ -120,7 +247,7 @@
 	"grid_page_length": 50,
 	"index_web_pages_for_search": 1,
 	"links": [],
-	"modified": "2026-05-07 12:00:00",
+	"modified": "2026-05-16 12:00:00",
 	"modified_by": "Administrator",
 	"module": "Omnexa Einvoice",
 	"name": "Tax Authority Profile",
