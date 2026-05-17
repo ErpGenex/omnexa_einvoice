@@ -248,6 +248,9 @@ def get_eta_invoice_branch_settings(branch: str) -> frappe._dict:
 		"eta_invoice_rin",
 		"eta_signer_mode",
 		"eta_signing_secret",
+		"eta_signing_agent_url",
+		"eta_usb_token_type",
+		"eta_usb_signing_pin",
 		"eta_windows_signer_command",
 		"eta_certificate_reference",
 	]
@@ -267,6 +270,9 @@ def get_eta_invoice_branch_settings(branch: str) -> frappe._dict:
 			"eta_client_secret": _branch_secret(branch, "eta_invoice_client_secret", row.get("eta_invoice_client_secret")),
 			"signer_mode": (row.get("eta_signer_mode") or "remote").strip().lower(),
 			"signing_secret": row.get("eta_signing_secret") or _password_from_branch(branch, "eta_signing_secret"),
+			"signing_agent_url": (row.get("eta_signing_agent_url") or "").strip(),
+			"usb_token_type": (row.get("eta_usb_token_type") or "epass2003").strip(),
+			"usb_signing_pin": _password_from_branch(branch, "eta_usb_signing_pin"),
 			"windows_signer_command": row.get("eta_windows_signer_command"),
 			"certificate_reference": row.get("eta_certificate_reference"),
 			"require_einvoice_before_si_submit": int(
@@ -356,6 +362,18 @@ def validate_branch_eta_settings(doc, method=None) -> None:
 		if not (doc.eta_invoice_client_id or "").strip() or not secret:
 			frappe.throw(_("E-Invoice: Client ID and Client Secret are required."), title=_("E-Invoice"))
 		mode = (doc.eta_signer_mode or "remote").strip().lower()
+		if mode in ("signing_agent", "windows_app"):
+			if not doc.is_new():
+				pin_ok = bool((doc.get_password("eta_usb_signing_pin", raise_exception=False) or "").strip())
+				if not pin_ok and not (doc.eta_usb_signing_pin or "").strip():
+					frappe.throw(
+						_("E-Invoice: USB Token PIN is required on Branch (Egypt ETA → USB Token PIN)."),
+						title=_("E-Invoice"),
+					)
+		if mode == "signing_agent":
+			url = (doc.eta_signing_agent_url or "").strip().lower()
+			if not url:
+				frappe.throw(_("E-Invoice: Signing Agent URL is required."), title=_("E-Invoice"))
 		if mode == "windows_app" and not (doc.eta_windows_signer_command or "").strip():
 			frappe.throw(_("E-Invoice: Windows Signer Command is required for USB mode."), title=_("E-Invoice"))
 		if mode == "windows_app" and not (doc.eta_certificate_reference or "").strip():

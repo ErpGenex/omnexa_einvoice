@@ -4,10 +4,7 @@
 from __future__ import annotations
 
 import base64
-import hashlib
-import hmac
 import json
-import subprocess
 
 import frappe
 import requests
@@ -21,17 +18,24 @@ from omnexa_einvoice.branch_eta import (
 	RECEIPT_KIND,
 	get_branch_eta_credentials,
 	get_eta_branch_settings,
-	get_eta_invoice_branch_settings,
 	resolve_branch_for_document,
 )
-from omnexa_einvoice.eta_receipt import (
-	build_eta_receipt_document,
-	encode_eta_receipt_submission,
-	ensure_receipt_uuid,
-	parse_receipt_submission_response,
-	refresh_receipt_datetime,
-	validate_receipt_document,
+from omnexa_einvoice.eta_ereceipt_submission import (
+	apply_e_receipt_send_result,
+	encode_e_receipt_body,
+	prepare_e_receipt_for_send,
+	sign_e_receipt_submission,
 )
+from omnexa_einvoice.branch_eta import get_eta_invoice_branch_settings
+from omnexa_einvoice.eta_einvoice_submission import (
+	apply_e_invoice_send_result,
+	build_e_invoice_submit_body,
+	build_unsigned_e_invoice_document,
+	prepare_e_invoice_for_send,
+	prepare_e_invoice_for_send_unsigned,
+	sign_e_invoice_submission,
+)
+from omnexa_einvoice.eta_invoice_signing import uses_browser_signing_agent
 from omnexa_einvoice.sales_invoice_eta import (
 	get_eta_billing_type,
 	resolve_submission_kind_for_sales_invoice,
@@ -185,59 +189,6 @@ class EInvoiceSubmission(Document):
 		return payload
 
 
-def _canonical_json(data: dict) -> str:
-	return json.dumps(data, sort_keys=True, separators=(",", ":"), ensure_ascii=False)
-
-
-def _build_sales_invoice_payload(doc) -> dict:
-	items = []
-	for row in doc.get("items") or []:
-		items.append(
-			{
-				"code": row.get("item_code"),
-				"name": row.get("item_name"),
-				"qty": row.get("qty"),
-				"rate": row.get("rate"),
-				"amount": row.get("amount"),
-			}
-		)
-	return {
-		"documentType": "I",
-		"internalId": doc.name,
-		"issueDate": str(doc.get("posting_date") or ""),
-		"currency": doc.get("currency") or "EGP",
-		"customer": doc.get("customer"),
-		"grandTotal": doc.get("grand_total"),
-		"items": items,
-	}
-
-
-def _sign_payload(canonical_text: str, branch: str, pin: str | None = None) -> str:
-	settings = get_eta_invoice_branch_settings(branch)
-	mode = settings.signer_mode
-	if mode == "windows_app" and (settings.windows_signer_command or "").strip():
-		cmd = settings.windows_signer_command.strip()
-		args = [cmd, canonical_text]
-		if pin:
-			args.append(pin)
-		out = subprocess.check_output(args, text=True).strip()
-		if not out:
-			frappe.throw(_("Windows signer returned empty signature."))
-		return out
-	secret = (settings.signing_secret or "").strip()
-	if not secret and frappe.db.exists("Branch", branch):
-		try:
-			secret = (
-				frappe.get_doc("Branch", branch).get_password("eta_signing_secret", raise_exception=False) or ""
-			)
-		except Exception:
-			secret = ""
-	if not secret:
-		secret = frappe.local.site
-	signature = hmac.new(secret.encode("utf-8"), canonical_text.encode("utf-8"), hashlib.sha256).digest()
-	return base64.b64encode(signature).decode("utf-8")
-
-
 @frappe.whitelist()
 def ensure_submission_for_document(doctype: str, docname: str):
 	if doctype not in ("Sales Invoice", "POS Invoice"):
@@ -301,9 +252,225 @@ def _recover_ereceipt_from_hub_queue(doc) -> None:
 	doc.save(ignore_permissions=True)
 
 
+def _branch_usb_pin_for_client(branch: str) -> str:
+	"""Return stored USB PIN for browser→local agent (authenticated session only)."""
+	if not branch:
+		return ""
+	try:
+		return (get_eta_invoice_branch_settings(branch).usb_signing_pin or "").strip()
+	except Exception:
+		return ""
+
+
+def _branch_usb_pin_b64_for_client(branch: str) -> str:
+	"""Base64 PIN for browser (avoids empty ``pin`` key in some clients)."""
+	raw = _branch_usb_pin_for_client(branch)
+	if not raw:
+		return ""
+	return base64.b64encode(raw.encode("utf-8")).decode("ascii")
+
+
+def _client_signing_secrets(branch: str) -> dict:
+	"""PIN payload for browser→agent (field names avoid accidental API redaction)."""
+	b64 = _branch_usb_pin_b64_for_client(branch)
+	return {
+		"signing_secret_b64": b64,
+		"usb_pin_b64": b64,
+		"has_signing_secret": bool(b64),
+	}
+
+
+def build_agent_sign_payload(unsigned: dict, branch: str, token_type: str = "epass2003") -> dict:
+	"""
+	Full POST body for epass2003_agent /sign (matches Temp-ETR DirectSigner.sign_with_agent).
+	PIN always from Branch — never from the browser UI.
+	"""
+	plain_pin = _branch_usb_pin_for_client(branch)
+	if not plain_pin:
+		frappe.throw(
+			_("USB Token PIN is missing on Branch {0}. Enter it under Egypt ETA → USB Token PIN and Save.").format(
+				branch
+			),
+			title=_("Signing Agent"),
+		)
+	pin_b64 = base64.b64encode(plain_pin.encode("utf-8")).decode("ascii")
+	unsigned = json.loads(json.dumps(unsigned or {}, ensure_ascii=False))
+	unsigned.pop("signatures", None)
+	return {
+		"invoice": unsigned,
+		"pin": plain_pin,
+		"usb_token_pin": plain_pin,
+		"pin_b64": pin_b64,
+		"signing_secret_b64": pin_b64,
+		"token_type": (token_type or "epass2003").strip() or "epass2003",
+		"use_chilkat": True,
+		"verify": False,
+	}
+
+
 @frappe.whitelist()
-def sign_submission(name: str, pin: str | None = None):
-	"""E-Receipt: build ETA JSON + ITIDA UUID + validate. E-Invoice: canonical sign (USB/HMAC)."""
+def get_agent_sign_payload_for_branch_test(branch: str) -> dict:
+	"""Server-built test /sign payload (Branch USB test button on Windows)."""
+	from omnexa_einvoice.eta_invoice import build_usb_signing_test_document
+
+	branch = (branch or "").strip()
+	settings = get_eta_invoice_branch_settings(branch)
+	document = build_usb_signing_test_document(branch)
+	token_type = (settings.usb_token_type or "epass2003").strip()
+	agent_payload = build_agent_sign_payload(document, branch, token_type=token_type)
+	return {
+		"ok": True,
+		"branch": branch,
+		"agent_url": (settings.signing_agent_url or "http://127.0.0.1:5002").strip(),
+		"agent_payload": agent_payload,
+		"internal_id": document.get("internalID"),
+	}
+
+
+@frappe.whitelist()
+def get_agent_sign_payload_for_submission(name: str, for_send: int = 0) -> dict:
+	"""
+	Server-built /sign payload for browser → local agent (E-Invoice only).
+	Avoids empty PIN when cached client JS is outdated.
+	"""
+	doc = frappe.get_doc("E Invoice Submission", name)
+	if doc.submission_kind == "E-Receipt":
+		frappe.throw(_("E-Receipt does not use USB signing."), title=_("E-Receipt"))
+	source = frappe.get_doc(doc.reference_doctype, doc.reference_name)
+	branch = doc.branch or resolve_branch_for_document(source)
+	settings = get_eta_invoice_branch_settings(branch)
+	if not uses_browser_signing_agent(branch):
+		frappe.throw(_("Branch signer mode is not Signing Agent."), title=_("E-Invoice Signing"))
+
+	if int(for_send or 0):
+		payload = json.loads(doc.result_data or "{}")
+		unsigned = prepare_e_invoice_for_send_unsigned(payload)
+	else:
+		unsigned = build_unsigned_e_invoice_document(source, branch)
+
+	agent_url = (settings.signing_agent_url or "http://127.0.0.1:5002").strip()
+	token_type = (settings.usb_token_type or "epass2003").strip()
+	agent_payload = build_agent_sign_payload(unsigned, branch, token_type=token_type)
+	return {
+		"ok": True,
+		"branch": branch,
+		"agent_url": agent_url,
+		"agent_payload": agent_payload,
+		"internal_id": (unsigned.get("internalID") or ""),
+		"pin_configured": True,
+	}
+
+
+@frappe.whitelist()
+def get_branch_signing_secret_b64(branch: str) -> dict:
+	"""Return branch USB signing secret for authenticated browser→local agent only."""
+	branch = (branch or "").strip()
+	if not branch or not frappe.db.exists("Branch", branch):
+		frappe.throw(_("Branch {0} does not exist.").format(branch or "—"), title=_("Signing"))
+	secrets = _client_signing_secrets(branch)
+	if not secrets["has_signing_secret"]:
+		frappe.throw(
+			_("USB Token PIN is missing on Branch {0}. Enter it under Egypt ETA → USB Token PIN and Save.").format(
+				branch
+			),
+			title=_("Signing Agent"),
+		)
+	return {"ok": True, "branch": branch, **secrets}
+
+
+@frappe.whitelist()
+def get_branch_usb_signing_status(branch: str) -> dict:
+	"""Whether Branch has USB PIN saved (does not expose the PIN)."""
+	branch = (branch or "").strip()
+	if not branch or not frappe.db.exists("Branch", branch):
+		return {"ok": False, "has_pin": False}
+	pin = _branch_usb_pin_for_client(branch)
+	signer_mode = ""
+	agent_url = ""
+	token_type = "epass2003"
+	if frappe.db.get_value("Branch", branch, "eta_einvoice_enabled"):
+		try:
+			settings = get_eta_invoice_branch_settings(branch)
+			signer_mode = (settings.signer_mode or "").strip()
+			agent_url = (settings.signing_agent_url or "").strip()
+			token_type = (settings.usb_token_type or "epass2003").strip()
+		except Exception:
+			pass
+	return {
+		"ok": True,
+		"has_pin": bool(pin),
+		"signer_mode": signer_mode,
+		"agent_url": agent_url,
+		"token_type": token_type,
+	}
+
+
+@frappe.whitelist()
+def get_e_invoice_signing_settings(name: str) -> dict:
+	"""Client-side USB agent settings (E-Invoice only). E-Receipt never uses this."""
+	doc = frappe.get_doc("E Invoice Submission", name)
+	if doc.submission_kind == "E-Receipt":
+		return {"browser_signing": False}
+	source = frappe.get_doc(doc.reference_doctype, doc.reference_name)
+	branch = doc.branch or resolve_branch_for_document(source)
+	settings = get_eta_invoice_branch_settings(branch)
+	return {
+		"browser_signing": uses_browser_signing_agent(branch),
+		"agent_url": (settings.signing_agent_url or "http://127.0.0.1:5002").strip(),
+		"token_type": (settings.usb_token_type or "epass2003").strip(),
+		"signer_mode": (settings.signer_mode or "remote").strip(),
+		"has_branch_pin": bool(_branch_usb_pin_for_client(branch)),
+	}
+
+
+@frappe.whitelist()
+def prepare_e_invoice_for_client_sign(name: str) -> dict:
+	"""Unsigned ETA invoice JSON for browser signing agent (E-Invoice only)."""
+	doc = frappe.get_doc("E Invoice Submission", name)
+	if doc.submission_kind == "E-Receipt":
+		frappe.throw(_("E-Receipt does not use USB signing."), title=_("E-Receipt"))
+	source = frappe.get_doc(doc.reference_doctype, doc.reference_name)
+	branch = doc.branch or resolve_branch_for_document(source)
+	document = build_unsigned_e_invoice_document(source, branch)
+	unsigned = json.loads(json.dumps(document, ensure_ascii=False))
+	unsigned.pop("signatures", None)
+	ctx = get_e_invoice_signing_settings(name)
+	secrets = _client_signing_secrets(branch)
+	if ctx.get("browser_signing") and not secrets["has_signing_secret"]:
+		frappe.throw(
+			_("USB Token PIN is missing on Branch {0}. Enter it under Egypt ETA → USB Token PIN and Save.").format(
+				branch
+			),
+			title=_("Signing Agent"),
+		)
+	return {"document": unsigned, "branch": branch, **ctx, **secrets}
+
+
+@frappe.whitelist()
+def prepare_e_invoice_for_client_send(name: str) -> dict:
+	"""Refresh issue time; return unsigned document for browser re-sign before ETA send."""
+	doc = frappe.get_doc("E Invoice Submission", name)
+	if doc.submission_kind == "E-Receipt":
+		frappe.throw(_("E-Receipt does not use USB signing."), title=_("E-Receipt"))
+	payload = json.loads(doc.result_data or "{}")
+	unsigned = prepare_e_invoice_for_send_unsigned(payload)
+	ctx = get_e_invoice_signing_settings(name)
+	source = frappe.get_doc(doc.reference_doctype, doc.reference_name)
+	branch = doc.branch or resolve_branch_for_document(source)
+	secrets = _client_signing_secrets(branch)
+	if ctx.get("browser_signing") and not secrets["has_signing_secret"]:
+		frappe.throw(
+			_("USB Token PIN is missing on Branch {0}. Enter it under Egypt ETA → USB Token PIN and Save.").format(
+				branch
+			),
+			title=_("Signing Agent"),
+		)
+	return {"document": unsigned, "branch": branch, **ctx, **secrets}
+
+
+@frappe.whitelist()
+def sign_submission(name: str, client_signature: str | None = None):
+	"""E-Receipt: build ETA JSON. E-Invoice: sign via Branch USB PIN (never prompted)."""
 	doc = frappe.get_doc("E Invoice Submission", name)
 	if doc.status not in ("Draft", "Failed", "Queued"):
 		frappe.throw(_("Only Draft/Failed submission can be signed."))
@@ -318,28 +485,19 @@ def sign_submission(name: str, pin: str | None = None):
 	doc.branch = branch
 
 	if is_receipt:
-		payload = build_eta_receipt_document(source, branch=branch)
-		validate_receipt_document(payload, strict_datetime=False)
-		doc.eta_uuid = payload.get("header", {}).get("uuid", "")
-		doc.canonical_hash = doc.eta_uuid
-		doc.signature_value = ""
-		merged = {"document": payload}
+		merged = sign_e_receipt_submission(doc, source, branch)
 	else:
-		payload = _build_sales_invoice_payload(source)
-		canonical = _canonical_json(payload)
-		signature = _sign_payload(canonical, branch, pin)
-		doc.signature_value = signature
-		doc.canonical_hash = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
-		merged = {"document": payload, "signatures": [{"signatureType": "I", "value": signature}]}
+		merged = sign_e_invoice_submission(doc, source, branch, client_signature=client_signature)
 
 	doc.result_data = json.dumps(merged, ensure_ascii=False)
 	doc.status = "Signed"
 	doc.save(ignore_permissions=True)
-	return {"ok": True, "status": doc.status, "uuid": doc.eta_uuid}
+	signer_method = merged.get("signer_method", "") if not is_receipt else ""
+	return {"ok": True, "status": doc.status, "uuid": doc.eta_uuid, "signer_method": signer_method}
 
 
 @frappe.whitelist()
-def send_submission_to_eta(name: str):
+def send_submission_to_eta(name: str, client_signature: str | None = None):
 	doc = frappe.get_doc("E Invoice Submission", name)
 	source = frappe.get_doc(doc.reference_doctype, doc.reference_name)
 	_sync_submission_kind_from_source(doc, source)
@@ -352,7 +510,7 @@ def send_submission_to_eta(name: str):
 	if doc.status not in allowed:
 		frappe.throw(_("Submission must be in Signed/Draft/Failed state before send."))
 	if not doc.result_data or doc.status != "Signed":
-		sign_submission(name)
+		sign_submission(name, client_signature=client_signature)
 		doc.reload()
 
 	payload = json.loads(doc.result_data or "{}")
@@ -373,25 +531,19 @@ def send_submission_to_eta(name: str):
 	}
 
 	if doc.submission_kind == "E-Receipt":
-		document = payload.get("document") or payload
-		document = refresh_receipt_datetime(document)
-		document = ensure_receipt_uuid(document)
-		validate_receipt_document(document, strict_datetime=True)
+		document = prepare_e_receipt_for_send(payload.get("document") or payload)
 		doc.eta_uuid = document.get("header", {}).get("uuid", "")
-		# Submit: Authorization only (Temp-ETR / PowerBuilder). POS headers are token-only.
 		url = f"{base_url}/api/v1/receiptsubmissions"
-		body_bytes = encode_eta_receipt_submission(document)
-	else:
-		url = f"{base_url}/api/v1/documentsubmissions"
-		document = payload.get("document") or payload
-		if payload.get("signatures"):
-			document["signatures"] = payload["signatures"]
-		body = {"documents": [document]}
-
-	if doc.submission_kind == "E-Receipt":
+		body_bytes = encode_e_receipt_body(document)
 		res = requests.post(url, data=body_bytes, headers=headers, timeout=60)
 	else:
-		res = requests.post(url, json=body, headers=headers, timeout=45)
+		document, doc.canonical_hash, signer_method, doc.signature_value = prepare_e_invoice_for_send(
+			payload, branch, client_signature=client_signature
+		)
+		doc.integration_message = _("Signed via {0} before send.").format(signer_method)
+		url = f"{base_url}/api/v1/documentsubmissions"
+		body = build_e_invoice_submit_body(document)
+		res = requests.post(url, json=body, headers=headers, timeout=60)
 	response_body: dict = {}
 	try:
 		response_body = res.json()
@@ -399,31 +551,21 @@ def send_submission_to_eta(name: str):
 		response_body = {"raw": res.text}
 
 	if doc.submission_kind == "E-Receipt":
-		parsed = parse_receipt_submission_response(response_body, res.status_code)
-		ok = parsed["ok"] and res.status_code in (200, 201, 202)
-		doc.status = "Completed" if ok else "Failed"
-		doc.provider_reference = (
-			parsed["submission_id"] or parsed["authority_uuid"] or doc.eta_uuid or ""
-		)[:140]
-		doc.authority_uuid = parsed["authority_uuid"] or doc.eta_uuid
-		doc.integration_message = parsed["message"]
-		doc.eta_error_code = parsed["error_code"]
+		send_out = apply_e_receipt_send_result(doc, document, response_body, res.status_code)
 	else:
-		ok = res.status_code < 300
-		doc.status = "Completed" if ok else "Failed"
-		doc.provider_reference = str(response_body.get("submissionId") or response_body.get("id") or "")[:140]
-		doc.authority_uuid = str(response_body.get("uuid") or response_body.get("documentUUID") or "")[:140]
-		doc.integration_message = str(response_body.get("message") or res.reason or "")[:140]
-		doc.eta_error_code = str(response_body.get("errorCode") or "")[:140]
-
-	if doc.submission_kind == "E-Receipt" and ok:
-		stored = {"document": document, "eta_response": response_body}
-		doc.result_data = json.dumps(stored, ensure_ascii=False)[:20000]
-	else:
-		doc.result_data = json.dumps(response_body, ensure_ascii=False)[:20000]
+		send_out = apply_e_invoice_send_result(doc, document, response_body, res.status_code)
+	ok = send_out["ok"]
+	parsed = send_out["parsed"]
 
 	doc.save(ignore_permissions=True)
-	return {"ok": ok, "status_code": res.status_code, "status": doc.status, "uuid": doc.eta_uuid}
+	return {
+		"ok": ok,
+		"status_code": res.status_code,
+		"status": doc.status,
+		"uuid": doc.eta_uuid,
+		"message": doc.integration_message,
+		"submission_id": (parsed.get("submission_id") if doc.submission_kind != "E-Receipt" else parsed.get("submission_id")),
+	}
 
 
 @frappe.whitelist()
