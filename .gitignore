@@ -11,7 +11,6 @@ build/
 .env
 .venv
 
-# Windows agent release (build on Windows; do not commit large ZIP)
-public/downloads/*.zip
-signing_agent/dist/
-signing_agent/build/
+# PyInstaller output (sources + release ZIP are committed under omnexa_einvoice/)
+omnexa_einvoice/signing_agent/dist/
+omnexa_einvoice/signing_agent/build/
