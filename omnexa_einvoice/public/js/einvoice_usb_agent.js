@@ -8,8 +8,19 @@
  * @version 20260517.4 — use get_agent_sign_payload_for_submission (server builds PIN).
  */
 frappe.provide("omnexa.einvoice");
-omnexa.einvoice.AGENT_JS_VERSION = "20260518.3";
+omnexa.einvoice.AGENT_JS_VERSION = "20260518.4";
 omnexa.einvoice.AGENT_SCAN_PORTS = [5002, 5001, 5003, 5004, 5005];
+
+/** fetch() to 127.0.0.1 from HTTPS cloud ERP (Chrome Private Network Access). */
+omnexa.einvoice.agentLocalFetch = function agentLocalFetch(url, options) {
+	const init = { mode: "cors", credentials: "omit", ...(options || {}) };
+	try {
+		init.targetAddressSpace = "local";
+	} catch (e) {
+		// ignored on older browsers
+	}
+	return fetch(url, init);
+};
 
 const EINV_PREPARE_USB_SIGN =
 	"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.prepare_usb_sign_for_browser";
@@ -51,9 +62,8 @@ omnexa.einvoice.discoverLocalAgent = async function discoverLocalAgent(preferred
 	const tried = [];
 	for (const base of tryUrls) {
 		try {
-			const res = await fetch(`${base}/health`, {
+			const res = await omnexa.einvoice.agentLocalFetch(`${base}/health`, {
 				method: "GET",
-				mode: "cors",
 				signal: AbortSignal.timeout(4000),
 			});
 			if (res.ok) {
@@ -178,11 +188,10 @@ omnexa.einvoice.postAgentSignPayload = async function postAgentSignPayload(msg) 
 	const base = discovery.agent_url;
 	let res;
 	try {
-		res = await fetch(`${base}/sign`, {
+		res = await omnexa.einvoice.agentLocalFetch(`${base}/sign`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(payload),
-			mode: "cors",
 		});
 	} catch (e) {
 		const hint = omnexa.einvoice.formatAgentFetchError(e, base);
@@ -299,7 +308,7 @@ omnexa.einvoice.signWithLocalAgent = async function signWithLocalAgent({
 
 	let health;
 	try {
-		health = await fetch(`${base}/health`, { method: "GET", mode: "cors" });
+		health = await omnexa.einvoice.agentLocalFetch(`${base}/health`, { method: "GET" });
 	} catch (e) {
 		const detail = e.message || String(e);
 		const refused =
@@ -323,7 +332,7 @@ omnexa.einvoice.signWithLocalAgent = async function signWithLocalAgent({
 		throw new Error(__("Signing agent health check failed at {0}", [base]));
 	}
 
-	const res = await fetch(`${base}/sign`, {
+	const res = await omnexa.einvoice.agentLocalFetch(`${base}/sign`, {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({
@@ -430,10 +439,21 @@ omnexa.einvoice.runCloudSigningBridgeTest = async function runCloudSigningBridge
 			__("Local signing agent reachable at {0}", [discovery.agent_url])
 		);
 	} else {
-		add(false, "local_agent", __("No local agent found on this PC (ports 5002–5005)."));
+		add(false, "local_agent", __("No local agent on this PC (ports 5002–5005)."));
 		(discovery.tried || []).forEach((t) => {
-			add(false, "local_agent_try", `${t.url}: ${t.error || ""}`);
+			const err = (t.error || "").trim();
+			const friendly =
+				/failed to fetch|networkerror/i.test(err) && omnexa.einvoice.isCloudErpContext()
+					? __("blocked or agent not running (see details below)")
+					: err;
+			add(false, "local_agent_try", `${t.url}: ${friendly}`);
 		});
+		if (omnexa.einvoice.isCloudErpContext()) {
+			resultHtmlError = omnexa.einvoice.formatAgentFetchError(
+				new Error("Failed to fetch"),
+				preferred
+			);
+		}
 	}
 
 	if (trialSign && discovery.ok && branch && server.ok !== false) {

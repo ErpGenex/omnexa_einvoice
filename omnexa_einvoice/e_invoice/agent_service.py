@@ -226,7 +226,9 @@ def run_branch_usb_signing_test_on_server(branch: str) -> dict[str, Any]:
 			_signing_check(
 				True,
 				"agent_ping",
-				_("Skipped on server — use Windows browser + sign_session. ERP config OK."),
+				_(
+					"Not tested from Linux server (127.0.0.1 is on your PC). Use Branch → Test cloud ↔ PC signing in Chrome on Windows."
+				),
 			)
 		)
 		browser_sign_required = True
@@ -241,7 +243,9 @@ def run_branch_usb_signing_test_on_server(branch: str) -> dict[str, Any]:
 	all_ok = all(c["ok"] for c in checks)
 	summary = _("Server checks passed.")
 	if all_ok and browser_sign_required:
-		summary = _("Server OK. Complete signing on Windows PC with USB token.")
+		summary = _(
+			"ERP/branch settings OK. Run «Test cloud ↔ PC signing» on the Windows PC with the USB token (not this server test)."
+		)
 
 	return {
 		**data,

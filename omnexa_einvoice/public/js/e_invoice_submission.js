@@ -27,9 +27,12 @@ async function omnexaPostAgentSignBody(msg) {
 	if (!body.erp_base_url) {
 		body.erp_base_url = window.location.origin;
 	}
+	const localFetch =
+		(typeof omnexa !== "undefined" && omnexa.einvoice && omnexa.einvoice.agentLocalFetch) ||
+		((url, opts) => fetch(url, { mode: "cors", ...opts }));
 	let health;
 	try {
-		health = await fetch(`${base}/health`, { method: "GET", mode: "cors" });
+		health = await localFetch(`${base}/health`, { method: "GET" });
 	} catch (e) {
 		const hint =
 			(typeof omnexa !== "undefined" &&
@@ -47,11 +50,10 @@ async function omnexaPostAgentSignBody(msg) {
 	}
 	let res;
 	try {
-		res = await fetch(`${base}/sign`, {
+		res = await localFetch(`${base}/sign`, {
 			method: "POST",
 			headers: { "Content-Type": "application/json" },
 			body: JSON.stringify(body),
-			mode: "cors",
 		});
 	} catch (e) {
 		const hint =
