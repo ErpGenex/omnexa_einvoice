@@ -29,4 +29,4 @@ fi
 
 bench restart
 echo "Done. On Windows PC: Ctrl+Shift+R in browser, then Branch → Test cloud ↔ PC signing."
-echo "Expected release: 20260518.4 (check Branch dashboard indicator)."
+echo "Expected release: 20260518.5 (check Branch dashboard indicator)."

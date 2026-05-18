@@ -214,8 +214,14 @@ def prepare_branch_usb_signing_test(branch: str) -> dict[str, Any]:
 
 @frappe.whitelist()
 def run_branch_usb_signing_test_on_server(branch: str) -> dict[str, Any]:
+	from omnexa_einvoice import SIGNING_BRIDGE_RELEASE
+
 	data = _prepare_branch_usb_signing_test(branch)
 	checks = list(data.get("checks") or [])
+	checks.insert(
+		0,
+		_signing_check(True, "release", _("Signing bridge release {0} (web worker).").format(SIGNING_BRIDGE_RELEASE)),
+	)
 	if not data.get("ok"):
 		return {**data, "checks": checks, "server_only": True, "summary": _("Fix failed checks and Save Branch.")}
 
@@ -254,6 +260,7 @@ def run_branch_usb_signing_test_on_server(branch: str) -> dict[str, Any]:
 		"server_only": True,
 		"browser_sign_required": browser_sign_required,
 		"summary": summary,
+		"signing_bridge_release": SIGNING_BRIDGE_RELEASE,
 	}
 
 

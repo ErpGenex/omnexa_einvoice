@@ -8,7 +8,7 @@
  * @version 20260517.4 — use get_agent_sign_payload_for_submission (server builds PIN).
  */
 frappe.provide("omnexa.einvoice");
-omnexa.einvoice.AGENT_JS_VERSION = "20260518.4";
+omnexa.einvoice.AGENT_JS_VERSION = "20260518.5";
 omnexa.einvoice.AGENT_SCAN_PORTS = [5002, 5001, 5003, 5004, 5005];
 
 /** fetch() to 127.0.0.1 from HTTPS cloud ERP (Chrome Private Network Access). */
