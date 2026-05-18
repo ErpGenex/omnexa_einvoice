@@ -265,6 +265,14 @@ def create_usb_sign_session(name: str, for_send: int = 0) -> dict:
 	return _usb.create_usb_sign_session_for_submission(name, for_send)
 
 
+@frappe.whitelist()
+def prepare_usb_sign_for_browser(name: str, for_send: int = 0) -> dict:
+	"""Pick sign_session (LAN) or browser PIN payload (HTTPS cloud) — same as Docs/Token Laravel flow."""
+	if _usb.use_browser_pin_for_usb():
+		return get_agent_sign_payload_for_submission(name, for_send)
+	return create_usb_sign_session(name, for_send)
+
+
 @frappe.whitelist(allow_guest=True)
 def resolve_usb_sign_session(session_id: str) -> dict:
 	return _usb.resolve_usb_sign_session(session_id)
@@ -313,10 +321,13 @@ def get_agent_sign_payload_for_submission(name: str, for_send: int = 0) -> dict:
 	return {
 		"ok": True,
 		"branch": branch,
-		"agent_url": (settings.signing_agent_url or _usb.DEFAULT_AGENT_URL).strip(),
+		"agent_url": _usb.normalize_browser_agent_url(settings.signing_agent_url),
+		"agent_body": agent_payload,
 		"agent_payload": agent_payload,
 		"internal_id": (unsigned.get("internalID") or ""),
 		"pin_configured": True,
+		"pin_mode": "browser",
+		"agent_scan_ports": list(_usb.AGENT_SCAN_PORTS),
 	}
 
 

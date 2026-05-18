@@ -2,9 +2,7 @@
 // License: MIT. See license.txt
 /* global frappe */
 
-/** E-Invoice USB signing v2 — sign_session (PIN fetched by agent from ERP). E-Receipt unchanged. */
-const OMNEXA_EINV_SIGN_SESSION =
-	"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.create_usb_sign_session";
+/** E-Invoice USB signing — delegates to omnexa.einvoice (LAN sign_session + cloud browser PIN). */
 
 async function omnexaPostAgentSignBody(msg) {
 	const base = ((msg && msg.agent_url) || "http://127.0.0.1:5002").replace(/\/$/, "");
@@ -99,13 +97,21 @@ async function omnexaPostAgentSignBody(msg) {
 }
 
 async function omnexaSignEInvoiceViaAgent(submissionName) {
-	const prep = await frappe.call({
-		method: OMNEXA_EINV_SIGN_SESSION,
-		args: { name: submissionName, for_send: 0 },
-		freeze: true,
-		freeze_message: __("Signing E-Invoice…"),
-	});
-	const signResult = await omnexaPostAgentSignBody(prep.message || {});
+	if (typeof omnexa !== "undefined" && omnexa.einvoice && omnexa.einvoice.signEInvoiceSubmission) {
+		return omnexa.einvoice.signEInvoiceSubmission(submissionName);
+	}
+	const prep =
+		typeof omnexa !== "undefined" && omnexa.einvoice && omnexa.einvoice.prepareUsbSignPrep
+			? await omnexa.einvoice.prepareUsbSignPrep(submissionName, 0, __("Signing E-Invoice…"))
+			: (
+					await frappe.call({
+						method:
+							"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.prepare_usb_sign_for_browser",
+						args: { name: submissionName, for_send: 0 },
+						freeze: true,
+					})
+			  ).message;
+	const signResult = await omnexaPostAgentSignBody(prep);
 	return frappe.call({
 		method:
 			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.sign_submission",
@@ -120,13 +126,21 @@ async function omnexaSignEInvoiceViaAgent(submissionName) {
 }
 
 async function omnexaSendEInvoiceViaAgent(submissionName) {
-	const prep = await frappe.call({
-		method: OMNEXA_EINV_SIGN_SESSION,
-		args: { name: submissionName, for_send: 1 },
-		freeze: true,
-		freeze_message: __("Signing before ETA send…"),
-	});
-	const signResult = await omnexaPostAgentSignBody(prep.message || {});
+	if (typeof omnexa !== "undefined" && omnexa.einvoice && omnexa.einvoice.sendEInvoiceSubmission) {
+		return omnexa.einvoice.sendEInvoiceSubmission(submissionName);
+	}
+	const prep =
+		typeof omnexa !== "undefined" && omnexa.einvoice && omnexa.einvoice.prepareUsbSignPrep
+			? await omnexa.einvoice.prepareUsbSignPrep(submissionName, 1, __("Signing before ETA send…"))
+			: (
+					await frappe.call({
+						method:
+							"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.prepare_usb_sign_for_browser",
+						args: { name: submissionName, for_send: 1 },
+						freeze: true,
+					})
+			  ).message;
+	const signResult = await omnexaPostAgentSignBody(prep);
 	return frappe.call({
 		method:
 			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.send_submission_to_eta",
@@ -152,6 +166,39 @@ frappe.ui.form.on("E Invoice Submission", {
 		);
 		if (!allow_sign && !allow_send) {
 			return;
+		}
+		if (!is_receipt && omnexa.einvoice && omnexa.einvoice.checkSigningAgentStatus) {
+			frm.add_custom_button(__("Check USB Agent"), async () => {
+				const st = await omnexa.einvoice.checkSigningAgentStatus("http://127.0.0.1:5002");
+				if (st.ok) {
+					frappe.msgprint({
+						title: __("USB Signing Agent"),
+						indicator: "green",
+						message: `${__("Agent reachable at")} <b>${frappe.utils.escape_html(
+							st.agent_url
+						)}</b><br><span class="small text-muted">${__(
+							"Cloud ERP uses browser PIN mode (same as legacy Laravel local-signing)."
+						)}</span>`,
+					});
+				} else {
+					const tried = (st.tried || [])
+						.map(
+							(t) =>
+								`<li>${frappe.utils.escape_html(t.url)}: ${frappe.utils.escape_html(
+									t.error || ""
+								)}</li>`
+						)
+						.join("");
+					frappe.msgprint({
+						title: __("USB Signing Agent"),
+						indicator: "red",
+						message: `${omnexa.einvoice.formatAgentFetchError(
+							new Error("Failed to fetch"),
+							"http://127.0.0.1:5002"
+						)}<ul class="small">${tried}</ul>`,
+					});
+				}
+			});
 		}
 		if (!is_receipt && frm.doc.status === "Draft") {
 			frm.add_custom_button(__("Dispatch to authority"), () => {

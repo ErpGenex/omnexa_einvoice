@@ -8,7 +8,88 @@
  * @version 20260517.4 — use get_agent_sign_payload_for_submission (server builds PIN).
  */
 frappe.provide("omnexa.einvoice");
-omnexa.einvoice.AGENT_JS_VERSION = "20260518.1";
+omnexa.einvoice.AGENT_JS_VERSION = "20260518.2";
+omnexa.einvoice.AGENT_SCAN_PORTS = [5002, 5001, 5003, 5004, 5005];
+
+const EINV_PREPARE_USB_SIGN =
+	"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.prepare_usb_sign_for_browser";
+
+/** HTTPS public host (cloud) vs LAN — mirrors server use_browser_pin_for_usb(). */
+omnexa.einvoice.isCloudErpContext = function isCloudErpContext() {
+	if (window.location.protocol !== "https:") {
+		return false;
+	}
+	const host = (window.location.hostname || "").toLowerCase();
+	if (host === "localhost" || host === "127.0.0.1" || host === "::1") {
+		return false;
+	}
+	if (/^192\.168\./.test(host) || /^10\./.test(host)) {
+		return false;
+	}
+	const m = host.match(/^172\.(\d+)\./);
+	if (m) {
+		const n = parseInt(m[1], 10);
+		if (n >= 16 && n <= 31) {
+			return false;
+		}
+	}
+	return true;
+};
+
+/** Scan local agent ports (legacy Docs/Token local-signing.js). */
+omnexa.einvoice.discoverLocalAgent = async function discoverLocalAgent(preferredUrl) {
+	const tryUrls = [];
+	const add = (u) => {
+		const b = (u || "").replace(/\/$/, "");
+		if (b && !tryUrls.includes(b)) {
+			tryUrls.push(b);
+		}
+	};
+	add(preferredUrl);
+	omnexa.einvoice.AGENT_SCAN_PORTS.forEach((port) => add(`http://127.0.0.1:${port}`));
+
+	const tried = [];
+	for (const base of tryUrls) {
+		try {
+			const res = await fetch(`${base}/health`, {
+				method: "GET",
+				mode: "cors",
+				signal: AbortSignal.timeout(4000),
+			});
+			if (res.ok) {
+				let data = {};
+				try {
+					data = await res.json();
+				} catch (e) {
+					data = {};
+				}
+				return { ok: true, agent_url: base, health: data, tried };
+			}
+			tried.push({ url: base, error: `HTTP ${res.status}` });
+		} catch (e) {
+			tried.push({ url: base, error: e.message || String(e) });
+		}
+	}
+	return { ok: false, tried };
+};
+
+omnexa.einvoice.checkSigningAgentStatus = async function checkSigningAgentStatus(preferredUrl) {
+	return omnexa.einvoice.discoverLocalAgent(preferredUrl);
+};
+
+omnexa.einvoice.prepareUsbSignPrep = async function prepareUsbSignPrep(name, forSend, freezeMessage) {
+	const r = await frappe.call({
+		method: EINV_PREPARE_USB_SIGN,
+		args: { name, for_send: forSend || 0 },
+		freeze: true,
+		freeze_message: freezeMessage || __("Preparing signing…"),
+	});
+	const msg = r.message || {};
+	if (msg.agent_payload && !msg.agent_body) {
+		msg.agent_body = msg.agent_payload;
+	}
+	return msg;
+};
 
 /** Explain browser "Failed to fetch" (common with HTTPS cloud ERP + local agent). */
 omnexa.einvoice.formatAgentFetchError = function formatAgentFetchError(err, agentUrl) {
@@ -68,7 +149,7 @@ const EINV_AGENT_PAYLOAD_BRANCH_TEST =
 	"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.get_agent_sign_payload_for_branch_test";
 
 omnexa.einvoice.postAgentSignPayload = async function postAgentSignPayload(msg) {
-	const base = ((msg && msg.agent_url) || "http://127.0.0.1:5002").replace(/\/$/, "");
+	const preferred = ((msg && msg.agent_url) || "http://127.0.0.1:5002").replace(/\/$/, "");
 	const payload = (msg && msg.agent_body) || (msg && msg.agent_payload) || {};
 	if (!payload.sign_session && !(payload.pin || payload.usb_token_pin || "").trim()) {
 		throw new Error(
@@ -80,18 +161,21 @@ omnexa.einvoice.postAgentSignPayload = async function postAgentSignPayload(msg) 
 	if (!payload.erp_base_url) {
 		payload.erp_base_url = window.location.origin;
 	}
-	let health;
-	try {
-		health = await fetch(`${base}/health`, { method: "GET", mode: "cors" });
-	} catch (e) {
-		const hint = omnexa.einvoice.formatAgentFetchError(e, base);
-		const err = new Error(hint);
+
+	const discovery = await omnexa.einvoice.discoverLocalAgent(preferred);
+	if (!discovery.ok) {
+		const hint = omnexa.einvoice.formatAgentFetchError(new Error("Failed to fetch"), preferred);
+		let extra = "";
+		if (discovery.tried && discovery.tried.length) {
+			extra = `<p class="small mt-2">${__("Tried")}: ${discovery.tried
+				.map((t) => `${frappe.utils.escape_html(t.url)} (${frappe.utils.escape_html(t.error || "")})`)
+				.join("; ")}</p>`;
+		}
+		const err = new Error(hint + extra);
 		err.omnexa_html = true;
 		throw err;
 	}
-	if (!health.ok) {
-		throw new Error(__("Signing agent health check failed at {0}", [base]));
-	}
+	const base = discovery.agent_url;
 	let res;
 	try {
 		res = await fetch(`${base}/sign`, {
@@ -431,14 +515,8 @@ omnexa.einvoice.testBranchUsbSigning = async function testBranchUsbSigning(branc
 };
 
 omnexa.einvoice.signEInvoiceSubmission = async function signEInvoiceSubmission(name, freezeMessage) {
-	const prep = await frappe.call({
-		method:
-			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.create_usb_sign_session",
-		args: { name, for_send: 0 },
-		freeze: true,
-		freeze_message: freezeMessage || __("Signing E-Invoice…"),
-	});
-	const signResult = await omnexa.einvoice.postAgentSignPayload(prep.message || {});
+	const prep = await omnexa.einvoice.prepareUsbSignPrep(name, 0, freezeMessage || __("Signing E-Invoice…"));
+	const signResult = await omnexa.einvoice.postAgentSignPayload(prep);
 	if (!signResult.signed_document || !signResult.signed_document_json) {
 		throw new Error(
 			__(
@@ -460,14 +538,12 @@ omnexa.einvoice.signEInvoiceSubmission = async function signEInvoiceSubmission(n
 };
 
 omnexa.einvoice.sendEInvoiceSubmission = async function sendEInvoiceSubmission(name, freezeMessage) {
-	const prep = await frappe.call({
-		method:
-			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.create_usb_sign_session",
-		args: { name, for_send: 1 },
-		freeze: true,
-		freeze_message: freezeMessage || __("Signing before ETA send…"),
-	});
-	const signResult = await omnexa.einvoice.postAgentSignPayload(prep.message || {});
+	const prep = await omnexa.einvoice.prepareUsbSignPrep(
+		name,
+		1,
+		freezeMessage || __("Signing before ETA send…")
+	);
+	const signResult = await omnexa.einvoice.postAgentSignPayload(prep);
 	if (!signResult.signed_document || !signResult.signed_document_json) {
 		throw new Error(
 			__(

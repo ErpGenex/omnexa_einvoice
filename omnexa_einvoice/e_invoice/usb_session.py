@@ -24,6 +24,8 @@ from omnexa_einvoice.eta_invoice_signing import uses_browser_signing_agent
 CACHE_PREFIX = "omnexa_usb_sign:"
 SESSION_TTL_SEC = 180
 DEFAULT_AGENT_URL = "http://127.0.0.1:5002"
+# Same scan order as legacy Laravel local-signing.js (Docs/Token)
+AGENT_SCAN_PORTS = (5002, 5001, 5003, 5004, 5005)
 
 
 def erp_public_base_url() -> str:
@@ -38,6 +40,26 @@ def erp_public_base_url() -> str:
 		if host:
 			url = f"{scheme}://{host}"
 	return url
+
+
+def use_browser_pin_for_usb() -> bool:
+	"""HTTPS public ERP: legacy Laravel-style PIN in browser→agent (no agent callback to ERP)."""
+	req = getattr(frappe.local, "request", None)
+	if not req:
+		return False
+	proto = (req.headers.get("X-Forwarded-Proto") or req.scheme or "").lower()
+	if proto != "https" and not getattr(req, "is_secure", False):
+		return False
+	host = (req.host or "").split(":")[0].lower()
+	if host in ("localhost", "127.0.0.1", "::1"):
+		return False
+	if host.startswith("192.168.") or host.startswith("10."):
+		return False
+	if host.startswith("172.") and host.split(".")[1].isdigit():
+		second = int(host.split(".")[1])
+		if 16 <= second <= 31:
+			return False
+	return True
 
 
 def normalize_browser_agent_url(agent_url: str | None) -> str:
@@ -126,7 +148,7 @@ def build_agent_sign_payload(unsigned: dict, branch: str, token_type: str = "epa
 	pin_b64 = base64.b64encode(plain_pin.encode("utf-8")).decode("ascii")
 	unsigned = json.loads(json.dumps(unsigned or {}, ensure_ascii=False))
 	unsigned.pop("signatures", None)
-	return {
+	out = {
 		"invoice": unsigned,
 		"pin": plain_pin,
 		"usb_token_pin": plain_pin,
@@ -136,6 +158,10 @@ def build_agent_sign_payload(unsigned: dict, branch: str, token_type: str = "epa
 		"use_chilkat": True,
 		"verify": False,
 	}
+	chilkat_code = branch_chilkat_unlock_code(branch)
+	if chilkat_code:
+		out["chilkat_unlock_code"] = chilkat_code
+	return out
 
 
 def resolve_usb_sign_session(session_id: str) -> dict:
@@ -190,6 +216,8 @@ def create_usb_sign_session_for_submission(name: str, for_send: int = 0) -> dict
 		"sign_session": session_id,
 		"erp_base_url": agent_body["erp_base_url"],
 		"internal_id": unsigned.get("internalID"),
+		"pin_mode": "sign_session",
+		"agent_scan_ports": list(AGENT_SCAN_PORTS),
 	}
 
 
