@@ -3,9 +3,8 @@
 /* global frappe */
 
 /**
+ * @deprecated Not loaded in hooks — use einvoice_usb_agent.js only (avoids overwriting cloud/PNA signing).
  * E-Invoice USB signing via local epass2003_agent (browser → 127.0.0.1:5002).
- * PIN from Branch only — never frappe.prompt. E-Receipt never uses this file.
- * @version 20260517.4 — use get_agent_sign_payload_for_submission (server builds PIN).
  */
 frappe.provide("omnexa.einvoice");
 omnexa.einvoice.AGENT_JS_VERSION = "20260517.4";

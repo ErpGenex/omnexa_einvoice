@@ -5,9 +5,19 @@
 /** E-Invoice USB signing — delegates to omnexa.einvoice (LAN sign_session + cloud browser PIN). */
 
 async function omnexaPostAgentSignBody(msg) {
+	if (
+		typeof omnexa !== "undefined" &&
+		omnexa.einvoice &&
+		omnexa.einvoice.postAgentSignPayload
+	) {
+		return omnexa.einvoice.postAgentSignPayload(msg);
+	}
 	const base = ((msg && msg.agent_url) || "http://127.0.0.1:5002").replace(/\/$/, "");
 	const body = (msg && msg.agent_body) || {};
-	if (!body.sign_session) {
+	if (
+		!body.sign_session &&
+		!(body.pin || body.usb_token_pin || "").trim()
+	) {
 		frappe.throw(
 			__(
 				"Signing session missing. Run bench update + build omnexa_einvoice, clear cache, Ctrl+Shift+R."
@@ -167,38 +177,17 @@ frappe.ui.form.on("E Invoice Submission", {
 		if (!allow_sign && !allow_send) {
 			return;
 		}
-		if (!is_receipt && omnexa.einvoice && omnexa.einvoice.checkSigningAgentStatus) {
-			frm.add_custom_button(__("Check USB Agent"), async () => {
-				const st = await omnexa.einvoice.checkSigningAgentStatus("http://127.0.0.1:5002");
-				if (st.ok) {
-					frappe.msgprint({
-						title: __("USB Signing Agent"),
-						indicator: "green",
-						message: `${__("Agent reachable at")} <b>${frappe.utils.escape_html(
-							st.agent_url
-						)}</b><br><span class="small text-muted">${__(
-							"Cloud ERP uses browser PIN mode (same as legacy Laravel local-signing)."
-						)}</span>`,
+		if (!is_receipt && omnexa.einvoice && omnexa.einvoice.showCloudSigningBridgeTest) {
+			frm.add_custom_button(
+				__("Test cloud ↔ PC signing"),
+				async () => {
+					await omnexa.einvoice.showCloudSigningBridgeTest({
+						branch: frm.doc.branch,
+						submissionName: frm.doc.name,
 					});
-				} else {
-					const tried = (st.tried || [])
-						.map(
-							(t) =>
-								`<li>${frappe.utils.escape_html(t.url)}: ${frappe.utils.escape_html(
-									t.error || ""
-								)}</li>`
-						)
-						.join("");
-					frappe.msgprint({
-						title: __("USB Signing Agent"),
-						indicator: "red",
-						message: `${omnexa.einvoice.formatAgentFetchError(
-							new Error("Failed to fetch"),
-							"http://127.0.0.1:5002"
-						)}<ul class="small">${tried}</ul>`,
-					});
-				}
-			});
+				},
+				__("Egypt ETA")
+			);
 		}
 		if (!is_receipt && frm.doc.status === "Draft") {
 			frm.add_custom_button(__("Dispatch to authority"), () => {
@@ -234,7 +223,13 @@ frappe.ui.form.on("E Invoice Submission", {
 					});
 				} else {
 					try {
-						const r = await omnexaSignEInvoiceViaAgent(frm.doc.name);
+						const r =
+							omnexa.einvoice && omnexa.einvoice.signOnPcReturnToCloud
+								? await omnexa.einvoice.signOnPcReturnToCloud(
+										frm.doc.name,
+										__("Signing on this PC — returning to cloud ERP…")
+								  )
+								: await omnexaSignEInvoiceViaAgent(frm.doc.name);
 						const msg = r?.message || {};
 						if (msg.signer_method) {
 							frappe.show_alert({
@@ -302,7 +297,7 @@ frappe.ui.form.on("E Invoice Submission", {
 					frappe.msgprint({
 						title: __("ETA"),
 						indicator: "red",
-						message: e.message || String(e),
+						message: e.omnexa_html ? e.message : frappe.utils.escape_html(e.message || String(e)),
 					});
 				}
 				await frm.reload_doc();

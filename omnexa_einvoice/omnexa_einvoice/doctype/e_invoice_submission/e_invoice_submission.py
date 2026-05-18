@@ -266,6 +266,87 @@ def create_usb_sign_session(name: str, for_send: int = 0) -> dict:
 
 
 @frappe.whitelist()
+def get_cloud_signing_bridge_status(branch: str, submission_name: str | None = None) -> dict:
+	"""Server-side checks for cloud ERP ↔ browser ↔ local signing agent (E-Invoice)."""
+	from omnexa_einvoice.e_invoice.agent_service import _prepare_branch_usb_signing_test
+	from omnexa_einvoice.e_invoice.usb_session import (
+		erp_public_base_url,
+		normalize_browser_agent_url,
+		use_browser_pin_for_usb,
+	)
+
+	branch = (branch or "").strip()
+	prep = _prepare_branch_usb_signing_test(branch)
+	checks = list(prep.get("checks") or [])
+	is_cloud = use_browser_pin_for_usb()
+	pin_mode = "browser_pin" if is_cloud else "sign_session"
+
+	if is_cloud:
+		checks.append(
+			{
+				"ok": True,
+				"step": "cloud_erp",
+				"message": _("HTTPS cloud ERP — PIN travels in browser→agent payload (no agent callback to ERP)."),
+			}
+		)
+	else:
+		checks.append(
+			{
+				"ok": True,
+				"step": "cloud_erp",
+				"message": _("LAN ERP — agent may fetch PIN via sign_session from ERP."),
+			}
+		)
+
+	agent_url = normalize_browser_agent_url(prep.get("agent_url") or _usb.DEFAULT_AGENT_URL)
+	submission_info = None
+	if submission_name:
+		if frappe.db.exists("E Invoice Submission", submission_name):
+			sub = frappe.db.get_value(
+				"E Invoice Submission",
+				submission_name,
+				["name", "status", "branch", "submission_kind", "reference_name"],
+				as_dict=True,
+			)
+			if sub and sub.submission_kind != "E-Receipt":
+				submission_info = {
+					"name": sub.name,
+					"status": sub.status,
+					"reference": sub.reference_name,
+					"branch": sub.branch or branch,
+				}
+		else:
+			checks.append(
+				{
+					"ok": False,
+					"step": "submission",
+					"message": _("E Invoice Submission {0} not found.").format(submission_name),
+				}
+			)
+
+	flow_steps = [
+		_("Cloud ERP builds unsigned ETA JSON"),
+		_("Your PC browser receives the signing payload (HTTPS)"),
+		_("Local agent at 127.0.0.1 signs with the USB token"),
+		_("Browser returns signed_document_json to cloud ERP"),
+		_("Cloud ERP sends the signed document to ETA"),
+	]
+
+	return {
+		"ok": prep.get("ok") and all(c.get("ok") for c in checks),
+		"checks": checks,
+		"branch": branch,
+		"agent_url": agent_url,
+		"pin_mode": pin_mode,
+		"is_cloud_erp": is_cloud,
+		"erp_base_url": erp_public_base_url(),
+		"browser_signing": bool(prep.get("browser_signing")),
+		"flow_steps": flow_steps,
+		"submission": submission_info,
+	}
+
+
+@frappe.whitelist()
 def prepare_usb_sign_for_browser(name: str, for_send: int = 0) -> dict:
 	"""Pick sign_session (LAN) or browser PIN payload (HTTPS cloud) — same as Docs/Token Laravel flow."""
 	if _usb.use_browser_pin_for_usb():

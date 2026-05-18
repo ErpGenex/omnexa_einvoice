@@ -52,6 +52,7 @@ frappe.pages["eta-einvoice-console"].on_page_load = function (wrapper) {
 				<button class="btn btn-outline-secondary btn-sm" data-action="select-all">${__("Select all")}</button>
 				<button class="btn btn-outline-secondary btn-sm" data-action="clear-sel">${__("Clear")}</button>
 				<button class="btn btn-default btn-sm" data-action="test-auth">${__("Test ETA connection")}</button>
+				<button class="btn btn-default btn-sm" data-action="test-signing-bridge">${__("Test cloud ↔ PC signing")}</button>
 				<button class="btn btn-warning btn-sm" data-action="sign-sel">${__("Sign selected")}</button>
 				<button class="btn btn-primary btn-sm" data-action="send-sel">${__("Send selected to ETA")}</button>
 				<span class="text-muted small">${__("USB signing runs on this PC (agent :5002).")}</span>
@@ -475,6 +476,19 @@ frappe.pages["eta-einvoice-console"].on_page_load = function (wrapper) {
 						m.error || ""
 				  )}</p>`,
 		});
+	});
+
+	$root.on("click", '[data-action="test-signing-bridge"]', async () => {
+		const branch = filter_val("branch");
+		if (!branch) {
+			frappe.msgprint(__("Select a Branch filter first."));
+			return;
+		}
+		if (!omnexa.einvoice || !omnexa.einvoice.showCloudSigningBridgeTest) {
+			frappe.msgprint(__("Reload ERP (Ctrl+Shift+R) after omnexa_einvoice update."));
+			return;
+		}
+		await omnexa.einvoice.showCloudSigningBridgeTest({ branch });
 	});
 
 	$root.on("click", '[data-action="sign-sel"]', async () => {

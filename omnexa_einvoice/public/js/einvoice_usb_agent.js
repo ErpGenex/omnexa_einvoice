@@ -8,7 +8,7 @@
  * @version 20260517.4 — use get_agent_sign_payload_for_submission (server builds PIN).
  */
 frappe.provide("omnexa.einvoice");
-omnexa.einvoice.AGENT_JS_VERSION = "20260518.2";
+omnexa.einvoice.AGENT_JS_VERSION = "20260518.3";
 omnexa.einvoice.AGENT_SCAN_PORTS = [5002, 5001, 5003, 5004, 5005];
 
 const EINV_PREPARE_USB_SIGN =
@@ -381,6 +381,169 @@ omnexa.einvoice.formatSigningTestChecks = function formatSigningTestChecks(check
 			return line;
 		})
 		.join("");
+};
+
+const EINV_CLOUD_BRIDGE_STATUS =
+	"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.get_cloud_signing_bridge_status";
+
+/** Full test: cloud ERP ↔ this PC browser ↔ local signing agent (optional trial sign). */
+omnexa.einvoice.runCloudSigningBridgeTest = async function runCloudSigningBridgeTest({
+	branch,
+	submissionName,
+	agentUrl,
+	trialSign = true,
+}) {
+	const checks = [];
+	let resultHtmlError = "";
+	const add = (ok, step, message) => checks.push({ ok: !!ok, step, message });
+
+	const browserCloud = omnexa.einvoice.isCloudErpContext();
+	add(
+		true,
+		"browser_erp",
+		browserCloud
+			? __("This browser uses HTTPS cloud ERP ({0})", [window.location.host])
+			: __("This browser uses LAN/local ERP ({0})", [window.location.host])
+	);
+
+	let server = {};
+	try {
+		const r = await frappe.call({
+			method: EINV_CLOUD_BRIDGE_STATUS,
+			args: { branch, submission_name: submissionName || "" },
+		});
+		server = r.message || {};
+	} catch (e) {
+		add(false, "erp_api", e.message || String(e));
+		return { ok: false, checks, server };
+	}
+
+	(server.checks || []).forEach((c) => add(c.ok, c.step || "erp", c.message || ""));
+
+	const preferred = (agentUrl || server.agent_url || "http://127.0.0.1:5002").replace(/\/$/, "");
+	const discovery = await omnexa.einvoice.discoverLocalAgent(preferred);
+
+	if (discovery.ok) {
+		add(
+			true,
+			"local_agent",
+			__("Local signing agent reachable at {0}", [discovery.agent_url])
+		);
+	} else {
+		add(false, "local_agent", __("No local agent found on this PC (ports 5002–5005)."));
+		(discovery.tried || []).forEach((t) => {
+			add(false, "local_agent_try", `${t.url}: ${t.error || ""}`);
+		});
+	}
+
+	if (trialSign && discovery.ok && branch && server.ok !== false) {
+		try {
+			const agentPrep = await frappe.call({
+				method: EINV_AGENT_PAYLOAD_BRANCH_TEST,
+				args: { branch },
+			});
+			const signResult = await omnexa.einvoice.postAgentSignPayload(agentPrep.message || {});
+			const sigLen = (signResult.signature || "").length;
+			const hasJson = !!(signResult.signed_document_json || signResult.signed_document);
+			add(
+				hasJson && sigLen > 0,
+				"trial_sign",
+				hasJson
+					? __("Trial sign on this PC OK (signature {0} chars, signed JSON ready for cloud ERP).", [
+							sigLen,
+					  ])
+					: __("Agent signed but missing signed_document_json — update Windows agent.")
+			);
+			if (submissionName) {
+				add(
+					true,
+					"next_step",
+					__(
+						"Use <b>Sign E-Invoice</b> on submission {0} to save signed JSON on cloud ERP, then <b>Send to ETA</b>.",
+						[submissionName]
+					)
+				);
+			}
+		} catch (e) {
+			add(false, "trial_sign", __("Trial sign on this PC failed."));
+			if (e.omnexa_html) {
+				resultHtmlError = e.message;
+			} else {
+				checks[checks.length - 1].message = e.message || String(e);
+			}
+		}
+	}
+
+	const allOk = checks.every((c) => c.ok);
+	return {
+		ok: allOk,
+		checks,
+		server,
+		agent_url: discovery.ok ? discovery.agent_url : preferred,
+		pin_mode: server.pin_mode,
+		flow_steps: server.flow_steps || [],
+		html_error: resultHtmlError,
+	};
+};
+
+omnexa.einvoice.showCloudSigningBridgeTest = async function showCloudSigningBridgeTest(opts) {
+	const options = opts || {};
+	frappe.dom.freeze(__("Testing cloud ↔ local signing connection…"));
+	let result;
+	try {
+		result = await omnexa.einvoice.runCloudSigningBridgeTest(options);
+	} finally {
+		frappe.dom.unfreeze();
+	}
+
+	const flowHtml = (result.flow_steps || [])
+		.map(
+			(s, i) =>
+				`<li>${i + 1}. ${frappe.utils.escape_html(s)}</li>`
+		)
+		.join("");
+
+	const extraParts = [
+		`<p class="small mb-2"><b>${__("Signing flow (cloud server)")}</b></p>`,
+		`<ol class="small ps-3 mb-2">${flowHtml}</ol>`,
+	];
+	if (result.html_error) {
+		extraParts.push(result.html_error);
+	}
+	extraParts.push(
+		`<p class="small text-muted mb-0">${__(
+			"Open ERP on the Windows PC where the USB token is inserted. The external server never talks to 127.0.0.1 — only your browser does."
+		)}</p>`
+	);
+	const extra = extraParts.join("");
+
+	omnexa.einvoice.showSigningTestResult({
+		title: result.ok
+			? __("Cloud ↔ local signing — connection OK")
+			: __("Cloud ↔ local signing — connection failed"),
+		indicator: result.ok ? "green" : "red",
+		checks: result.checks,
+		extra,
+	});
+	return result;
+};
+
+/** Sign on this PC and POST signed JSON back to cloud ERP (E Invoice Submission). */
+omnexa.einvoice.signOnPcReturnToCloud = async function signOnPcReturnToCloud(submissionName, freezeMessage) {
+	return omnexa.einvoice.signEInvoiceSubmission(submissionName, freezeMessage);
+};
+
+/** Sign on PC, save on cloud ERP, then send to ETA. */
+omnexa.einvoice.signOnPcSendFromCloud = async function signOnPcSendFromCloud(submissionName) {
+	const signRes = await omnexa.einvoice.signEInvoiceSubmission(
+		submissionName,
+		__("Signing on this PC…")
+	);
+	const sendRes = await omnexa.einvoice.sendEInvoiceSubmission(
+		submissionName,
+		__("Sending from cloud ERP to ETA…")
+	);
+	return { sign: signRes, send: sendRes };
 };
 
 omnexa.einvoice.showSigningTestResult = function showSigningTestResult({ title, indicator, checks, extra }) {

@@ -10,10 +10,17 @@ from frappe.tests.utils import FrappeTestCase
 from omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission import (
 	_recover_ereceipt_from_hub_queue,
 	dispatch_submission,
+	get_cloud_signing_bridge_status,
 )
 
 
 class TestEInvoiceSubmission(FrappeTestCase):
+	def test_cloud_signing_bridge_status_empty_branch(self):
+		out = get_cloud_signing_bridge_status("")
+		self.assertFalse(out.get("ok"))
+		self.assertTrue(any(c.get("step") == "branch" for c in out.get("checks") or []))
+		self.assertGreaterEqual(len(out.get("flow_steps") or []), 4)
+
 	def test_stub_dispatch_sets_queued(self):
 		doc = frappe.get_doc(
 			{

@@ -33,7 +33,6 @@ omnexa_register_integration_hub = [
 # app_include_css = "/assets/omnexa_einvoice/css/omnexa_einvoice.css"
 app_include_js = [
 	"/assets/omnexa_einvoice/js/einvoice_usb_agent.js",
-	"/assets/omnexa_einvoice/js/einvoice_client_agent.js",
 ]
 
 # include js, css files in header of web template

@@ -25,6 +25,22 @@ frappe.ui.form.on("Sales Invoice", {
 				frappe.set_route("Form", "E Invoice Submission", r.message.name);
 			}
 		}, __("ETA"));
+		if (
+			billing === "E-Invoice" &&
+			frm.doc.branch &&
+			omnexa.einvoice &&
+			omnexa.einvoice.showCloudSigningBridgeTest
+		) {
+			frm.add_custom_button(
+				__("Test cloud ↔ PC signing"),
+				async () => {
+					await omnexa.einvoice.showCloudSigningBridgeTest({
+						branch: frm.doc.branch,
+					});
+				},
+				__("ETA")
+			);
+		}
 	},
 	eta_billing_type(frm) {
 		frm.set_df_property(
