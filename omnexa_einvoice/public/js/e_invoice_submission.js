@@ -54,9 +54,18 @@ async function omnexaPostAgentSignBody(msg) {
 			)
 		);
 	}
+	if (!parsed.signed_document_json) {
+		frappe.throw(
+			__(
+				"Agent must return signed_document_json (Chilkat Emit). Update epass2003_agent.py on Windows — fixes ETA 4043."
+			)
+		);
+	}
 	return {
 		signature,
 		signed_document: parsed.signed_document,
+		signed_document_json: parsed.signed_document_json,
+		canonical_json: parsed.canonical_json || null,
 	};
 }
 
@@ -75,6 +84,8 @@ async function omnexaSignEInvoiceViaAgent(submissionName) {
 			name: submissionName,
 			client_signature: signResult.signature,
 			agent_signed_document: signResult.signed_document,
+			agent_signed_document_json: signResult.signed_document_json,
+			agent_canonical_json: signResult.canonical_json,
 		},
 	});
 }
@@ -94,6 +105,8 @@ async function omnexaSendEInvoiceViaAgent(submissionName) {
 			name: submissionName,
 			client_signature: signResult.signature,
 			agent_signed_document: signResult.signed_document,
+			agent_signed_document_json: signResult.signed_document_json,
+			agent_canonical_json: signResult.canonical_json,
 		},
 	});
 }

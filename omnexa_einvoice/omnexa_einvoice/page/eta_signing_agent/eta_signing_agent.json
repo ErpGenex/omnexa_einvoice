@@ -1,0 +1,16 @@
+{
+ "content": null,
+ "docstatus": 0,
+ "doctype": "Page",
+ "icon": "lock",
+ "module": "Omnexa Einvoice",
+ "name": "eta-signing-agent",
+ "page_name": "eta-signing-agent",
+ "roles": [
+  {"role": "System Manager"},
+  {"role": "Accounts Manager"},
+  {"role": "Accounts User"}
+ ],
+ "standard": "Yes",
+ "title": "USB Signing Agent"
+}

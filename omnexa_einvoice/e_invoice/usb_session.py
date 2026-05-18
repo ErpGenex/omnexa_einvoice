@@ -46,6 +46,15 @@ def branch_usb_pin(branch: str) -> str:
 		return ""
 
 
+def branch_chilkat_unlock_code(branch: str) -> str:
+	if not branch:
+		return ""
+	try:
+		return (get_eta_invoice_branch_settings(branch).chilkat_unlock_code or "").strip()
+	except Exception:
+		return ""
+
+
 def require_branch_usb_pin(branch: str) -> str:
 	pin = branch_usb_pin(branch)
 	if not pin:
@@ -60,10 +69,14 @@ def require_branch_usb_pin(branch: str) -> str:
 
 def _store_session(branch: str) -> str:
 	pin = require_branch_usb_pin(branch)
+	chilkat_code = branch_chilkat_unlock_code(branch)
 	session_id = frappe.generate_hash(length=32)
+	payload = {"pin": pin, "user": frappe.session.user, "branch": branch}
+	if chilkat_code:
+		payload["chilkat_unlock_code"] = chilkat_code
 	frappe.cache().set_value(
 		f"{CACHE_PREFIX}{session_id}",
-		{"pin": pin, "user": frappe.session.user, "branch": branch},
+		payload,
 		expires_in_sec=SESSION_TTL_SEC,
 	)
 	return session_id
@@ -102,7 +115,7 @@ def build_agent_sign_payload(unsigned: dict, branch: str, token_type: str = "epa
 
 
 def resolve_usb_sign_session(session_id: str) -> dict:
-	"""epass2003_agent on Windows — one-time PIN fetch (allow_guest, session id is the secret)."""
+	"""epass2003_agent on Windows — one-time PIN + Chilkat key (allow_guest; session id is the secret)."""
 	session_id = (session_id or "").strip()
 	if not session_id:
 		frappe.throw(_("session_id is required."), frappe.PermissionError)
@@ -114,7 +127,11 @@ def resolve_usb_sign_session(session_id: str) -> dict:
 	pin = (data.get("pin") or "").strip()
 	if not pin:
 		frappe.throw(_("USB PIN missing in signing session."), frappe.PermissionError)
-	return {"pin": pin, "usb_token_pin": pin}
+	out = {"pin": pin, "usb_token_pin": pin}
+	chilkat_code = (data.get("chilkat_unlock_code") or "").strip()
+	if chilkat_code:
+		out["chilkat_unlock_code"] = chilkat_code
+	return out
 
 
 def _submission_context(name: str, for_send: int) -> tuple[dict, str, str, str]:

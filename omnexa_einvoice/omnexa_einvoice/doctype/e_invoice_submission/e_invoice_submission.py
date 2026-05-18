@@ -29,6 +29,7 @@ from omnexa_einvoice.branch_eta import get_eta_invoice_branch_settings
 from omnexa_einvoice.eta_einvoice_submission import (
 	apply_e_invoice_send_result,
 	build_e_invoice_submit_body,
+	build_e_invoice_submit_body_bytes,
 	build_unsigned_e_invoice_document,
 	prepare_e_invoice_for_send,
 	prepare_e_invoice_for_send_unsigned,
@@ -433,7 +434,13 @@ def prepare_e_invoice_for_client_send(name: str) -> dict:
 
 
 @frappe.whitelist()
-def sign_submission(name: str, client_signature: str | None = None, agent_signed_document=None):
+def sign_submission(
+	name: str,
+	client_signature: str | None = None,
+	agent_signed_document=None,
+	agent_signed_document_json: str | None = None,
+	agent_canonical_json: str | None = None,
+):
 	"""E-Receipt: build ETA JSON. E-Invoice: sign via Branch USB PIN (never prompted)."""
 	doc = frappe.get_doc("E Invoice Submission", name)
 	if doc.status not in ("Draft", "Failed", "Queued"):
@@ -457,6 +464,8 @@ def sign_submission(name: str, client_signature: str | None = None, agent_signed
 			branch,
 			client_signature=client_signature,
 			agent_signed_document=agent_signed_document,
+			agent_signed_document_json=agent_signed_document_json,
+			agent_canonical_json=agent_canonical_json,
 		)
 
 	doc.result_data = json.dumps(merged, ensure_ascii=False)
@@ -473,7 +482,12 @@ def sign_submission(name: str, client_signature: str | None = None, agent_signed
 
 
 @frappe.whitelist()
-def send_submission_to_eta(name: str, client_signature: str | None = None, agent_signed_document=None):
+def send_submission_to_eta(
+	name: str,
+	client_signature: str | None = None,
+	agent_signed_document=None,
+	agent_signed_document_json: str | None = None,
+):
 	doc = frappe.get_doc("E Invoice Submission", name)
 	source = frappe.get_doc(doc.reference_doctype, doc.reference_name)
 	_sync_submission_kind_from_source(doc, source)
@@ -486,7 +500,12 @@ def send_submission_to_eta(name: str, client_signature: str | None = None, agent
 	if doc.status not in allowed:
 		frappe.throw(_("Submission must be in Signed/Draft/Failed state before send."))
 	if not doc.result_data or doc.status != "Signed":
-		sign_submission(name, client_signature=client_signature, agent_signed_document=agent_signed_document)
+		sign_submission(
+			name,
+			client_signature=client_signature,
+			agent_signed_document=agent_signed_document,
+			agent_signed_document_json=agent_signed_document_json,
+		)
 		doc.reload()
 
 	payload = json.loads(doc.result_data or "{}")
@@ -513,16 +532,21 @@ def send_submission_to_eta(name: str, client_signature: str | None = None, agent
 		body_bytes = encode_e_receipt_body(document)
 		res = requests.post(url, data=body_bytes, headers=headers, timeout=60)
 	else:
-		document, doc.canonical_hash, signer_method, doc.signature_value = prepare_e_invoice_for_send(
+		document, doc.canonical_hash, signer_method, doc.signature_value, signed_json = prepare_e_invoice_for_send(
 			payload,
 			branch,
 			client_signature=client_signature,
 			agent_signed_document=agent_signed_document,
+			agent_signed_document_json=agent_signed_document_json,
 		)
 		doc.integration_message = _("Signed via {0} before send.").format(signer_method)
 		url = f"{base_url}/api/v1/documentsubmissions"
-		body = build_e_invoice_submit_body(document)
-		res = requests.post(url, json=body, headers=headers, timeout=60)
+		if signed_json:
+			body_bytes = build_e_invoice_submit_body_bytes(signed_json)
+			res = requests.post(url, data=body_bytes, headers=headers, timeout=60)
+		else:
+			body = build_e_invoice_submit_body(document)
+			res = requests.post(url, json=body, headers=headers, timeout=60)
 	response_body: dict = {}
 	try:
 		response_body = res.json()

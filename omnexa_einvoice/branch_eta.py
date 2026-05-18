@@ -251,6 +251,7 @@ def get_eta_invoice_branch_settings(branch: str) -> frappe._dict:
 		"eta_signing_agent_url",
 		"eta_usb_token_type",
 		"eta_usb_signing_pin",
+		"eta_chilkat_unlock_code",
 		"eta_windows_signer_command",
 		"eta_certificate_reference",
 		"eta_einvoice_submission_mode",
@@ -276,6 +277,7 @@ def get_eta_invoice_branch_settings(branch: str) -> frappe._dict:
 			"signing_agent_url": (row.get("eta_signing_agent_url") or "").strip(),
 			"usb_token_type": (row.get("eta_usb_token_type") or "epass2003").strip(),
 			"usb_signing_pin": _password_from_branch(branch, "eta_usb_signing_pin"),
+			"chilkat_unlock_code": _password_from_branch(branch, "eta_chilkat_unlock_code"),
 			"windows_signer_command": row.get("eta_windows_signer_command"),
 			"certificate_reference": row.get("eta_certificate_reference"),
 			"require_einvoice_before_si_submit": int(

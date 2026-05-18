@@ -10,3 +10,8 @@ dist/
 build/
 .env
 .venv
+
+# Windows agent release (build on Windows; do not commit large ZIP)
+public/downloads/*.zip
+signing_agent/dist/
+signing_agent/build/

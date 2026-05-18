@@ -57,13 +57,26 @@ omnexa.einvoice.postAgentSignPayload = async function postAgentSignPayload(msg) 
 		throw new Error(body.message || body.error || res.statusText || __("Signing agent failed"));
 	}
 	const sigs = body.signatures || [];
+	let signature = "";
 	if (sigs[0] && sigs[0].value) {
-		return sigs[0].value;
+		signature = sigs[0].value;
+	} else if (body.signature) {
+		signature = body.signature;
 	}
-	if (body.signature) {
-		return body.signature;
+	if (!signature) {
+		throw new Error(__("Signing agent returned no signature"));
 	}
-	throw new Error(__("Signing agent returned no signature"));
+	const out = { signature };
+	if (body.signed_document) {
+		out.signed_document = body.signed_document;
+	}
+	if (body.signed_document_json) {
+		out.signed_document_json = body.signed_document_json;
+	}
+	if (body.canonical_json) {
+		out.canonical_json = body.canonical_json;
+	}
+	return out;
 };
 
 omnexa.einvoice.pickSigningSecretB64 = function pickSigningSecretB64(ctx) {
@@ -272,7 +285,8 @@ omnexa.einvoice.testBranchUsbSigning = async function testBranchUsbSigning(branc
 			method: EINV_AGENT_PAYLOAD_BRANCH_TEST,
 			args: { branch },
 		});
-		signature = await omnexa.einvoice.postAgentSignPayload(agentPrep.message || {});
+		const signResult = await omnexa.einvoice.postAgentSignPayload(agentPrep.message || {});
+		signature = signResult.signature || "";
 		checks.push({
 			ok: true,
 			step: "local_agent",
@@ -357,30 +371,60 @@ omnexa.einvoice.testBranchUsbSigning = async function testBranchUsbSigning(branc
 	return { ok: true, checks, signature_length: signature.length };
 };
 
-omnexa.einvoice.signEInvoiceSubmission = async function signEInvoiceSubmission(name) {
+omnexa.einvoice.signEInvoiceSubmission = async function signEInvoiceSubmission(name, freezeMessage) {
 	const prep = await frappe.call({
 		method:
 			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.create_usb_sign_session",
 		args: { name, for_send: 0 },
+		freeze: true,
+		freeze_message: freezeMessage || __("Signing E-Invoice…"),
 	});
-	const clientSignature = await omnexa.einvoice.postAgentSignPayload(prep.message || {});
+	const signResult = await omnexa.einvoice.postAgentSignPayload(prep.message || {});
+	if (!signResult.signed_document || !signResult.signed_document_json) {
+		throw new Error(
+			__(
+				"Agent must return signed_document and signed_document_json. Update Omnexa signing agent on Windows."
+			)
+		);
+	}
 	return frappe.call({
 		method:
 			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.sign_submission",
-		args: { name, client_signature: clientSignature },
+		args: {
+			name,
+			client_signature: signResult.signature,
+			agent_signed_document: signResult.signed_document,
+			agent_signed_document_json: signResult.signed_document_json,
+			agent_canonical_json: signResult.canonical_json,
+		},
 	});
 };
 
-omnexa.einvoice.sendEInvoiceSubmission = async function sendEInvoiceSubmission(name) {
+omnexa.einvoice.sendEInvoiceSubmission = async function sendEInvoiceSubmission(name, freezeMessage) {
 	const prep = await frappe.call({
 		method:
 			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.create_usb_sign_session",
 		args: { name, for_send: 1 },
+		freeze: true,
+		freeze_message: freezeMessage || __("Signing before ETA send…"),
 	});
-	const clientSignature = await omnexa.einvoice.postAgentSignPayload(prep.message || {});
+	const signResult = await omnexa.einvoice.postAgentSignPayload(prep.message || {});
+	if (!signResult.signed_document || !signResult.signed_document_json) {
+		throw new Error(
+			__(
+				"Agent must return signed_document and signed_document_json. Update Omnexa signing agent on Windows."
+			)
+		);
+	}
 	return frappe.call({
 		method:
 			"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.send_submission_to_eta",
-		args: { name, client_signature: clientSignature },
+		args: {
+			name,
+			client_signature: signResult.signature,
+			agent_signed_document: signResult.signed_document,
+			agent_signed_document_json: signResult.signed_document_json,
+			agent_canonical_json: signResult.canonical_json,
+		},
 	});
 };

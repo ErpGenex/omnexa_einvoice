@@ -22,6 +22,16 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "ETA E-Invoice Console",
+   "link_count": 0,
+   "link_to": "eta-einvoice-console",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "ETA E-Receipt Console",
    "link_count": 0,
    "link_to": "eta-ereceipt-console",
@@ -80,6 +90,16 @@
   {
    "hidden": 0,
    "is_query_report": 0,
+   "label": "USB Signing Agent (Windows)",
+   "link_count": 0,
+   "link_to": "eta-signing-agent",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
    "label": "Related accounting",
    "link_count": 0,
    "onboard": 0,
@@ -122,6 +142,51 @@
   {"role": "Accounts User"}
  ],
  "sequence_id": 8.0,
- "shortcuts": [],
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "format": "",
+   "icon": "download",
+   "label": "USB Signing Agent (Windows)",
+   "link_to": "eta-signing-agent",
+   "stats_filter": "",
+   "type": "Page",
+   "url": ""
+  },
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "format": "",
+   "icon": "file",
+   "label": "ETA E-Invoice Console",
+   "link_to": "eta-einvoice-console",
+   "stats_filter": "",
+   "type": "Page",
+   "url": ""
+  },
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "format": "",
+   "icon": "receipt",
+   "label": "ETA E-Receipt Console",
+   "link_to": "eta-ereceipt-console",
+   "stats_filter": "",
+   "type": "Page",
+   "url": ""
+  },
+  {
+   "color": "Green",
+   "doc_view": "",
+   "format": "",
+   "icon": "download",
+   "label": "Download Signing Agent ZIP",
+   "link_to": "",
+   "stats_filter": "",
+   "type": "URL",
+   "url": "/assets/omnexa_einvoice/downloads/OmnexaESigningAgent-win64.zip"
+  }
+ ],
  "title": "E-Invoice"
 }

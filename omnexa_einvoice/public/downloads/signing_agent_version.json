@@ -1,0 +1,7 @@
+{
+  "version": "2026-05-18",
+  "filename": "OmnexaESigningAgent-win64.zip",
+  "size_bytes": 22148821,
+  "port": 5002,
+  "health_url": "http://127.0.0.1:5002/health"
+}
