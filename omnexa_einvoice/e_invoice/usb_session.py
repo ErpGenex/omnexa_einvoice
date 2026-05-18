@@ -26,6 +26,30 @@ SESSION_TTL_SEC = 180
 DEFAULT_AGENT_URL = "http://127.0.0.1:5002"
 
 
+def erp_public_base_url() -> str:
+	"""HTTPS/cloud-safe ERP URL for the Windows agent (sign_session PIN fetch)."""
+	from frappe.utils import get_url
+
+	url = (get_url() or "").strip().rstrip("/")
+	if not url and getattr(frappe.local, "request", None):
+		req = frappe.local.request
+		scheme = "https" if getattr(req, "is_secure", False) else "http"
+		host = (req.headers.get("Host") or req.host or "").strip()
+		if host:
+			url = f"{scheme}://{host}"
+	return url
+
+
+def normalize_browser_agent_url(agent_url: str | None) -> str:
+	"""USB signing: agent must be on the signer's PC (127.0.0.1), not the cloud server."""
+	url = (agent_url or DEFAULT_AGENT_URL).strip() or DEFAULT_AGENT_URL
+	lower = url.lower()
+	if "127.0.0.1" in lower or "localhost" in lower:
+		return url
+	# Non-local URL breaks when ERP is on cloud — browser calls agent from user's PC.
+	return DEFAULT_AGENT_URL
+
+
 def client_signing_secrets(branch: str) -> dict:
 	"""PIN payload for legacy browser clients (prefer sign_session)."""
 	raw = branch_usb_pin(branch)
@@ -89,7 +113,7 @@ def build_agent_session_body(unsigned: dict, branch: str, token_type: str, sessi
 	return {
 		"invoice": unsigned,
 		"sign_session": session_id,
-		"erp_base_url": frappe.utils.get_url(),
+		"erp_base_url": erp_public_base_url(),
 		"token_type": (token_type or "epass2003").strip() or "epass2003",
 		"use_chilkat": True,
 		"verify": False,
@@ -149,7 +173,7 @@ def _submission_context(name: str, for_send: int) -> tuple[dict, str, str, str]:
 	else:
 		unsigned = build_unsigned_e_invoice_document(source, branch)
 	token_type = (settings.usb_token_type or "epass2003").strip()
-	agent_url = (settings.signing_agent_url or DEFAULT_AGENT_URL).strip()
+	agent_url = normalize_browser_agent_url(settings.signing_agent_url)
 	return unsigned, branch, token_type, agent_url
 
 

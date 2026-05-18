@@ -517,7 +517,7 @@ frappe.pages["eta-einvoice-console"].on_page_load = function (wrapper) {
 			frappe.msgprint({
 				title: __("E-Invoice"),
 				indicator: "red",
-				message: e.message || String(e),
+				message: e.omnexa_html ? e.message : frappe.utils.escape_html(e.message || String(e)),
 			});
 		} finally {
 			frappe.dom.unfreeze();

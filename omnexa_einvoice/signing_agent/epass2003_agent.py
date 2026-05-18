@@ -9,7 +9,7 @@
 هذا Agent مخصص لـ ePass2003 مع محاولات متعددة للتوقيع
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, make_response, request, jsonify
 from flask_cors import CORS
 from PyKCS11 import PyKCS11Lib, Mechanism, PyKCS11Error
 from PyKCS11.LowLevel import (
@@ -67,12 +67,45 @@ CORS(app, resources={
     r"/*": {
         "origins": "*",
         "methods": ["GET", "POST", "OPTIONS"],
-        "allow_headers": ["Content-Type", "Authorization"],
+        "allow_headers": [
+            "Content-Type",
+            "Authorization",
+            "Access-Control-Request-Private-Network",
+        ],
         "expose_headers": ["Content-Type"],
         "supports_credentials": False,
-        "max_age": 3600
+        "max_age": 3600,
     }
 })
+
+
+def _apply_cors_headers(response):
+    """HTTPS cloud ERP → http://127.0.0.1:5002 needs Private Network Access (Chrome/Edge)."""
+    origin = request.headers.get("Origin")
+    if origin:
+        response.headers["Access-Control-Allow-Origin"] = origin
+    else:
+        response.headers["Access-Control-Allow-Origin"] = "*"
+    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
+    response.headers["Access-Control-Allow-Headers"] = (
+        "Content-Type, Authorization, Access-Control-Request-Private-Network"
+    )
+    response.headers["Access-Control-Allow-Private-Network"] = "true"
+    response.headers["Vary"] = "Origin"
+    return response
+
+
+@app.before_request
+def cors_preflight_private_network():
+    if request.method != "OPTIONS":
+        return None
+    response = make_response("", 204)
+    return _apply_cors_headers(response)
+
+
+@app.after_request
+def cors_after_request(response):
+    return _apply_cors_headers(response)
 
 # =============================================================================
 # إعداد Logging

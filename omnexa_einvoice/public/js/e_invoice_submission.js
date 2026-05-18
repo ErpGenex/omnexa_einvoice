@@ -19,15 +19,44 @@ async function omnexaPostAgentSignBody(msg) {
 	if (!body.erp_base_url) {
 		body.erp_base_url = window.location.origin;
 	}
-	const health = await fetch(`${base}/health`, { method: "GET" });
+	let health;
+	try {
+		health = await fetch(`${base}/health`, { method: "GET", mode: "cors" });
+	} catch (e) {
+		const hint =
+			(typeof omnexa !== "undefined" &&
+				omnexa.einvoice &&
+				omnexa.einvoice.formatAgentFetchError &&
+				omnexa.einvoice.formatAgentFetchError(e, base)) ||
+			e.message ||
+			"Failed to fetch";
+		const err = new Error(hint);
+		err.omnexa_html = true;
+		throw err;
+	}
 	if (!health.ok) {
 		frappe.throw(__("Signing agent not reachable at {0}", [base]));
 	}
-	const res = await fetch(`${base}/sign`, {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(body),
-	});
+	let res;
+	try {
+		res = await fetch(`${base}/sign`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(body),
+			mode: "cors",
+		});
+	} catch (e) {
+		const hint =
+			(typeof omnexa !== "undefined" &&
+				omnexa.einvoice &&
+				omnexa.einvoice.formatAgentFetchError &&
+				omnexa.einvoice.formatAgentFetchError(e, base)) ||
+			e.message ||
+			"Failed to fetch";
+		const err = new Error(hint);
+		err.omnexa_html = true;
+		throw err;
+	}
 	let parsed = {};
 	try {
 		parsed = await res.json();
@@ -182,7 +211,7 @@ frappe.ui.form.on("E Invoice Submission", {
 						frappe.msgprint({
 							title: __("Signing"),
 							indicator: "red",
-							message: e.message || String(e),
+							message: e.omnexa_html ? e.message : frappe.utils.escape_html(e.message || String(e)),
 						});
 					}
 				}

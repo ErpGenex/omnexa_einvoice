@@ -8,7 +8,59 @@
  * @version 20260517.4 — use get_agent_sign_payload_for_submission (server builds PIN).
  */
 frappe.provide("omnexa.einvoice");
-omnexa.einvoice.AGENT_JS_VERSION = "20260517.4";
+omnexa.einvoice.AGENT_JS_VERSION = "20260518.1";
+
+/** Explain browser "Failed to fetch" (common with HTTPS cloud ERP + local agent). */
+omnexa.einvoice.formatAgentFetchError = function formatAgentFetchError(err, agentUrl) {
+	const base = (agentUrl || "http://127.0.0.1:5002").replace(/\/$/, "");
+	const raw = (err && err.message) || String(err || "");
+	if (raw && raw !== "Failed to fetch" && !/failed to fetch|networkerror/i.test(raw)) {
+		return frappe.utils.escape_html(raw);
+	}
+	const erpHttps = window.location.protocol === "https:";
+	const agentLocal = /^https?:\/\/(127\.0\.0\.1|localhost|\[::1\])(:\d+)?\/?$/i.test(base);
+	const parts = [
+		`<p>${__(
+			"Browser could not reach the signing agent at <b>{0}</b>.",
+			[frappe.utils.escape_html(base)]
+		)}</p>`,
+	];
+	if (erpHttps && agentLocal) {
+		parts.push(
+			`<p class="mb-2"><b>${__("Cloud ERP (HTTPS) + USB token on your PC")}</b></p>`,
+			`<ol class="small ps-3 mb-2">`,
+			`<li>${__(
+				"Run <b>Omnexa Signing Agent</b> on the Windows PC where the USB token is inserted (not on the cloud server unless the token is there)."
+			)}</li>`,
+			`<li>${__(
+				"Branch → Egypt ETA → <b>Signing Agent URL</b> = <code>http://127.0.0.1:5002</code> (never the cloud server IP)."
+			)}</li>`,
+			`<li>${__(
+				"Open ERP in Chrome/Edge on that same PC. Signing from RDP on the cloud VM only works if the USB token is on the VM."
+			)}</li>`,
+			`<li>${__(
+				"When Chrome asks to access devices on your local network, click <b>Allow</b>."
+			)}</li>`,
+			`<li>${__(
+				"Update the agent from E-Invoice workspace (includes Private Network Access fix), restart the agent, then hard-refresh ERP (Ctrl+Shift+R)."
+			)}</li>`,
+			`</ol>`,
+			`<p class="small text-muted mb-0">${__(
+				"Test on this PC:"
+			)} <a href="${frappe.utils.escape_html(
+				base
+			)}/health" target="_blank" rel="noopener">${frappe.utils.escape_html(base)}/health</a></p>`
+		);
+	} else {
+		parts.push(
+			`<p class="small mb-0">${__(
+				"Start the agent on Windows, then open {0}/health in this browser.",
+				[frappe.utils.escape_html(base)]
+			)}</p>`
+		);
+	}
+	return parts.join("");
+};
 
 const EINV_AGENT_PAYLOAD_SIGN =
 	"omnexa_einvoice.omnexa_einvoice.doctype.e_invoice_submission.e_invoice_submission.get_agent_sign_payload_for_submission";
@@ -30,23 +82,30 @@ omnexa.einvoice.postAgentSignPayload = async function postAgentSignPayload(msg) 
 	}
 	let health;
 	try {
-		health = await fetch(`${base}/health`, { method: "GET" });
+		health = await fetch(`${base}/health`, { method: "GET", mode: "cors" });
 	} catch (e) {
-		throw new Error(
-			__(
-				"Cannot reach signing agent at {0}. Run epass2003_agent.py on this Windows PC. {1}",
-				[base, e.message || e]
-			)
-		);
+		const hint = omnexa.einvoice.formatAgentFetchError(e, base);
+		const err = new Error(hint);
+		err.omnexa_html = true;
+		throw err;
 	}
 	if (!health.ok) {
 		throw new Error(__("Signing agent health check failed at {0}", [base]));
 	}
-	const res = await fetch(`${base}/sign`, {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(payload),
-	});
+	let res;
+	try {
+		res = await fetch(`${base}/sign`, {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify(payload),
+			mode: "cors",
+		});
+	} catch (e) {
+		const hint = omnexa.einvoice.formatAgentFetchError(e, base);
+		const err = new Error(hint);
+		err.omnexa_html = true;
+		throw err;
+	}
 	let body = {};
 	try {
 		body = await res.json();
@@ -156,7 +215,7 @@ omnexa.einvoice.signWithLocalAgent = async function signWithLocalAgent({
 
 	let health;
 	try {
-		health = await fetch(`${base}/health`, { method: "GET" });
+		health = await fetch(`${base}/health`, { method: "GET", mode: "cors" });
 	} catch (e) {
 		const detail = e.message || String(e);
 		const refused =
