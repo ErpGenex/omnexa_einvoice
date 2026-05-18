@@ -266,6 +266,20 @@ def create_usb_sign_session(name: str, for_send: int = 0) -> dict:
 
 
 @frappe.whitelist()
+def get_signing_deploy_info() -> dict:
+	"""Verify cloud server pulled latest omnexa_einvoice (compare with omnexa.einvoice.AGENT_JS_VERSION in browser)."""
+	from omnexa_einvoice import SIGNING_BRIDGE_RELEASE
+	from omnexa_einvoice.e_invoice.usb_session import use_browser_pin_for_usb
+
+	return {
+		"release": SIGNING_BRIDGE_RELEASE,
+		"min_agent_js": SIGNING_BRIDGE_RELEASE,
+		"is_cloud_erp_request": use_browser_pin_for_usb(),
+		"hooks_loads_client_agent": False,
+	}
+
+
+@frappe.whitelist()
 def get_cloud_signing_bridge_status(branch: str, submission_name: str | None = None) -> dict:
 	"""Server-side checks for cloud ERP ↔ browser ↔ local signing agent (E-Invoice)."""
 	from omnexa_einvoice.e_invoice.agent_service import _prepare_branch_usb_signing_test
