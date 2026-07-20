@@ -21,8 +21,8 @@ _ETA_BILLING_ALIASES = {
 	"e-receipt": ETA_BILLING_ERECEIPT,
 	"فاتورة عادية": ETA_BILLING_REGULAR,
 	"فاتورة إلكترونية": ETA_BILLING_EINVOICE,
-	"إيصال إلكتروني": ETA_BILLING_ERECEIPT,
-}
+	"إيصال إلكتروني": ETA_BILLING_ERECEIPT
+	}
 
 
 def normalize_eta_billing_type(raw: str | None) -> str:

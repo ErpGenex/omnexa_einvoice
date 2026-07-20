@@ -56,7 +56,8 @@ class PluginCountryAdapter:
 				status="completed",
 				provider_reference=f"{self.meta.country_code}-{document_type.upper()}-{reference}",
 				message=_("{0} Phase 1 completed.").format(self.meta.label),
-				data={"phase1": result},
+				data={"phase1": result
+	},
 			)
 		provider_ref = f"{self.meta.country_code}-{document_type.upper()}-{reference}"
 		return IntegrationResult(
@@ -68,8 +69,8 @@ class PluginCountryAdapter:
 				"adapter": self.meta.adapter_name,
 				"integration_tier": self.meta.integration_tier,
 				"pipeline_enabled": self.meta.pipeline_enabled,
-				"production_ready": self.meta.production_ready,
-			},
+				"production_ready": self.meta.production_ready
+	},
 		)
 
 

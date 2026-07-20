@@ -35,7 +35,8 @@ def dispatch_zatca_for_sales_invoice(
 			)
 	else:
 		settings_name = frappe.db.get_value(
-			"ZATCA Company Settings", {"company": company, "enabled": 1}, "name"
+			"ZATCA Company Settings", {"company": company, "enabled": 1
+	}, "name"
 		)
 		if not settings_name:
 			frappe.throw(
@@ -51,7 +52,7 @@ def dispatch_zatca_for_sales_invoice(
 		"document_type": doc_type,
 		"phase": phase,
 		"company": company,
-		"branch": branch,
+		"branch": branch
 	}
 	if phase == "phase1":
 		return run_phase1(payload)

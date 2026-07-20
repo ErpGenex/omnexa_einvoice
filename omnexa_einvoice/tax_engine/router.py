@@ -49,7 +49,8 @@ def resolve_tax_provider_for_branch(branch: str | None) -> dict[str, str]:
 	"""
 	country_code = _branch_country_code(branch or "")
 	tax_provider = resolve_adapter_name(country_code)
-	return {"country_code": country_code, "tax_provider": tax_provider}
+	return {"country_code": country_code, "tax_provider": tax_provider
+	}
 
 
 def is_egypt_branch(branch: str | None) -> bool:

@@ -27,17 +27,20 @@ class TestPhase2EsCoDeFr(FrappeTestCase):
 			"reference_name": ref,
 			"seller_name": "Seller",
 			"tax_registration_number": "B12345678",
-			"buyer": {"name": "Buyer", "tax_registration": "A87654321"},
-			"lines": [{"description": "Item", "qty": 1, "rate": 100, "amount": 100, "tax_amount": 21}],
-			"totals": {"net_total": 100, "tax_total": 21, "grand_total": 121},
-		}
+			"buyer": {"name": "Buyer", "tax_registration": "A87654321"
+	},
+			"lines": [{"description": "Item", "qty": 1, "rate": 100, "amount": 100, "tax_amount": 21
+	}],
+			"totals": {"net_total": 100, "tax_total": 21, "grand_total": 121}
+	}
 
 	def test_spain_phase1_phase2(self):
 		frappe.flags.in_test = True
 		p1 = run_country_phase1(self._payload("SI-ES-PH1"), country_code="ES")
 		self.assertIn("fe:Facturae", p1.get("signed_xml") or "")
 		p2 = run_country_phase2(
-			{"company": "Test", "reference_name": "SI-ES-PH1", "phase1": p1},
+			{"company": "Test", "reference_name": "SI-ES-PH1", "phase1": p1
+	},
 			country_code="ES",
 			sync=True,
 		)
@@ -50,7 +53,8 @@ class TestPhase2EsCoDeFr(FrappeTestCase):
 		self.assertIn("DIAN 2.1", xml)
 		self.assertIn("CUFE-SHA384", xml)
 		p2 = run_country_phase2(
-			{"company": "Test", "reference_name": "SI-CO-PH1", "phase1": p1},
+			{"company": "Test", "reference_name": "SI-CO-PH1", "phase1": p1
+	},
 			country_code="CO",
 			sync=True,
 		)
@@ -61,7 +65,8 @@ class TestPhase2EsCoDeFr(FrappeTestCase):
 		p1 = run_country_phase1(self._payload("SI-DE-PH1"), country_code="DE")
 		self.assertIn("BuyerReference", p1.get("signed_xml") or "")
 		p2 = run_country_phase2(
-			{"company": "Test", "reference_name": "SI-DE-PH1", "phase1": p1},
+			{"company": "Test", "reference_name": "SI-DE-PH1", "phase1": p1
+	},
 			country_code="DE",
 			sync=True,
 		)
@@ -72,7 +77,8 @@ class TestPhase2EsCoDeFr(FrappeTestCase):
 		p1 = run_country_phase1(self._payload("SI-FR-PH1"), country_code="FR")
 		self.assertIn("CrossIndustryInvoice", p1.get("signed_xml") or "")
 		p2 = run_country_phase2(
-			{"company": "Test", "reference_name": "SI-FR-PH1", "phase1": p1},
+			{"company": "Test", "reference_name": "SI-FR-PH1", "phase1": p1
+	},
 			country_code="FR",
 			sync=True,
 		)

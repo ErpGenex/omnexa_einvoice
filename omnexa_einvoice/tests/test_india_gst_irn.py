@@ -20,11 +20,14 @@ class TestIndiaGstIrn(FrappeTestCase):
 		doc = {
 			"reference_name": "SI-IN-001",
 			"issue_datetime": "2026-05-19T10:00:00",
-			"seller": {"name": "Seller", "tax_registration": "29AABCT1332L000"},
-			"buyer": {"name": "Buyer", "tax_registration": "29AABCT1332L001"},
-			"lines": [{"description": "Service", "qty": 1, "rate": 100, "amount": 100, "tax_amount": 18}],
-			"totals": {"net_total": 100, "tax_total": 18, "grand_total": 118},
-		}
+			"seller": {"name": "Seller", "tax_registration": "29AABCT1332L000"
+	},
+			"buyer": {"name": "Buyer", "tax_registration": "29AABCT1332L001"
+	},
+			"lines": [{"description": "Service", "qty": 1, "rate": 100, "amount": 100, "tax_amount": 18
+	}],
+			"totals": {"net_total": 100, "tax_total": 18, "grand_total": 118}
+	}
 		raw = build_gst_irn_json(doc)
 		data = json.loads(raw)
 		self.assertEqual(data["Version"], "1.1")
@@ -40,10 +43,12 @@ class TestIndiaGstIrn(FrappeTestCase):
 				"reference_name": "SMOKE-IN",
 				"seller_name": "Seller",
 				"tax_registration_number": "29AABCT1332L000",
-				"buyer": {"name": "Buyer", "tax_registration": "29AABCT1332L001"},
-				"lines": [{"description": "Item", "qty": 1, "rate": 100, "amount": 100}],
-				"totals": {"net_total": 100, "tax_total": 18, "grand_total": 118},
-			},
+				"buyer": {"name": "Buyer", "tax_registration": "29AABCT1332L001"
+	},
+				"lines": [{"description": "Item", "qty": 1, "rate": 100, "amount": 100
+	}],
+				"totals": {"net_total": 100, "tax_total": 18, "grand_total": 118}
+	},
 			country_code="IN",
 		)
 		self.assertTrue(out.get("ok"))

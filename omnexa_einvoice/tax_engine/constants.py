@@ -50,8 +50,7 @@ def _build_registry() -> dict[str, CountryTaxMeta]:
 			pipeline_enabled=True,
 			production_ready=True,
 			document_types=("tax_invoice", "simplified_invoice", "credit_note"),
-		),
-	}
+		)}
 	for entry in PLUGIN_CATALOG:
 		tier = integration_tier_for_country(entry.code)
 		reg[entry.code] = CountryTaxMeta(

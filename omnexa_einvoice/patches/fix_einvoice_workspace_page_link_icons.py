@@ -11,8 +11,8 @@ WORKSPACE = "E-Invoice"
 PAGE_ICONS = {
 	"eta-signing-agent": "download",
 	"eta-einvoice-console": "file",
-	"eta-ereceipt-console": "receipt",
-}
+	"eta-ereceipt-console": "receipt"
+	}
 
 
 def execute() -> None:

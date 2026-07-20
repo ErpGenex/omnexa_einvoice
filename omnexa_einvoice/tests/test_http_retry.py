@@ -13,13 +13,15 @@ class TestHttpRetry(FrappeTestCase):
 		key = build_idempotency_key(
 			country_code="DE",
 			uuid="abc-123",
-			document={"reference_name": "SI-001"},
+			document={"reference_name": "SI-001"
+	},
 		)
 		self.assertEqual(key, "DE-abc-123")
 
 	def test_retry_on_429(self):
 		res_ok = MagicMock(status_code=200, text='{"status":"ACCEPTED"}')
-		res_ok.json.return_value = {"status": "ACCEPTED"}
+		res_ok.json.return_value = {"status": "ACCEPTED"
+	}
 		res_429 = MagicMock(status_code=429, text="")
 		with patch("omnexa_einvoice.tax_engine.plugin.http_retry.requests.post") as post:
 			post.side_effect = [res_429, res_ok]

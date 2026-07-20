@@ -31,10 +31,10 @@ def _mock_timbrado(*, uuid: str, reference: str) -> dict[str, Any]:
 		"raw": {
 			"uuid": uuid_timbre,
 			"reference": reference,
-			"message": "Mock PAC timbrado",
-		},
+			"message": "Mock PAC timbrado"
+	},
 		"mode": "mock",
-		"framework": "CFDI-4.0",
+		"framework": "CFDI-4.0"
 	}
 
 
@@ -62,7 +62,8 @@ def submit_cfdi_timbrado(
 	if not url.endswith("/timbrado") and not url.endswith("/stamp"):
 		url = f"{url}/timbrado"
 
-	headers = {"Accept": "application/json", "Content-Type": "application/json"}
+	headers = {"Accept": "application/json", "Content-Type": "application/json"
+	}
 	if pac.pac_username and pac.pac_password:
 		token = base64.b64encode(f"{pac.pac_username}:{pac.pac_password}".encode()).decode("ascii")
 		headers["Authorization"] = f"Basic {token}"
@@ -72,7 +73,7 @@ def submit_cfdi_timbrado(
 		"uuid": uuid,
 		"invoiceHash": hash_b64,
 		"provider": pac.pac_provider,
-		"reference": reference,
+		"reference": reference
 	}
 
 	idem = build_idempotency_key(country_code="MX", uuid=uuid, document=document)
@@ -90,7 +91,8 @@ def submit_cfdi_timbrado(
 	try:
 		body = res.json() if res.text else {}
 	except Exception:
-		body = {"raw": (res.text or "")[:8000]}
+		body = {"raw": (res.text or "")[:8000]
+	}
 
 	if res.status_code >= 400:
 		frappe.throw(_("Mexico PAC error ({0}): {1}").format(res.status_code, body), title=_("Mexico PAC"))
@@ -105,14 +107,15 @@ def submit_cfdi_timbrado(
 		"raw": body,
 		"mode": "live",
 		"environment": settings.api_environment if settings else "sandbox",
-		"framework": "CFDI-4.0",
+		"framework": "CFDI-4.0"
 	}
 
 
 @frappe.whitelist()
 def test_mexico_pac_connection(branch: str | None = None, company: str | None = None) -> dict[str, Any]:
 	if not branch and company:
-		branch = frappe.db.get_value("Branch", {"company": company}, "name")
+		branch = frappe.db.get_value("Branch", {"company": company
+	}, "name")
 	if not branch:
 		frappe.throw(_("Select a branch."), title=_("Mexico PAC"))
 	comp = company or frappe.db.get_value("Branch", branch, "company")
@@ -120,7 +123,7 @@ def test_mexico_pac_connection(branch: str | None = None, company: str | None = 
 	config = {
 		"pac_base_url": pac.pac_base_url,
 		"csd_private_key_pem": pac.csd_private_key_pem,
-		"csd_certificate_pem": pac.csd_certificate_pem,
+		"csd_certificate_pem": pac.csd_certificate_pem
 	}
 	csd_checklist = validate_csd_config(config)
 	if allow_mock_api() or not pac.pac_base_url:
@@ -131,15 +134,15 @@ def test_mexico_pac_connection(branch: str | None = None, company: str | None = 
 			"sat_uuid": mock["sat_uuid"],
 			"mode": "mock",
 			"csd_ready": not csd_checklist,
-			"checklist": csd_checklist or [_("Optional for mock: add CSD PEMs before SAT UAT.")],
-		}
+			"checklist": csd_checklist or [_("Optional for mock: add CSD PEMs before SAT UAT.")]
+	}
 	if csd_checklist:
 		return {
 			"ok": False,
 			"message": _("PAC URL configured; complete CSD before live timbrado."),
 			"pac_base_url": pac.pac_base_url,
-			"checklist": csd_checklist,
-		}
+			"checklist": csd_checklist
+	}
 	try:
 		res = requests.get(pac.pac_base_url.rstrip("/"), timeout=30)
 		return {
@@ -148,7 +151,8 @@ def test_mexico_pac_connection(branch: str | None = None, company: str | None = 
 				res.status_code
 			),
 			"pac_base_url": pac.pac_base_url,
-			"csd_ready": True,
-		}
+			"csd_ready": True
+	}
 	except requests.RequestException as exc:
-		return {"ok": False, "message": str(exc), "checklist": csd_checklist}
+		return {"ok": False, "message": str(exc), "checklist": csd_checklist
+	}

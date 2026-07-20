@@ -10,7 +10,9 @@ from omnexa_einvoice.eta_invoice_signing import assert_eta_invoice_document_shap
 
 class TestETAPathSeparation(unittest.TestCase):
 	def test_receipt_json_rejected_by_invoice_signing_guard(self):
-		receipt_like = {"header": {"uuid": "x"}, "seller": {"rin": "1"}}
+		receipt_like = {"header": {"uuid": "x"
+	}, "seller": {"rin": "1"}
+	}
 		with self.assertRaises(frappe.ValidationError):
 			assert_eta_invoice_document_shape(receipt_like)
 

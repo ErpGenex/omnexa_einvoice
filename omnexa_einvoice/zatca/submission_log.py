@@ -18,8 +18,8 @@ def create_submission_log(payload: dict[str, Any], *, phase: str, status: str) -
 			"reference_name": payload.get("reference_name"),
 			"document_type": payload.get("document_type"),
 			"phase": phase,
-			"status": status,
-		}
+			"status": status
+	}
 	)
 	doc.insert(ignore_permissions=True)
 	return doc.name

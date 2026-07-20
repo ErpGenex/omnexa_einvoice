@@ -41,8 +41,7 @@ GULF_PROFILES: dict[str, UblCountryProfile] = {
 		"urn:peppol:bis:billing",
 		"00000000-0000-0000-0000-000000000000",
 		vat_percent="0",
-	),
-}
+	)}
 
 
 def build_gulf_xml(document: dict[str, Any], *, country_code: str) -> str:

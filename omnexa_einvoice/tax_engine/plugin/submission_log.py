@@ -18,7 +18,7 @@ def create_log(payload: dict[str, Any], *, country_code: str, phase: str, status
 		"reference_doctype": payload.get("reference_doctype") or "Sales Invoice",
 		"reference_name": payload.get("reference_name"),
 		"phase": phase,
-		"status": status,
+		"status": status
 	}
 	if payload.get("idempotency_key"):
 		row["idempotency_key"] = payload.get("idempotency_key")

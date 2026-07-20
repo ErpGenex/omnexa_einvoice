@@ -17,12 +17,12 @@ from frappe import _
 
 ETA_TOKEN_URLS = {
 	"preprod": "https://id.preprod.eta.gov.eg/connect/token",
-	"prod": "https://id.eta.gov.eg/connect/token",
-}
+	"prod": "https://id.eta.gov.eg/connect/token"
+	}
 ETA_DEFAULT_API_BASE = {
 	"preprod": "https://api.preprod.invoicing.eta.gov.eg",
-	"prod": "https://api.invoicing.eta.gov.eg",
-}
+	"prod": "https://api.invoicing.eta.gov.eg"
+	}
 
 
 class ETAReceiptValidationError(frappe.ValidationError):
@@ -95,7 +95,8 @@ def get_eta_company_settings(company: str, branch: str | None = None) -> frappe.
 
 	if branch:
 		return get_eta_branch_settings(branch)
-	doc = frappe._dict({"company": company})
+	doc = frappe._dict({"company": company
+	})
 	resolved = resolve_branch_for_document(doc)
 	if not resolved:
 		frappe.throw(_("No branch found for company {0}. Configure Branch → Egypt ETA.").format(company))
@@ -182,12 +183,15 @@ def _resolve_buyer(source_doc) -> dict[str, Any]:
 		tax_id = (frappe.db.get_value("Customer", customer, "tax_id") or "").strip()
 	tax_digits = re.sub(r"\D", "", tax_id)
 	if len(tax_digits) >= 9:
-		return {"type": "B", "id": tax_digits, "name": name}
-	return {"type": "P", "name": name}
+		return {"type": "B", "id": tax_digits, "name": name
+	}
+	return {"type": "P", "name": name
+	}
 
 
 def encode_eta_receipt_submission(document: dict) -> bytes:
-	"""POST body like PowerBuilder: ``{\"receipts\":[`` + compact JSON + ``]}``."""
+	"""POST body like PowerBuilder: ``{\"receipts\":[`` + compact JSON + ``]
+	}``."""
 	try:
 		import chilkat2
 
@@ -246,9 +250,10 @@ def build_eta_receipt_document(source_doc, branch: str | None = None) -> dict:
 			"currency": source_doc.get("currency") or "EGP",
 			"exchangeRate": 0,
 			"sOrderNameCode": "sOrderNameCode",
-			"orderdeliveryMode": "FC",
-		},
-		"documentType": {"receiptType": "s", "typeVersion": "1.2"},
+			"orderdeliveryMode": "FC"
+	},
+		"documentType": {"receiptType": "s", "typeVersion": "1.2"
+	},
 		"seller": {
 			"rin": settings.rin,
 			"companyTradeName": settings.company_trade_name,
@@ -256,19 +261,20 @@ def build_eta_receipt_document(source_doc, branch: str | None = None) -> dict:
 			"branchAddress": settings.address,
 			"deviceSerialNumber": settings.device_serial_number,
 			"syndicateLicenseNumber": "",
-			"activityCode": settings.activity_code,
-		},
+			"activityCode": settings.activity_code
+	},
 		"buyer": _resolve_buyer(source_doc),
 		"itemData": [],
 		"taxTotals": [],
 		"extraReceiptDiscountData": [
-			{"amount": 0.0, "description": "Receipt Level Discount", "rate": 0.0},
+			{"amount": 0.0, "description": "Receipt Level Discount", "rate": 0.0
+	},
 		],
 		"totalCommercialDiscount": 0.0,
 		"totalItemsDiscount": 0.0,
 		"feesAmount": 0.0,
 		"adjustment": 0.0,
-		"paymentMethod": "C",
+		"paymentMethod": "C"
 	}
 
 	tax_groups: dict[str, float] = {}
@@ -308,10 +314,13 @@ def build_eta_receipt_document(source_doc, branch: str | None = None) -> dict:
 				"netSale": net_f,
 				"totalSale": net_f,
 				"total": total_f,
-				"commercialDiscountData": [{"amount": 0.0, "description": "XYZ"}],
+				"commercialDiscountData": [{"amount": 0.0, "description": "XYZ"
+	}],
 				"itemDiscountData": [
-					{"amount": 0.0, "description": "ABC"},
-					{"amount": 0.0, "description": "XYZ"},
+					{"amount": 0.0, "description": "ABC"
+	},
+					{"amount": 0.0, "description": "XYZ"
+	},
 				],
 				"valueDifference": 0.0,
 				"taxableItems": [
@@ -319,10 +328,9 @@ def build_eta_receipt_document(source_doc, branch: str | None = None) -> dict:
 						"taxType": "T1",
 						"amount": tax_f,
 						"subType": "V009",
-						"rate": _q2_rate(tax_rate),
-					}
-				],
-			}
+						"rate": _q2_rate(tax_rate)
+	}
+				]}
 		)
 
 		rate_key = str(_q2_rate(tax_rate))
@@ -334,7 +342,8 @@ def build_eta_receipt_document(source_doc, branch: str | None = None) -> dict:
 		frappe.throw(_("At least one receipt line item is required."), title=_("ETA Receipt"))
 
 	# Single T1 total (Temp-ETR merges by taxType)
-	document["taxTotals"].append({"taxType": "T1", "amount": _q5(total_tax)})
+	document["taxTotals"].append({"taxType": "T1", "amount": _q5(total_tax)
+	})
 
 	net_amount = _q5(net_total)
 	total_amount = _q5(sum(float(item["total"]) for item in document["itemData"]))
@@ -464,8 +473,8 @@ def parse_receipt_submission_response(response_body: dict, http_status: int) -> 
 			"message": _("ETA request blocked (firewall/WAF). Try again from an allowed network."),
 			"error_code": "ETA_WAF_BLOCKED",
 			"accepted_count": 0,
-			"rejected_count": 0,
-		}
+			"rejected_count": 0
+	}
 
 	accepted = (
 		response_body.get("acceptedReceipts")
@@ -509,5 +518,5 @@ def parse_receipt_submission_response(response_body: dict, http_status: int) -> 
 		"message": str(message)[:140],
 		"error_code": str(response_body.get("errorCode") or header.get("code") or "")[:140],
 		"accepted_count": len(accepted),
-		"rejected_count": len(rejected),
+		"rejected_count": len(rejected)
 	}

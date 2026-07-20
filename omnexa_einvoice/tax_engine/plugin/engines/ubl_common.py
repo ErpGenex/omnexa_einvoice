@@ -14,8 +14,8 @@ from frappe.utils import flt
 NS = {
 	"": "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
 	"cac": "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
-	"cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
-}
+	"cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+	}
 
 
 @dataclass(frozen=True)

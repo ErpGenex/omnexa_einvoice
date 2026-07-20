@@ -30,8 +30,8 @@ def _latest_einvoice_submissions(sales_invoice_names: list[str]) -> dict[str, fr
 			"reference_doctype": "Sales Invoice",
 			"reference_name": ["in", sales_invoice_names],
 			"submission_kind": "E-Invoice",
-			"operation": "submit",
-		},
+			"operation": "submit"
+	},
 		fields=[
 			"name",
 			"reference_name",
@@ -88,7 +88,7 @@ def get_einvoice_queue(
 	params: dict[str, Any] = {
 		"einv": "%E-Invoice%",
 		"einv_exact": ETA_BILLING_EINVOICE,
-		"limit": int(limit or 200),
+		"limit": int(limit or 200)
 	}
 	if int(include_drafts or 0):
 		conditions.append("si.docstatus IN (0, 1, 2)")
@@ -188,8 +188,8 @@ def get_einvoice_queue(
 				"signer_mode": signer_mode,
 				"browser_signing": browser_sign,
 				"can_sign": can_sign,
-				"can_send": can_send,
-			}
+				"can_send": can_send
+	}
 		)
 	return rows
 
@@ -229,7 +229,7 @@ def preview_einvoice(sales_invoice: str, signed: int = 0) -> dict[str, Any]:
 		"document": document,
 		"browser_signing": browser_sign,
 		"can_sign": eta_st in ("", "Not Registered", "Draft", "Failed"),
-		"can_send": eta_st == "Signed",
+		"can_send": eta_st == "Signed"
 	}
 
 
@@ -241,10 +241,12 @@ def test_eta_einvoice_connection(branch: str | None = None, company: str | None 
 	if not branch and company:
 		branch = frappe.db.get_value(
 			"Branch",
-			{"company": company, "is_head_office": 1},
+			{"company": company, "is_head_office": 1
+	},
 			"name",
 			order_by="creation asc",
-		) or frappe.db.get_value("Branch", {"company": company}, "name")
+		) or frappe.db.get_value("Branch", {"company": company
+	}, "name")
 	if not branch:
 		frappe.throw(_("Select a branch or company."), title=_("ETA"))
 
@@ -263,8 +265,8 @@ def test_eta_einvoice_connection(branch: str | None = None, company: str | None 
 			"api_base_url": settings.eta_base_url,
 			"rin": settings.rin,
 			"expires_in": state.get("expires_in"),
-			"message": _("ETA e-Invoice authentication successful."),
-		}
+			"message": _("ETA e-Invoice authentication successful.")
+	}
 	except Exception as exc:
 		return {
 			"ok": False,
@@ -272,8 +274,8 @@ def test_eta_einvoice_connection(branch: str | None = None, company: str | None 
 			"environment": creds.get("environment"),
 			"api_base_url": settings.eta_base_url,
 			"error": str(exc),
-			"message": _("ETA e-Invoice authentication failed."),
-		}
+			"message": _("ETA e-Invoice authentication failed.")
+	}
 
 
 @frappe.whitelist()
@@ -300,7 +302,7 @@ def sign_einvoice_server(sales_invoice: str) -> dict[str, Any]:
 		"ok": True,
 		"status": sub.status,
 		"signer_method": out.get("signer_method"),
-		"message": sub.integration_message,
+		"message": sub.integration_message
 	}
 
 
@@ -340,7 +342,7 @@ def send_einvoice(sales_invoice: str, force: int = 0) -> dict[str, Any]:
 		"uuid": sub.eta_uuid,
 		"provider_reference": sub.provider_reference,
 		"message": sub.integration_message,
-		"error_code": sub.eta_error_code,
+		"error_code": sub.eta_error_code
 	}
 
 
@@ -354,7 +356,8 @@ def bulk_send_einvoices(sales_invoices) -> list[dict[str, Any]]:
 			results.append({"sales_invoice": name, "ok": bool(row.get("ok")), **row})
 		except Exception as exc:
 			frappe.log_error(message=frappe.get_traceback(), title=f"E-Invoice send failed: {name}")
-			results.append({"sales_invoice": name, "ok": False, "error": str(exc)})
+			results.append({"sales_invoice": name, "ok": False, "error": str(exc)
+	})
 	return results
 
 
@@ -385,7 +388,7 @@ def get_review_summary(sales_invoices) -> list[dict[str, Any]]:
 				"docstatus": inv.docstatus,
 				"submission": sub.name if sub else "",
 				"eta_status": sub.status if sub else "Not Registered",
-				"eta_uuid": (sub.eta_uuid or sub.authority_uuid) if sub else "",
-			}
+				"eta_uuid": (sub.eta_uuid or sub.authority_uuid) if sub else ""
+	}
 		)
 	return rows

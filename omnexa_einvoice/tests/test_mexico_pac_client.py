@@ -19,7 +19,8 @@ class TestMexicoPacClient(FrappeTestCase):
 			uuid="mx-uuid",
 			hash_b64="abc",
 			signed_xml=xml,
-			document={"reference_name": "SI-MX-PAC"},
+			document={"reference_name": "SI-MX-PAC"
+	},
 		)
 		self.assertTrue(out.get("ok"))
 		self.assertTrue(out.get("mock"))
@@ -33,13 +34,15 @@ class TestMexicoPacClient(FrappeTestCase):
 				"reference_name": "SI-MX-P2",
 				"seller_name": "Seller",
 				"tax_registration_number": "XAXX010101000",
-				"lines": [{"description": "Item", "qty": 1, "rate": 100, "amount": 100}],
-				"totals": {"net_total": 100, "tax_total": 16, "grand_total": 116},
-			},
+				"lines": [{"description": "Item", "qty": 1, "rate": 100, "amount": 100
+	}],
+				"totals": {"net_total": 100, "tax_total": 16, "grand_total": 116}
+	},
 			country_code="MX",
 		)
 		p2 = run_country_phase2(
-			{"company": "Test", "reference_name": "SI-MX-P2", "phase1": p1},
+			{"company": "Test", "reference_name": "SI-MX-P2", "phase1": p1
+	},
 			country_code="MX",
 			sync=True,
 		)

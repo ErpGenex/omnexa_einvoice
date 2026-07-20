@@ -32,7 +32,7 @@ def process_zatca_invoice(
 		"phase": phase,
 		"company": company or frappe.defaults.get_user_default("Company"),
 		"branch": branch,
-		"csid_reference": csid_reference,
+		"csid_reference": csid_reference
 	}
 	if document_json:
 		payload["document"] = frappe.parse_json(document_json)

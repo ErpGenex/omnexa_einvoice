@@ -22,21 +22,27 @@ SMOKE_PAYLOAD = {
 	"company": "Test",
 	"seller_name": "Smoke Seller",
 	"tax_registration_number": "100000000000003",
-	"buyer": {"name": "Smoke Buyer", "tax_registration": "200000000000004"},
-	"lines": [{"description": "Item", "qty": 1, "rate": 100, "amount": 100, "tax_amount": 5}],
-	"totals": {"net_total": 100, "tax_total": 5, "grand_total": 105},
-}
+	"buyer": {"name": "Smoke Buyer", "tax_registration": "200000000000004"
+	},
+	"lines": [{"description": "Item", "qty": 1, "rate": 100, "amount": 100, "tax_amount": 5
+	}],
+	"totals": {"net_total": 100, "tax_total": 5, "grand_total": 105}
+	}
 
 
 def _run_smoke_internal(*, full: bool = True) -> dict[str, Any]:
 	frappe.flags.in_test = True
 	codes = sorted(PLUGIN_COUNTRY_CODES) if full else _smoke_sample_codes()
-	results: dict[str, Any] = {"countries": {}, "ok": True, "tested": len(codes)}
+	results: dict[str, Any] = {"countries": {
+	}, "ok": True, "tested": len(codes)
+	}
 	for code in codes:
-		entry: dict[str, Any] = {"phase1": None, "phase2": None, "ok": False}
+		entry: dict[str, Any] = {"phase1": None, "phase2": None, "ok": False
+	}
 		try:
 			p1 = run_country_phase1(
-				{**SMOKE_PAYLOAD, "reference_name": f"SMOKE-{code}-P1"},
+				{**SMOKE_PAYLOAD, "reference_name": f"SMOKE-{code}-P1"
+	},
 				country_code=code,
 			)
 			xml = p1.get("signed_xml") or ""
@@ -45,12 +51,15 @@ def _run_smoke_internal(*, full: bool = True) -> dict[str, Any]:
 			if missing:
 				raise ValueError(f"XML missing markers: {missing}")
 			p2 = run_country_phase2(
-				{**SMOKE_PAYLOAD, "reference_name": f"SMOKE-{code}-P2"},
+				{**SMOKE_PAYLOAD, "reference_name": f"SMOKE-{code}-P2"
+	},
 				country_code=code,
 				sync=True,
 			)
-			entry["phase1"] = {"framework": p1.get("framework"), "uuid": p1.get("uuid")}
-			entry["phase2"] = {"status": p2.get("status"), "mock": (p2.get("api") or {}).get("mock")}
+			entry["phase1"] = {"framework": p1.get("framework"), "uuid": p1.get("uuid")
+	}
+			entry["phase2"] = {"status": p2.get("status"), "mock": (p2.get("api") or {}).get("mock")
+	}
 			entry["ok"] = True
 		except Exception as exc:
 			entry["error"] = str(exc)[:500]
@@ -101,8 +110,8 @@ def list_country_status() -> list[dict[str, Any]]:
 				"currency": entry.currency,
 				"integration_tier": (meta.integration_tier if meta else integration_tier_for_country(entry.code)),
 				"pipeline_enabled": bool(meta and meta.pipeline_enabled),
-				"production_ready": bool(meta and meta.production_ready),
-			}
+				"production_ready": bool(meta and meta.production_ready)
+	}
 		)
 	for code in ("EG", "SA"):
 		meta = COUNTRY_REGISTRY[code]
@@ -116,7 +125,7 @@ def list_country_status() -> list[dict[str, Any]]:
 				"currency": "EGP" if code == "EG" else "SAR",
 				"integration_tier": "production",
 				"pipeline_enabled": True,
-				"production_ready": True,
-			}
+				"production_ready": True
+	}
 		)
 	return sorted(rows, key=lambda r: r["country_code"])

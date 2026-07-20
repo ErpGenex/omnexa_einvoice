@@ -49,7 +49,7 @@ def zatca_request(
 		"Accept": "application/json",
 		"Content-Type": "application/json",
 		"Accept-Version": API_VERSION_HEADER,
-		"Accept-Language": ACCEPT_LANGUAGE,
+		"Accept-Language": ACCEPT_LANGUAGE
 	}
 	if otp:
 		headers["OTP"] = str(otp)
@@ -72,7 +72,8 @@ def zatca_request(
 	try:
 		body = res.json() if res.text else {}
 	except Exception:
-		body = {"raw": res.text[:4000]}
+		body = {"raw": res.text[:4000]
+	}
 
 	return res.status_code, body
 
@@ -91,12 +92,14 @@ def zatca_request_strict(
 
 
 def clearance_headers() -> dict[str, str]:
-	return {"Clearance-Status": "1"}
+	return {"Clearance-Status": "1"
+	}
 
 
 def request_compliance_csid(portal: str, csr_base64: str, otp: str) -> dict[str, Any]:
 	url = api_url(portal, PATH_COMPLIANCE_CSID)
-	return zatca_request_strict("POST", url, otp=otp, json_body={"csr": csr_base64})
+	return zatca_request_strict("POST", url, otp=otp, json_body={"csr": csr_base64
+	})
 
 
 def request_production_csid(portal: str, compliance_request_id: str, token: str, secret: str) -> dict[str, Any]:
@@ -106,7 +109,8 @@ def request_production_csid(portal: str, compliance_request_id: str, token: str,
 		url,
 		token=token,
 		secret=secret,
-		json_body={"compliance_request_id": compliance_request_id},
+		json_body={"compliance_request_id": compliance_request_id
+	},
 	)
 
 

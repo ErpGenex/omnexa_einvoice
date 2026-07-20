@@ -31,8 +31,7 @@ class TestEInvoiceSubmission(FrappeTestCase):
 				"adapter_name": "einvoice_stub",
 				"document_type": "invoice",
 				"operation": "submit",
-				**stub_submission_fields(),
-			}
+				**stub_submission_fields()}
 		)
 		doc.insert()
 		dispatch_submission(doc.name)
@@ -49,8 +48,7 @@ class TestEInvoiceSubmission(FrappeTestCase):
 				"adapter_name": "einvoice_stub",
 				"document_type": "invoice",
 				"operation": "submit",
-				**stub_submission_fields(),
-			}
+				**stub_submission_fields()}
 		)
 		doc.insert()
 		dispatch_submission(doc.name)
@@ -59,7 +57,8 @@ class TestEInvoiceSubmission(FrappeTestCase):
 
 	def _ereceipt_si_ref(self) -> tuple[str, str] | None:
 		si = frappe.db.get_value(
-			"Sales Invoice", {"docstatus": 1, "eta_billing_type": "E-Receipt"}, "name"
+			"Sales Invoice", {"docstatus": 1, "eta_billing_type": "E-Receipt"
+	}, "name"
 		)
 		if not si:
 			return None
@@ -78,8 +77,8 @@ class TestEInvoiceSubmission(FrappeTestCase):
 				"adapter_name": "einvoice_eta",
 				"submission_kind": "E-Receipt",
 				"document_type": "receipt",
-				"operation": "submit",
-			}
+				"operation": "submit"
+	}
 		)
 		doc.insert(ignore_permissions=True)
 		self.addCleanup(
@@ -104,8 +103,8 @@ class TestEInvoiceSubmission(FrappeTestCase):
 				"operation": "submit",
 				"status": "Queued",
 				"provider_reference": "ETA-SUBMIT-RECEIPT-X",
-				"integration_message": "Queued for ETA submit",
-			}
+				"integration_message": "Queued for ETA submit"
+	}
 		)
 		doc.insert(ignore_permissions=True)
 		self.addCleanup(
@@ -130,8 +129,8 @@ class TestEInvoiceSubmission(FrappeTestCase):
 				"document_type": "invoice",
 				"operation": "submit",
 				"submission_channel": "API",
-				"submission_kind": "E-Invoice",
-			}
+				"submission_kind": "E-Invoice"
+	}
 		)
 		doc._merge_branch_defaults()
 		extra = json.loads(doc.extra_json or "{}")

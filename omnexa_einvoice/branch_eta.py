@@ -39,7 +39,8 @@ def resolve_branch_for_document(doc, user: str | None = None) -> str | None:
 
 		return get_default_branch(company, user or frappe.session.user)
 	except Exception:
-		return frappe.db.get_value("Branch", {"company": company, "status": "Active"}, "name", order_by="is_head_office desc")
+		return frappe.db.get_value("Branch", {"company": company, "status": "Active"
+	}, "name", order_by="is_head_office desc")
 
 
 def _branch_row(branch: str, fields: list[str]) -> frappe._dict:
@@ -221,9 +222,8 @@ def get_eta_receipt_branch_settings(branch: str) -> frappe._dict:
 				"floor": (row.get("eta_address_floor") or "1").strip(),
 				"room": (row.get("eta_address_room") or "1").strip(),
 				"landmark": (row.get("eta_address_landmark") or "").strip(),
-				"additionalInformation": (row.get("eta_address_additional") or "").strip(),
-			},
-		}
+				"additionalInformation": (row.get("eta_address_additional") or "").strip()}
+	}
 	)
 
 
@@ -285,8 +285,8 @@ def get_eta_invoice_branch_settings(branch: str) -> frappe._dict:
 			),
 			"submission_mode": (row.get("eta_einvoice_submission_mode") or "Manual").strip(),
 			"batch_size": int(row.get("eta_einvoice_batch_size") or 10),
-			"send_delay_hours": float(row.get("eta_einvoice_send_delay_hours") or 0),
-		}
+			"send_delay_hours": float(row.get("eta_einvoice_send_delay_hours") or 0)
+	}
 	)
 
 
@@ -301,7 +301,7 @@ def get_branch_eta_credentials(branch: str, kind: str = RECEIPT_KIND) -> dict:
 	credentials = {
 		"client_id": (settings.eta_client_id or "").strip(),
 		"client_secret": (settings.eta_client_secret or "").strip(),
-		"environment": (settings.eta_environment or "preprod").strip(),
+		"environment": (settings.eta_environment or "preprod").strip()
 	}
 	if kind == RECEIPT_KIND:
 		pos_os = (settings.pos_os_version or "").strip()
@@ -312,8 +312,8 @@ def get_branch_eta_credentials(branch: str, kind: str = RECEIPT_KIND) -> dict:
 		credentials["pos_headers"] = {
 			"posserial": (settings.device_serial_number or "").strip(),
 			"pososversion": pos_os,
-			"presharedkey": (settings.pos_preshared_key or "").strip(),
-		}
+			"presharedkey": (settings.pos_preshared_key or "").strip()
+	}
 		if not credentials["pos_headers"]["posserial"]:
 			frappe.throw(
 				_("POS Device Serial is required on Branch {0} for e-Receipt authentication.").format(branch),

@@ -36,14 +36,15 @@ def fetch_erp_sign_session_secrets(data: dict[str, Any]) -> dict[str, str]:
 		import requests
 
 		url = f"{erp_base}/api/method/{ERP_RESOLVE_METHOD}"
-		res = requests.get(url, params={"session_id": session_id}, timeout=30)
+		res = requests.get(url, params={"session_id": session_id
+	}, timeout=30)
 		body = res.json() if res.content else {}
 		msg = body.get("message") if isinstance(body, dict) else {}
 		if isinstance(msg, dict):
 			secrets = {
 				"pin": (msg.get("pin") or msg.get("usb_token_pin") or "").strip(),
-				"chilkat_unlock_code": (msg.get("chilkat_unlock_code") or "").strip(),
-			}
+				"chilkat_unlock_code": (msg.get("chilkat_unlock_code") or "").strip()
+	}
 			if secrets.get("pin"):
 				logger.info(
 					"ERP sign_session: pin_len=%s chilkat_key=%s",

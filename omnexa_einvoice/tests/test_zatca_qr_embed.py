@@ -16,10 +16,12 @@ class TestZatcaQrEmbed(FrappeTestCase):
 			"reference_name": "SI-QR-1",
 			"issue_datetime": "2026-05-19T12:00:00",
 			"currency": "SAR",
-			"lines": [{"description": "Item", "qty": 1, "rate": 100, "net_amount": 100}],
-			"totals": {"net_total": 100, "tax_total": 15, "grand_total": 115},
-		}
-		seller = {"name": "Seller", "name_ar": "بائع", "vat_registration": "300000000000003"}
+			"lines": [{"description": "Item", "qty": 1, "rate": 100, "net_amount": 100
+	}],
+			"totals": {"net_total": 100, "tax_total": 15, "grand_total": 115}
+	}
+		seller = {"name": "Seller", "name_ar": "بائع", "vat_registration": "300000000000003"
+	}
 		xml_text, _ = build_ubl_invoice_xml(payload, icv=1, previous_hash="", seller=seller)
 		qr_b64 = build_tlv_qr_base64(
 			seller_name="بائع",

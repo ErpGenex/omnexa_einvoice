@@ -25,7 +25,7 @@ def build_payload_from_signed_xml(signed_xml: str) -> dict[str, Any]:
 
 	namespaces = {
 		"ds": "http://www.w3.org/2000/09/xmldsig#",
-		"cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
+		"cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
 	}
 	root = etree.fromstring(xml_bytes)
 
@@ -41,7 +41,7 @@ def build_payload_from_signed_xml(signed_xml: str) -> dict[str, Any]:
 	return {
 		"uuid": uuid_el.text.strip(),
 		"invoiceHash": digest_el.text.strip(),
-		"invoice": base64.b64encode(xml_bytes).decode("ascii"),
+		"invoice": base64.b64encode(xml_bytes).decode("ascii")
 	}
 
 
@@ -62,5 +62,5 @@ def build_invoice_api_payload(
 	return {
 		"invoiceHash": invoice_hash_b64,
 		"uuid": uuid,
-		"invoice": base64.b64encode(signed_xml.encode("utf-8")).decode("ascii"),
+		"invoice": base64.b64encode(signed_xml.encode("utf-8")).decode("ascii")
 	}

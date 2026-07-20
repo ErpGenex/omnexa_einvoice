@@ -42,8 +42,7 @@ def get_france_pdp_settings(company: str, *, branch: str | None = None) -> frapp
 			"pdp_submit_path": (config.get("pdp_submit_path") or "/facturx/v1/submit").strip(),
 			"siret": (config.get("siret") or (settings.get("tax_registration_number") if settings else "") or "").strip(),
 			"client_id": (settings.get("client_id") if settings else "") or "",
-			"client_secret": get_settings_password(settings, "client_secret") if settings else None,
-		}
+			"client_secret": get_settings_password(settings, "client_secret") if settings else None}
 	)
 
 
@@ -55,9 +54,10 @@ def _mock_pdp(*, uuid: str, reference: str) -> dict[str, Any]:
 		"status": "ACCEPTED",
 		"flow_id": flow_id,
 		"uuid": flow_id,
-		"raw": {"flowId": flow_id, "reference": reference},
+		"raw": {"flowId": flow_id, "reference": reference
+	},
 		"mode": "mock",
-		"framework": "Factur-X",
+		"framework": "Factur-X"
 	}
 
 
@@ -89,14 +89,15 @@ def submit_facturx_pdp(
 		)
 
 	url = f"{cfg.pdp_base_url.rstrip('/')}{cfg.pdp_submit_path}"
-	headers = {"Accept": "application/json", "Content-Type": "application/json"}
+	headers = {"Accept": "application/json", "Content-Type": "application/json"
+	}
 	apply_basic_auth(headers, cfg.client_id, cfg.client_secret)
 
 	payload = {
 		"uuid": uuid,
 		"invoiceHash": hash_b64,
 		"xml": base64.b64encode(signed_xml.encode("utf-8")).decode("ascii"),
-		"siret": cfg.siret,
+		"siret": cfg.siret
 	}
 	res = post_country_json(
 		country_code="FR",
@@ -110,7 +111,8 @@ def submit_facturx_pdp(
 	try:
 		body = res.json() if res.text else {}
 	except Exception:
-		body = {"raw": (res.text or "")[:8000]}
+		body = {"raw": (res.text or "")[:8000]
+	}
 
 	if res.status_code >= 400:
 		frappe.throw(_("France PDP error ({0}): {1}").format(res.status_code, body), title=_("France PDP"))
@@ -124,22 +126,25 @@ def submit_facturx_pdp(
 		"uuid": flow_id,
 		"raw": body,
 		"mode": "live",
-		"framework": "Factur-X",
+		"framework": "Factur-X"
 	}
 
 
 @frappe.whitelist()
 def test_france_pdp_connection(branch: str | None = None, company: str | None = None) -> dict[str, Any]:
 	if not branch and company:
-		branch = frappe.db.get_value("Branch", {"company": company}, "name")
+		branch = frappe.db.get_value("Branch", {"company": company
+	}, "name")
 	if not branch:
 		frappe.throw(_("Select a branch."), title=_("France PDP"))
 	comp = company or frappe.db.get_value("Branch", branch, "company")
 	cfg = get_france_pdp_settings(comp, branch=branch)
 	if not cfg.siret:
-		return {"ok": False, "message": _("Set SIRET on tax registration or configuration_json.siret.")}
+		return {"ok": False, "message": _("Set SIRET on tax registration or configuration_json.siret.")
+	}
 	checklist = validate_required_fields(
-		{"pdp_base_url": cfg.pdp_base_url},
+		{"pdp_base_url": cfg.pdp_base_url
+	},
 		[("pdp_base_url", _("pdp_base_url"))],
 	)
 	mock = _mock_pdp(uuid=frappe.generate_hash(length=10), reference="TEST")
@@ -151,8 +156,8 @@ def test_france_pdp_connection(branch: str | None = None, company: str | None = 
 			"ok": True,
 			"message": _("France PDP sandbox OK (mock)."),
 			"flow_id": mock["flow_id"],
-			"mode": "mock",
-		},
+			"mode": "mock"
+	},
 		base_url=cfg.pdp_base_url,
 		ready_label=_("PDP / Factur-X UAT ready."),
 	)

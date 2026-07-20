@@ -34,19 +34,23 @@ def enqueue_reconciliation(log_name: str, *, delay_seconds: int = 300) -> str | 
 def reconcile_submission_log(log_name: str) -> dict[str, Any]:
 	"""Poll ASP status when configured; update Country Tax Submission Log."""
 	if not frappe.db.exists("Country Tax Submission Log", log_name):
-		return {"ok": False, "error": "log not found"}
+		return {"ok": False, "error": "log not found"
+	}
 
 	log = frappe.get_doc("Country Tax Submission Log", log_name)
 	code = normalize_country_code(log.country_code)
 	if code in ("EG", "SA"):
-		return {"ok": False, "skipped": True, "reason": "EG/SA use dedicated reconciliation"}
+		return {"ok": False, "skipped": True, "reason": "EG/SA use dedicated reconciliation"
+	}
 
 	if log.status in (ACCEPTED, "Accepted", "Failed", "Cancelled"):
-		return {"ok": True, "skipped": True, "status": log.status}
+		return {"ok": True, "skipped": True, "status": log.status
+	}
 
 	config = _log_poll_config(log)
 	if not config.get("poll_enabled"):
-		return {"ok": True, "skipped": True, "reason": "poll_disabled"}
+		return {"ok": True, "skipped": True, "reason": "poll_disabled"
+	}
 
 	# Placeholder: ASP-specific poll URLs are per-country wave. Until wired, normalize stored response.
 	raw = {}
@@ -54,12 +58,14 @@ def reconcile_submission_log(log_name: str) -> dict[str, Any]:
 		try:
 			raw = json.loads(log.response_payload)
 		except json.JSONDecodeError:
-			raw = {"raw": log.response_payload}
+			raw = {"raw": log.response_payload
+	}
 
 	status = normalize_authority_status(
 		str(raw.get("status") or log.authority_status or raw.get("clearanceStatus") or "")
 	)
-	updates: dict[str, Any] = {"authority_status": status}
+	updates: dict[str, Any] = {"authority_status": status
+	}
 	if status == ACCEPTED:
 		updates["status"] = "Accepted"
 	elif status == FAILED:
@@ -74,14 +80,17 @@ def reconcile_submission_log(log_name: str) -> dict[str, Any]:
 def _log_poll_config(log) -> dict[str, Any]:
 	branch = frappe.db.get_value(
 		"Branch",
-		{"company": log.company},
+		{"company": log.company
+	},
 		["name", "intl_tax_configuration_json"],
 		as_dict=True,
 	)
 	if not branch or not branch.get("intl_tax_configuration_json"):
-		return {"poll_enabled": False}
+		return {"poll_enabled": False
+	}
 	try:
 		cfg = json.loads(branch.intl_tax_configuration_json)
 		return cfg if isinstance(cfg, dict) else {}
 	except json.JSONDecodeError:
-		return {"poll_enabled": False}
+		return {"poll_enabled": False
+	}

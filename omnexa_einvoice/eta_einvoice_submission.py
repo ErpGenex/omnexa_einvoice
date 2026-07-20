@@ -114,8 +114,8 @@ def sign_e_invoice_submission(
 			"document": document,
 			"signed_document_json": signed_json,
 			"signer_canonical_json": agent_canonical_json or "",
-			"signer_method": signer_method,
-		}
+			"signer_method": signer_method
+	}
 	else:
 		document = build_unsigned_e_invoice_document(source, branch)
 		signature, signer_method = sign_eta_invoice_document(
@@ -130,7 +130,8 @@ def sign_e_invoice_submission(
 	doc.canonical_hash = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 	doc.eta_uuid = ""
 	doc.integration_message = _("Signed via {0}.").format(signer_method)
-	return {"document": document, "signer_method": signer_method}
+	return {"document": document, "signer_method": signer_method
+	}
 
 
 def prepare_e_invoice_for_send(
@@ -235,7 +236,8 @@ def prepare_e_invoice_for_send_unsigned(payload: dict) -> dict:
 
 
 def build_e_invoice_submit_body(document: dict) -> dict:
-	return {"documents": [document]}
+	return {"documents": [document]
+	}
 
 
 def apply_e_invoice_send_result(doc, document: dict, response_body: dict, http_status: int) -> dict:
@@ -250,9 +252,11 @@ def apply_e_invoice_send_result(doc, document: dict, response_body: dict, http_s
 	doc.integration_message = parsed["message"]
 	doc.eta_error_code = parsed["error_code"]
 	if ok:
-		doc.result_data = json.dumps({"document": document, "eta_response": response_body}, ensure_ascii=False)[
+		doc.result_data = json.dumps({"document": document, "eta_response": response_body
+	}, ensure_ascii=False)[
 			:20000
 		]
 	else:
 		doc.result_data = json.dumps(response_body, ensure_ascii=False)[:20000]
-	return {"ok": ok, "parsed": parsed}
+	return {"ok": ok, "parsed": parsed
+	}

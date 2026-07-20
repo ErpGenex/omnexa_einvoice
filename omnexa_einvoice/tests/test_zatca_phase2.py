@@ -19,8 +19,8 @@ class TestZatcaPhase2(FrappeTestCase):
 				"company": "Test SA",
 				"csid_reference": "csid-test",
 				"taxpayer_registration_id": "300000000000003",
-				"seller_name": "Seller",
-			}
+				"seller_name": "Seller"
+	}
 		)
 		self.assertTrue(out.get("ok"))
 		self.assertEqual(out.get("status"), "queued")
@@ -31,8 +31,10 @@ class TestZatcaPhase2(FrappeTestCase):
 		import base64
 
 		cleared_b64 = base64.b64encode(b"<Invoice/>").decode("ascii")
-		mock_api.return_value = (200, {"clearanceStatus": "CLEARED", "clearedInvoice": cleared_b64})
-		settings = type("S", (), {"zatca_environment": "sandbox", "name": "x"})()
+		mock_api.return_value = (200, {"clearanceStatus": "CLEARED", "clearedInvoice": cleared_b64
+	})
+		settings = type("S", (), {"zatca_environment": "sandbox", "name": "x"
+	})()
 		with patch(
 			"omnexa_einvoice.zatca.phase2.clearance.get_production_auth",
 			return_value=("t", "s"),
@@ -47,8 +49,10 @@ class TestZatcaPhase2(FrappeTestCase):
 
 	@patch("omnexa_einvoice.zatca.phase2.reporting.submit_reporting_api")
 	def test_reporting_wrapper(self, mock_api):
-		mock_api.return_value = (200, {"reportingStatus": "REPORTED"})
-		settings = type("S", (), {"zatca_environment": "sandbox", "name": "x"})()
+		mock_api.return_value = (200, {"reportingStatus": "REPORTED"
+	})
+		settings = type("S", (), {"zatca_environment": "sandbox", "name": "x"
+	})()
 		with patch(
 			"omnexa_einvoice.zatca.phase2.reporting.get_production_auth",
 			return_value=("t", "s"),

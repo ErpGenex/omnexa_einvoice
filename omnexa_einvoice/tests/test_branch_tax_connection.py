@@ -16,7 +16,8 @@ class TestBranchTaxConnection(FrappeTestCase):
 	def test_spec_for_eg_branch(self):
 		branch = frappe.get_all(
 			"Branch",
-			filters={"country_code": "EG"},
+			filters={"country_code": "EG"
+	},
 			limit=1,
 			pluck="name",
 		)

@@ -33,6 +33,6 @@ def sales_invoice_international_tax_on_submit(doc, method=None) -> None:
 	payload = {
 		"reference_name": doc.name,
 		"company": doc.company,
-		"document_type": "invoice",
+		"document_type": "invoice"
 	}
 	enqueue_phase2(payload, country_code=code)

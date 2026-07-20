@@ -35,8 +35,8 @@ ZATCA_BRANCH_FIELDS: dict[str, str] = {
 	"public_key_pem": "zatca_public_key_pem",
 	"compliance_request_id": "zatca_compliance_request_id",
 	"icv_counter": "zatca_icv_counter",
-	"last_invoice_hash": "zatca_last_invoice_hash",
-}
+	"last_invoice_hash": "zatca_last_invoice_hash"
+	}
 
 ZATCA_PASSWORD_FIELDS = (
 	"private_key",
@@ -61,7 +61,8 @@ def branch_to_zatca_settings(branch: str) -> frappe._dict:
 	if not doc.get("zatca_enabled"):
 		frappe.throw(_("Enable ZATCA on Branch → Saudi ZATCA tab."), title=_("ZATCA"))
 
-	out: dict = {"name": doc.name, "company": doc.company, "doctype": "Branch", "_from_branch": True}
+	out: dict = {"name": doc.name, "company": doc.company, "doctype": "Branch", "_from_branch": True
+	}
 	for zatca_key, branch_field in ZATCA_BRANCH_FIELDS.items():
 		out[zatca_key] = doc.get(branch_field)
 	out["country_code"] = "SA"
@@ -77,6 +78,7 @@ def update_branch_chain(branch: str, icv: int, invoice_hash_hex: str) -> None:
 	frappe.db.set_value(
 		"Branch",
 		branch,
-		{"zatca_icv_counter": icv, "zatca_last_invoice_hash": invoice_hash_hex},
+		{"zatca_icv_counter": icv, "zatca_last_invoice_hash": invoice_hash_hex
+	},
 		update_modified=True,
 	)

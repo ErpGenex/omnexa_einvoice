@@ -16,8 +16,8 @@ class TestEInvoiceHubAdapters(FrappeTestCase):
 				"document_type": "invoice",
 				"taxpayer_rin": "123456789",
 				"operation": "submit",
-				"signer_mode": "windows_app",
-			},
+				"signer_mode": "windows_app"
+	},
 			idempotency_key="eta-1",
 		)
 		self.assertEqual(result.status, "queued")
@@ -33,8 +33,8 @@ class TestEInvoiceHubAdapters(FrappeTestCase):
 					"reference_name": "SI-0001",
 					"document_type": "invoice",
 					"taxpayer_rin": "123456789",
-					"operation": "cancel",
-				},
+					"operation": "cancel"
+	},
 				idempotency_key="eta-cancel-1",
 			)
 
@@ -43,7 +43,8 @@ class TestEInvoiceHubAdapters(FrappeTestCase):
 		with self.assertRaises(IntegrationHubError):
 			hub.dispatch(
 				"einvoice_zatca",
-				{"reference_name": "SI-0002", "document_type": "tax_invoice", "phase": "phase2"},
+				{"reference_name": "SI-0002", "document_type": "tax_invoice", "phase": "phase2"
+	},
 				idempotency_key="zatca-1",
 			)
 
@@ -58,8 +59,8 @@ class TestEInvoiceHubAdapters(FrappeTestCase):
 				"csid_reference": "csid-abc",
 				"company": "Test SA",
 				"taxpayer_registration_id": "300000000000003",
-				"seller_name": "SA Seller",
-			},
+				"seller_name": "SA Seller"
+	},
 			idempotency_key="zatca-2",
 		)
 		self.assertEqual(result.status, "queued")
@@ -75,8 +76,8 @@ class TestEInvoiceHubAdapters(FrappeTestCase):
 				"phase": "phase1",
 				"company": "Test SA",
 				"taxpayer_registration_id": "300000000000003",
-				"seller_name": "SA Seller",
-			},
+				"seller_name": "SA Seller"
+	},
 			idempotency_key="zatca-p1",
 		)
 		self.assertEqual(result.status, "completed")

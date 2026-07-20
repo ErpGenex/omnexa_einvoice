@@ -41,8 +41,8 @@ def get_brazil_sefaz_settings(company: str, *, branch: str | None = None) -> fra
 			"client_secret": get_settings_password(settings, "client_secret") if settings else None,
 			"a1_certificate_pem": config.get("a1_certificate_pem") or "",
 			"a1_private_key_pem": config.get("a1_private_key_pem") or "",
-			"a1_passphrase": (config.get("a1_passphrase") or "").strip(),
-		}
+			"a1_passphrase": (config.get("a1_passphrase") or "").strip()
+	}
 	)
 
 
@@ -53,8 +53,8 @@ def validate_brazil_sefaz_for_live(company: str, *, branch: str | None = None) -
 			"cnpj": sefaz.cnpj,
 			"sefaz_base_url": sefaz.sefaz_base_url,
 			"a1_private_key_pem": sefaz.a1_private_key_pem,
-			"a1_certificate_pem": sefaz.a1_certificate_pem,
-		}
+			"a1_certificate_pem": sefaz.a1_certificate_pem
+	}
 	)
 	if missing:
 		frappe.throw(
@@ -73,9 +73,10 @@ def _mock_sefaz(*, uuid: str, reference: str) -> dict[str, Any]:
 		"nfe_protocol": protocol,
 		"chave_acesso": chave,
 		"uuid": chave,
-		"raw": {"protocolo": protocol, "chNFe": chave, "reference": reference},
+		"raw": {"protocolo": protocol, "chNFe": chave, "reference": reference
+	},
 		"mode": "mock",
-		"framework": "NF-e-4.0",
+		"framework": "NF-e-4.0"
 	}
 
 
@@ -100,7 +101,8 @@ def submit_nfe_sefaz(
 		validate_brazil_sefaz_for_live(company, branch=branch)
 
 	url = f"{sefaz.sefaz_base_url.rstrip('/')}/nfe/v1/authorize"
-	headers = {"Accept": "application/json", "Content-Type": "application/json"}
+	headers = {"Accept": "application/json", "Content-Type": "application/json"
+	}
 	if sefaz.client_id and sefaz.client_secret:
 		token = base64.b64encode(f"{sefaz.client_id}:{sefaz.client_secret}".encode()).decode("ascii")
 		headers["Authorization"] = f"Basic {token}"
@@ -111,7 +113,7 @@ def submit_nfe_sefaz(
 		"xml": base64.b64encode(signed_xml.encode("utf-8")).decode("ascii"),
 		"cUF": sefaz.uf,
 		"cnpj": sefaz.cnpj,
-		"tpAmb": 2 if sefaz.ambiente != "producao" else 1,
+		"tpAmb": 2 if sefaz.ambiente != "producao" else 1
 	}
 	idem = build_idempotency_key(country_code="BR", uuid=uuid, document=document)
 	headers["Idempotency-Key"] = idem
@@ -128,7 +130,8 @@ def submit_nfe_sefaz(
 	try:
 		body = res.json() if res.text else {}
 	except Exception:
-		body = {"raw": (res.text or "")[:8000]}
+		body = {"raw": (res.text or "")[:8000]
+	}
 
 	if res.status_code >= 400:
 		frappe.throw(_("SEFAZ error ({0}): {1}").format(res.status_code, body), title=_("SEFAZ"))
@@ -143,14 +146,15 @@ def submit_nfe_sefaz(
 		"uuid": chave,
 		"raw": body,
 		"mode": "live",
-		"framework": "NF-e-4.0",
+		"framework": "NF-e-4.0"
 	}
 
 
 @frappe.whitelist()
 def test_brazil_sefaz_connection(branch: str | None = None, company: str | None = None) -> dict[str, Any]:
 	if not branch and company:
-		branch = frappe.db.get_value("Branch", {"company": company}, "name")
+		branch = frappe.db.get_value("Branch", {"company": company
+	}, "name")
 	if not branch:
 		frappe.throw(_("Select a branch."), title=_("SEFAZ"))
 	comp = company or frappe.db.get_value("Branch", branch, "company")
@@ -159,7 +163,7 @@ def test_brazil_sefaz_connection(branch: str | None = None, company: str | None 
 		"cnpj": sefaz.cnpj,
 		"sefaz_base_url": sefaz.sefaz_base_url,
 		"a1_private_key_pem": sefaz.a1_private_key_pem,
-		"a1_certificate_pem": sefaz.a1_certificate_pem,
+		"a1_certificate_pem": sefaz.a1_certificate_pem
 	}
 	checklist = validate_sefaz_config(cfg)
 	if allow_mock_api() or not sefaz.sefaz_base_url:
@@ -170,14 +174,14 @@ def test_brazil_sefaz_connection(branch: str | None = None, company: str | None 
 			"chave_acesso": mock["chave_acesso"],
 			"mode": "mock",
 			"a1_ready": not checklist,
-			"checklist": checklist or [_("Optional for mock: add A1 PEMs before homologação UAT.")],
-		}
+			"checklist": checklist or [_("Optional for mock: add A1 PEMs before homologação UAT.")]
+	}
 	if checklist:
 		return {
 			"ok": False,
 			"message": _("Complete A1 + SEFAZ settings before live NF-e."),
-			"checklist": checklist,
-		}
+			"checklist": checklist
+	}
 	try:
 		res = requests.get(sefaz.sefaz_base_url.rstrip("/"), timeout=30)
 		return {
@@ -185,7 +189,8 @@ def test_brazil_sefaz_connection(branch: str | None = None, company: str | None 
 			"message": _("SEFAZ URL reachable ({0}). A1 keys present — ready for homologação UAT.").format(
 				res.status_code
 			),
-			"a1_ready": True,
-		}
+			"a1_ready": True
+	}
 	except requests.RequestException as exc:
-		return {"ok": False, "message": str(exc), "checklist": checklist}
+		return {"ok": False, "message": str(exc), "checklist": checklist
+	}

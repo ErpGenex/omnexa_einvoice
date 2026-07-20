@@ -24,7 +24,7 @@ def asp_payload_type(engine_key: str) -> str:
 		"pint_ae": "peppol",
 		"peppol_ubl": "peppol",
 		"latam_invoice": "latam",
-		"jofotara": "jofotara",
+		"jofotara": "jofotara"
 	}.get(engine_key, "generic")
 
 
@@ -61,7 +61,7 @@ def build_asp_payload(
 		"invoiceNumber": document.get("reference_name") or "",
 		"sellerTaxId": seller.get("tax_registration") or (settings.get("tax_registration_number") if settings else ""),
 		"buyerTaxId": buyer.get("tax_registration") or "",
-		"currency": document.get("currency") or (entry.currency if entry else ""),
+		"currency": document.get("currency") or (entry.currency if entry else "")
 	}
 
 	if payload_type == "peppol":
@@ -77,7 +77,8 @@ def build_asp_payload(
 			}
 		)
 	elif payload_type == "cfdi":
-		base.update({"documentType": "CFDI", "version": "4.0", "tipoComprobante": "I"})
+		base.update({"documentType": "CFDI", "version": "4.0", "tipoComprobante": "I"
+	})
 		try:
 			cfg = json.loads(settings.configuration_json or "{}")
 			if isinstance(cfg, dict):
@@ -86,20 +87,26 @@ def build_asp_payload(
 		except json.JSONDecodeError:
 			pass
 	elif payload_type == "gst_irn":
-		base.update({"documentType": "eInvoice", "version": "1.1", "format": "JSON"})
+		base.update({"documentType": "eInvoice", "version": "1.1", "format": "JSON"
+	})
 		try:
 			base["eInvoiceJson"] = json.loads(signed_xml) if signed_xml.strip().startswith("{") else {}
 		except json.JSONDecodeError:
 			base["eInvoiceJson"] = {}
 	elif payload_type == "fatturapa":
-		base.update({"documentType": "FatturaPA", "formato": "FPR12", "trasmissione": "FPR12"})
+		base.update({"documentType": "FatturaPA", "formato": "FPR12", "trasmissione": "FPR12"
+	})
 	elif payload_type == "ksef_fa2":
-		base.update({"documentType": "FA", "ksefVersion": "FA2", "schema": "FA(2)"})
+		base.update({"documentType": "FA", "ksefVersion": "FA2", "schema": "FA(2)"
+	})
 	elif payload_type == "nfe":
-		base.update({"documentType": "NFe", "modelo": "55", "versao": "4.00"})
+		base.update({"documentType": "NFe", "modelo": "55", "versao": "4.00"
+	})
 	elif payload_type == "latam":
-		base.update({"documentType": "TaxInvoice", "latamCountry": code})
+		base.update({"documentType": "TaxInvoice", "latamCountry": code
+	})
 	elif payload_type == "jofotara":
-		base.update({"documentType": "JoFotaraInvoice", "jordanApiVersion": "v1"})
+		base.update({"documentType": "JoFotaraInvoice", "jordanApiVersion": "v1"
+	})
 
 	return base

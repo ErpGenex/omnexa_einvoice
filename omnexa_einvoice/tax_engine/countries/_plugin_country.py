@@ -30,7 +30,8 @@ def make_country_handlers(country_code: str):
 			message=_("{0} Phase 1 ({1}) completed.").format(
 				meta.label, result.get("framework") or "plugin"
 			),
-			data={"country_code": code, "phase1": result, "framework": result.get("framework")},
+			data={"country_code": code, "phase1": result, "framework": result.get("framework")
+	},
 		)
 
 	def dispatch_sales_invoice(doc, *, branch=None, phase=None, **kwargs):
@@ -38,8 +39,8 @@ def make_country_handlers(country_code: str):
 			"reference_name": doc.name,
 			"company": doc.company,
 			"document_type": "invoice",
-			"branch": branch,
-		}
+			"branch": branch
+	}
 		ph = (phase or kwargs.get("phase") or "phase1").strip().lower()
 		if ph == "phase2":
 			return run_phase2(payload, country_code=code, sync=bool(kwargs.get("sync")))

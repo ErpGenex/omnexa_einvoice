@@ -54,11 +54,14 @@ class TestNationalSigners(FrappeTestCase):
 			{
 				"reference_name": "SI-IT-1",
 				"issue_datetime": "2026-05-20",
-				"seller": {"tax_registration": "IT123", "name": "S"},
-				"buyer": {"name": "B"},
-				"lines": [{"description": "S", "qty": 1, "rate": 10, "net_amount": 10}],
-				"totals": {"net_total": 10, "tax_total": 2, "grand_total": 12},
-			}
+				"seller": {"tax_registration": "IT123", "name": "S"
+	},
+				"buyer": {"name": "B"
+	},
+				"lines": [{"description": "S", "qty": 1, "rate": 10, "net_amount": 10
+	}],
+				"totals": {"net_total": 10, "tax_total": 2, "grand_total": 12}
+	}
 		)
 		out = sign_fatturapa_cades(xml, private_key_pem=priv, certificate_pem=cert)
 		self.assertIn("Signature", out["signed_xml"])
@@ -68,10 +71,11 @@ class TestNationalSigners(FrappeTestCase):
 			{
 				"reference_name": "SI-PL-1",
 				"issue_datetime": "2026-05-20",
-				"seller": {"tax_registration": "5252525252", "name": "S"},
+				"seller": {"tax_registration": "5252525252", "name": "S"
+	},
 				"lines": [],
-				"totals": {"net_total": 0, "tax_total": 0, "grand_total": 0},
-			}
+				"totals": {"net_total": 0, "tax_total": 0, "grand_total": 0}
+	}
 		)
 		out = sign_ksef_fa2_token(xml, ksef_token="test-token")
 		self.assertIn("KSeFSessionDigest", out["signed_xml"])
@@ -81,9 +85,10 @@ class TestNationalSigners(FrappeTestCase):
 			{
 				"uuid": "latam-uuid",
 				"reference_name": "SI-AR-1",
-				"totals": {"net_total": 1, "tax_total": 0, "grand_total": 1},
-				"lines": [],
-			},
+				"totals": {"net_total": 1, "tax_total": 0, "grand_total": 1
+	},
+				"lines": []
+	},
 			country_code="AR",
 		)
 		out = sign_cufe_digest(xml, country_code="AR")
@@ -94,10 +99,11 @@ class TestNationalSigners(FrappeTestCase):
 			{
 				"uuid": "jo-1",
 				"reference_name": "SI-JO-1",
-				"seller": {"name": "S", "tax_registration": "123"},
+				"seller": {"name": "S", "tax_registration": "123"
+	},
 				"lines": [],
-				"totals": {},
-			}
+				"totals": {}
+	}
 		)
 		out = sign_jofotara_digest(xml)
 		self.assertIn("AuthorityDigest", out["signed_xml"])

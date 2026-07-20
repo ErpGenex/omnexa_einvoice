@@ -30,8 +30,8 @@ _AUTHORITY_TO_INTERNAL: dict[str, str] = {
 	"CANCELED": CANCELLED,
 	"PENDING": SUBMITTED,
 	"PROCESSING": SUBMITTED,
-	"SUBMITTED": SUBMITTED,
-}
+	"SUBMITTED": SUBMITTED
+	}
 
 
 def normalize_authority_status(raw: str | None) -> str:

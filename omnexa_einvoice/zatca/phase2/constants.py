@@ -8,8 +8,8 @@ ZATCA_HOST = "https://gw-fatoora.zatca.gov.sa"
 ENVIRONMENT_PORTALS = {
 	"sandbox": "developer-portal",
 	"simulation": "simulation",
-	"production": "core",
-}
+	"production": "core"
+	}
 
 PATH_COMPLIANCE_CSID = "/e-invoicing/{portal}/compliance"
 PATH_PRODUCTION_CSID = "/e-invoicing/{portal}/production/csids"

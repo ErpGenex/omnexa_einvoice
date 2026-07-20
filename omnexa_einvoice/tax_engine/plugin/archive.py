@@ -36,5 +36,7 @@ def archive_artifacts(
 	with open(xml_path, "w", encoding="utf-8") as fh:
 		fh.write(xml_text)
 	with open(json_path, "w", encoding="utf-8") as fh:
-		json.dump({"document": document, "meta": extra or {}}, fh, indent=2, default=str)
-	return {"xml": xml_path, "json": json_path}
+		json.dump({"document": document, "meta": extra or {}
+	}, fh, indent=2, default=str)
+	return {"xml": xml_path, "json": json_path
+	}

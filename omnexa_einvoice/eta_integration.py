@@ -51,8 +51,8 @@ ETA_AUTHORITY_STATUS_MAP = {
 	"invalid": DOC_STATUS_REJECTED,
 	"rejected": DOC_STATUS_REJECTED,
 	"cancelled": DOC_STATUS_REJECTED,
-	"canceled": DOC_STATUS_REJECTED,
-}
+	"canceled": DOC_STATUS_REJECTED
+	}
 
 
 def eta_token_cache_key(profile_key: str) -> str:
@@ -131,8 +131,8 @@ def exchange_eta_token(
 			"expires_in": expires_in,
 			"expires_at_ts": time.time() + expires_in,
 			"expires_at": str(expires_at),
-			"environment": (environment or "preprod").strip(),
-		}
+			"environment": (environment or "preprod").strip()
+	}
 
 	from omnexa_einvoice.branch_eta import normalize_eta_environment
 
@@ -142,11 +142,11 @@ def exchange_eta_token(
 		"grant_type": "client_credentials",
 		"client_id": client_id,
 		"client_secret": client_secret,
-		"scope": "",
+		"scope": ""
 	}
 	headers = {
 		"Content-Type": "application/x-www-form-urlencoded",
-		"Accept": "application/json",
+		"Accept": "application/json"
 	}
 	if pos_headers:
 		for key, value in pos_headers.items():
@@ -192,7 +192,7 @@ def exchange_eta_token(
 		"expires_in": expires_in,
 		"expires_at_ts": time.time() + expires_in,
 		"expires_at": str(expires_at),
-		"environment": env,
+		"environment": env
 	}
 
 
@@ -241,7 +241,7 @@ def normalize_eta_poll_response(body: dict[str, Any], http_status_code: int = 20
 		"authority_uuid": str(uuid).strip(),
 		"eta_error_code": str(err).strip() if err else "",
 		"http_status_code": int(http_status_code),
-		"raw": body,
+		"raw": body
 	}
 
 
@@ -252,7 +252,7 @@ def map_eta_error_to_message(eta_error_code: str) -> str:
 		"401": _("Authentication failed; refresh ETA token or check credentials."),
 		"403": _("ETA rejected the request; check registration and environment."),
 		"INVALID_SIGNATURE": _("Invalid document signature; check e-seal / signer."),
-		"INVALID_DOCUMENT": _("Document failed ETA validation; review mapped fields."),
+		"INVALID_DOCUMENT": _("Document failed ETA validation; review mapped fields.")
 	}
 	return str(known.get(code, _("ETA error {0}").format(code)))
 

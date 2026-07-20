@@ -19,9 +19,10 @@ class TestTaxPhase2Queue(FrappeTestCase):
 			"signed_xml": "<Invoice/>",
 			"framework": "PEPPOL-UBL",
 			"log_name": None,
-			"document": {"company": "Test Co"},
-		}
-		payload = {"reference_name": "SI-PH2-Q", "company": "Test Co"}
+			"document": {"company": "Test Co"}
+	}
+		payload = {"reference_name": "SI-PH2-Q", "company": "Test Co"
+	}
 
 		with patch(
 			"omnexa_einvoice.tax_engine.plugin.pipeline.run_country_phase1",
@@ -45,15 +46,17 @@ class TestTaxPhase2Queue(FrappeTestCase):
 			"signed_xml": "<x/>",
 			"framework": "PEPPOL-UBL",
 			"log_name": None,
-			"document": {},
-		}
-		payload = {"reference_name": "SI-JOB", "company": "Test Co"}
+			"document": {}
+	}
+		payload = {"reference_name": "SI-JOB", "company": "Test Co"
+	}
 
 		with patch(
 			"omnexa_einvoice.tax_engine.plugin.pipeline.run_country_phase1",
 		) as mock_p1, patch(
 			"omnexa_einvoice.tax_engine.plugin.pipeline.execute_country_phase2_submit",
-			return_value={"ok": True, "status": "submitted"},
+			return_value={"ok": True, "status": "submitted"
+	},
 		) as mock_submit:
 			process_phase2_job(payload, "DE", phase1=phase1)
 
@@ -67,15 +70,16 @@ class TestTaxPhase2Queue(FrappeTestCase):
 			"signed_xml": "<Invoice/>",
 			"framework": "CFDI-4.0",
 			"log_name": None,
-			"document": {"company": "Test Co"},
-		}
+			"document": {"company": "Test Co"}
+	}
 		frappe.flags.in_test = True
 
 		with patch(
 			"omnexa_einvoice.tax_engine.plugin.api_client.submit_invoice_api",
 		) as mock_api:
 			result = execute_country_phase2_submit(
-				{"company": "Test Co"},
+				{"company": "Test Co"
+	},
 				country_code="MX",
 				phase1=phase1,
 			)
@@ -100,7 +104,8 @@ class TestTaxPhase2Queue(FrappeTestCase):
 			return_value=False,
 		), patch(
 			"omnexa_einvoice.international_tax_hooks.resolve_tax_provider_for_branch",
-			return_value={"country_code": "DE"},
+			return_value={"country_code": "DE"
+	},
 		), patch(
 			"omnexa_einvoice.international_tax_hooks.get_country_tax_settings",
 			return_value=frappe._dict(enabled=1, auto_submit_on_si_submit=1),

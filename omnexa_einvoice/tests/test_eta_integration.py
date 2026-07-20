@@ -45,29 +45,32 @@ class TestETAIntegration(FrappeTestCase):
 			{
 				"access_token": "tok",
 				"expires_in": 60,
-				"expires_at": str(add_to_date(now_datetime(), seconds=300)),
-			},
+				"expires_at": str(add_to_date(now_datetime(), seconds=300))},
 		)
 		self.assertFalse(eta_token_needs_refresh(get_cached_eta_token_state("test-profile")))
 
 	def test_ensure_eta_access_token_uses_cache(self):
 		first = ensure_eta_access_token(
 			"test-profile",
-			{"client_id": "a", "client_secret": "b"},
+			{"client_id": "a", "client_secret": "b"
+	},
 		)
 		second = ensure_eta_access_token(
 			"test-profile",
-			{"client_id": "a", "client_secret": "b"},
+			{"client_id": "a", "client_secret": "b"
+	},
 		)
 		self.assertEqual(first, second)
 
 	def test_normalize_poll_maps_valid_status(self):
-		poll = normalize_eta_poll_response({"status": "Valid", "uuid": "eta-uuid-1"}, http_status_code=200)
+		poll = normalize_eta_poll_response({"status": "Valid", "uuid": "eta-uuid-1"
+	}, http_status_code=200)
 		self.assertEqual(poll["authority_status"], DOC_STATUS_ACCEPTED)
 		self.assertEqual(poll["authority_uuid"], "eta-uuid-1")
 
 	def test_normalize_poll_http_error_marks_rejected(self):
-		poll = normalize_eta_poll_response({"status": "Submitted"}, http_status_code=500)
+		poll = normalize_eta_poll_response({"status": "Submitted"
+	}, http_status_code=500)
 		self.assertEqual(poll["authority_status"], DOC_STATUS_REJECTED)
 
 	def test_map_eta_error_known_code(self):
@@ -83,7 +86,8 @@ class TestETAIntegration(FrappeTestCase):
 		d.authority_operation = "submit"
 		d.insert(ignore_permissions=True)
 		poll = normalize_eta_poll_response(
-			{"status": "valid", "uuid": "eta-uuid-poll-001"},
+			{"status": "valid", "uuid": "eta-uuid-poll-001"
+	},
 			http_status_code=200,
 		)
 		apply_eta_poll_to_submission(d.name, poll)

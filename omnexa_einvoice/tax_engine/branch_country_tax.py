@@ -61,8 +61,7 @@ def get_branch_tab_labels_for_doc(country_code: str) -> dict[str, str]:
 		"country_code": code,
 		"tab_break_eta": country_tab_label("EG"),
 		"tab_break_zatca": country_tab_label("SA"),
-		"tab_break_country_tax": country_tab_label(code) if code not in ("EG", "SA") else _("Country Tax"),
-	}
+		"tab_break_country_tax": country_tab_label(code) if code not in ("EG", "SA") else _("Country Tax")}
 
 
 @frappe.whitelist()
@@ -71,7 +70,7 @@ def resolve_tax_provider(country_code: str) -> dict[str, str]:
 	return {
 		"country_code": code,
 		"provider": resolve_adapter_name(code),
-		"country_name": country_display_name(code),
+		"country_name": country_display_name(code)
 	}
 
 
@@ -95,7 +94,7 @@ def get_branch_tax_panel(company: str, country_code: str, branch: str | None = N
 		"framework": entry.framework if entry else "",
 		"tab_label": tab_label,
 		"kind": "none",
-		"configured": False,
+		"configured": False
 	}
 
 	if not branch or not frappe.db.exists("Branch", branch):
@@ -133,8 +132,8 @@ def get_branch_tax_panel(company: str, country_code: str, branch: str | None = N
 					"tax_registration_number": settings.tax_registration_number,
 					"signing_mode": settings.signing_mode,
 					"auto_submit_on_si_submit": bool(settings.auto_submit_on_si_submit),
-					"settings_name": doc.name,
-				}
+					"settings_name": doc.name
+	}
 			)
 		else:
 			base["message"] = frappe._("Enable E-Invoice on the Country Tax tab below.")

@@ -246,8 +246,8 @@ COUNTRY_INTEGRATION_TIERS: dict[str, str] = {
 	"ES": "sandbox",
 	"CO": "sandbox",
 	"DE": "sandbox",
-	"FR": "sandbox",
-}
+	"FR": "sandbox"
+	}
 
 
 def integration_tier_for_country(country_code: str) -> str:
@@ -309,8 +309,8 @@ def branch_country_select_options(*, lang: str | None = None) -> list[dict[str, 
 			{
 				"code": code,
 				"name": name,
-				"label": f"{code} — {name}",
-			}
+				"label": f"{code} — {name}"
+	}
 		)
 	return out
 

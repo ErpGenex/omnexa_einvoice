@@ -29,7 +29,8 @@ def _resolve_phase2_settings(payload: dict[str, Any]):
 
 		if branch_has_zatca(branch):
 			return get_company_settings(company, branch=branch)
-	if company and frappe.db.exists("ZATCA Company Settings", {"company": company, "enabled": 1}):
+	if company and frappe.db.exists("ZATCA Company Settings", {"company": company, "enabled": 1
+	}):
 		return get_company_settings(company, branch=branch)
 	if csid_ref:
 		return None
@@ -61,8 +62,8 @@ def run_phase2(payload: dict[str, Any], *, sync: bool = False) -> dict[str, Any]
 			"status": "queued",
 			"message": _("ZATCA Phase 2 queued (awaiting company CSID configuration)."),
 			"phase1": phase1_result,
-			"log_name": log_name,
-		}
+			"log_name": log_name
+	}
 
 	signed_xml = phase1_result.get("signed_xml") or ""
 	uuid = phase1_result.get("uuid") or ""
@@ -70,7 +71,8 @@ def run_phase2(payload: dict[str, Any], *, sync: bool = False) -> dict[str, Any]
 	document_type = (payload.get("document_type") or "").strip().lower()
 
 	if frappe.conf.get("zatca_mock_api") or frappe.flags.in_test:
-		api_result = {"ok": True, "mock": True, "status": "REPORTED"}
+		api_result = {"ok": True, "mock": True, "status": "REPORTED"
+	}
 		zatca_status = "Reported" if document_type == DOCUMENT_SIMPLIFIED_INVOICE else "Cleared"
 	else:
 		if not sync:
@@ -82,8 +84,8 @@ def run_phase2(payload: dict[str, Any], *, sync: bool = False) -> dict[str, Any]
 				"message": "ZATCA Phase 2 queued for API submission.",
 				"phase1": phase1_result,
 				"job_id": job_id,
-				"log_name": log_name,
-			}
+				"log_name": log_name
+	}
 		try:
 			if document_type == DOCUMENT_SIMPLIFIED_INVOICE:
 				api_result = submit_reporting(
@@ -109,7 +111,8 @@ def run_phase2(payload: dict[str, Any], *, sync: bool = False) -> dict[str, Any]
 				reference=payload.get("reference_name"),
 				phase="phase2",
 				ok=False,
-				details={"error": str(exc)},
+				details={"error": str(exc)
+	},
 			)
 			raise
 
@@ -117,7 +120,7 @@ def run_phase2(payload: dict[str, Any], *, sync: bool = False) -> dict[str, Any]
 	log_updates = {
 		"status": zatca_status,
 		"zatca_status": zatca_field_status,
-		"response_payload": frappe.as_json(api_result.get("raw") or api_result),
+		"response_payload": frappe.as_json(api_result.get("raw") or api_result)
 	}
 	if api_result.get("qr_tlv"):
 		log_updates["qr_base64"] = api_result.get("qr_tlv")
@@ -132,5 +135,5 @@ def run_phase2(payload: dict[str, Any], *, sync: bool = False) -> dict[str, Any]
 		"phase1": phase1_result,
 		"api": api_result,
 		"log_name": log_name,
-		"cleared_invoice_xml": api_result.get("cleared_invoice_xml"),
+		"cleared_invoice_xml": api_result.get("cleared_invoice_xml")
 	}

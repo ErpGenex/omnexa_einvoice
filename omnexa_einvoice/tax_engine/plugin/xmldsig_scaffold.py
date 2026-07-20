@@ -80,7 +80,8 @@ def sign_xml_enveloped(
 			certificate_pem,
 		).strip()
 
-	sig_el = etree.Element(f"{{{DS_NS}}}Signature", nsmap={"ds": DS_NS})
+	sig_el = etree.Element(f"{{{DS_NS}}}Signature", nsmap={"ds": DS_NS
+	})
 	etree.SubElement(sig_el, f"{{{DS_NS}}}SignatureValue").text = sig_b64
 	if cert_b64:
 		ki = etree.SubElement(sig_el, f"{{{DS_NS}}}KeyInfo")
@@ -101,5 +102,5 @@ def sign_xml_enveloped(
 		"signature_b64": sig_b64,
 		"signed_xml": signed_xml,
 		"signer": signer_label,
-		"signing_family": "xmldsig",
+		"signing_family": "xmldsig"
 	}

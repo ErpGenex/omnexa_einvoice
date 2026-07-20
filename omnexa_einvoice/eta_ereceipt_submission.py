@@ -36,7 +36,8 @@ def sign_e_receipt_submission(doc, source, branch: str) -> dict:
 	doc.eta_uuid = payload.get("header", {}).get("uuid", "")
 	doc.canonical_hash = doc.eta_uuid
 	doc.signature_value = ""
-	return {"document": payload}
+	return {"document": payload
+	}
 
 
 def prepare_e_receipt_for_send(document: dict) -> dict:
@@ -60,9 +61,11 @@ def apply_e_receipt_send_result(doc, document: dict, response_body: dict, http_s
 	doc.integration_message = parsed["message"]
 	doc.eta_error_code = parsed["error_code"]
 	if ok:
-		doc.result_data = json.dumps({"document": document, "eta_response": response_body}, ensure_ascii=False)[
+		doc.result_data = json.dumps({"document": document, "eta_response": response_body
+	}, ensure_ascii=False)[
 			:20000
 		]
 	else:
 		doc.result_data = json.dumps(response_body, ensure_ascii=False)[:20000]
-	return {"ok": ok, "parsed": parsed}
+	return {"ok": ok, "parsed": parsed
+	}

@@ -183,7 +183,8 @@ class EInvoiceSubmission(Document):
 			result = hub.dispatch(self.adapter_name, payload, idempotency_key=idem)
 		except IntegrationHubError as err:
 			self.db_set(
-				{"status": "Failed", "integration_message": str(err)},
+				{"status": "Failed", "integration_message": str(err)
+	},
 				update_modified=False,
 			)
 			raise
@@ -202,8 +203,8 @@ class EInvoiceSubmission(Document):
 		payload: dict = {
 			"reference_name": self.reference_name,
 			"document_type": (self.document_type or "invoice").strip().lower(),
-			"operation": (self.operation or "submit").strip().lower(),
-		}
+			"operation": (self.operation or "submit").strip().lower()
+	}
 		if self.extra_json and self.extra_json.strip():
 			extra = json.loads(self.extra_json)
 			payload.update(extra)
@@ -242,12 +243,14 @@ def ensure_submission_for_document(doctype: str, docname: str):
 		kind = resolve_submission_kind_for_sales_invoice(doc)
 	existing = frappe.db.get_value(
 		"E Invoice Submission",
-		{"reference_doctype": doctype, "reference_name": docname, "operation": "submit"},
+		{"reference_doctype": doctype, "reference_name": docname, "operation": "submit"
+	},
 		"name",
 		order_by="creation desc",
 	)
 	if existing:
-		return {"name": existing, "created": False}
+		return {"name": existing, "created": False
+	}
 	sub = frappe.get_doc(
 		{
 			"doctype": "E Invoice Submission",
@@ -259,11 +262,12 @@ def ensure_submission_for_document(doctype: str, docname: str):
 			"adapter_name": "einvoice_eta",
 			"document_type": "receipt" if kind == "E-Receipt" else "invoice",
 			"operation": "submit",
-			"status": "Draft",
-		}
+			"status": "Draft"
+	}
 	)
 	sub.insert(ignore_permissions=True)
-	return {"name": sub.name, "created": True}
+	return {"name": sub.name, "created": True
+	}
 
 
 def _sync_submission_kind_from_source(doc, source) -> None:
@@ -309,7 +313,7 @@ def get_signing_deploy_info() -> dict:
 		"release": SIGNING_BRIDGE_RELEASE,
 		"min_agent_js": SIGNING_BRIDGE_RELEASE,
 		"is_cloud_erp_request": use_browser_pin_for_usb(),
-		"hooks_loads_client_agent": False,
+		"hooks_loads_client_agent": False
 	}
 
 
@@ -334,16 +338,16 @@ def get_cloud_signing_bridge_status(branch: str, submission_name: str | None = N
 			{
 				"ok": True,
 				"step": "cloud_erp",
-				"message": _("HTTPS cloud ERP — PIN travels in browser→agent payload (no agent callback to ERP)."),
-			}
+				"message": _("HTTPS cloud ERP — PIN travels in browser→agent payload (no agent callback to ERP).")
+	}
 		)
 	else:
 		checks.append(
 			{
 				"ok": True,
 				"step": "cloud_erp",
-				"message": _("LAN ERP — agent may fetch PIN via sign_session from ERP."),
-			}
+				"message": _("LAN ERP — agent may fetch PIN via sign_session from ERP.")
+	}
 		)
 
 	agent_url = normalize_browser_agent_url(prep.get("agent_url") or _usb.DEFAULT_AGENT_URL)
@@ -361,15 +365,15 @@ def get_cloud_signing_bridge_status(branch: str, submission_name: str | None = N
 					"name": sub.name,
 					"status": sub.status,
 					"reference": sub.reference_name,
-					"branch": sub.branch or branch,
-				}
+					"branch": sub.branch or branch
+	}
 		else:
 			checks.append(
 				{
 					"ok": False,
 					"step": "submission",
-					"message": _("E Invoice Submission {0} not found.").format(submission_name),
-				}
+					"message": _("E Invoice Submission {0} not found.").format(submission_name)
+	}
 			)
 
 	flow_steps = [
@@ -390,7 +394,7 @@ def get_cloud_signing_bridge_status(branch: str, submission_name: str | None = N
 		"erp_base_url": erp_public_base_url(),
 		"browser_signing": bool(prep.get("browser_signing")),
 		"flow_steps": flow_steps,
-		"submission": submission_info,
+		"submission": submission_info
 	}
 
 
@@ -426,7 +430,7 @@ def get_agent_sign_payload_for_branch_test(branch: str) -> dict:
 		"branch": branch,
 		"agent_url": (settings.signing_agent_url or _usb.DEFAULT_AGENT_URL).strip(),
 		"agent_payload": agent_payload,
-		"internal_id": document.get("internalID"),
+		"internal_id": document.get("internalID")
 	}
 
 
@@ -456,7 +460,7 @@ def get_agent_sign_payload_for_submission(name: str, for_send: int = 0) -> dict:
 		"internal_id": (unsigned.get("internalID") or ""),
 		"pin_configured": True,
 		"pin_mode": "browser",
-		"agent_scan_ports": list(_usb.AGENT_SCAN_PORTS),
+		"agent_scan_ports": list(_usb.AGENT_SCAN_PORTS)
 	}
 
 
@@ -482,7 +486,8 @@ def get_branch_usb_signing_status(branch: str) -> dict:
 	"""Whether Branch has USB PIN saved (does not expose the PIN)."""
 	branch = (branch or "").strip()
 	if not branch or not frappe.db.exists("Branch", branch):
-		return {"ok": False, "has_pin": False}
+		return {"ok": False, "has_pin": False
+	}
 	pin = _branch_usb_pin_for_client(branch)
 	signer_mode = ""
 	agent_url = ""
@@ -500,7 +505,7 @@ def get_branch_usb_signing_status(branch: str) -> dict:
 		"has_pin": bool(pin),
 		"signer_mode": signer_mode,
 		"agent_url": agent_url,
-		"token_type": token_type,
+		"token_type": token_type
 	}
 
 
@@ -509,7 +514,8 @@ def get_e_invoice_signing_settings(name: str) -> dict:
 	"""Client-side USB agent settings (E-Invoice only). E-Receipt never uses this."""
 	doc = frappe.get_doc("E Invoice Submission", name)
 	if doc.submission_kind == "E-Receipt":
-		return {"browser_signing": False}
+		return {"browser_signing": False
+	}
 	source = frappe.get_doc(doc.reference_doctype, doc.reference_name)
 	branch = doc.branch or resolve_branch_for_document(source)
 	settings = get_eta_invoice_branch_settings(branch)
@@ -524,7 +530,7 @@ def get_e_invoice_signing_settings(name: str) -> dict:
 		"token_type": (settings.usb_token_type or "epass2003").strip(),
 		"signer_mode": (settings.signer_mode or "remote").strip(),
 		"has_branch_pin": bool(_branch_usb_pin_for_client(branch)),
-		"submission_mode": submission_mode,
+		"submission_mode": submission_mode
 	}
 
 
@@ -612,7 +618,8 @@ def sign_submission(
 	doc.status = "Signed"
 	doc.save(ignore_permissions=True)
 	signer_method = merged.get("signer_method", "") if not is_receipt else ""
-	out = {"ok": True, "status": doc.status, "uuid": doc.eta_uuid, "signer_method": signer_method}
+	out = {"ok": True, "status": doc.status, "uuid": doc.eta_uuid, "signer_method": signer_method
+	}
 	if not is_receipt:
 		from omnexa_einvoice.e_invoice.auto_submit import maybe_enqueue_live_send_after_sign
 
@@ -662,7 +669,7 @@ def send_submission_to_eta(
 	base_url = settings.eta_base_url.rstrip("/")
 	headers = {
 		"Content-Type": "application/json",
-		"Authorization": f"Bearer {token}",
+		"Authorization": f"Bearer {token}"
 	}
 
 	if doc.submission_kind == "E-Receipt":
@@ -691,7 +698,8 @@ def send_submission_to_eta(
 	try:
 		response_body = res.json()
 	except Exception:
-		response_body = {"raw": res.text}
+		response_body = {"raw": res.text
+	}
 
 	if doc.submission_kind == "E-Receipt":
 		send_out = apply_e_receipt_send_result(doc, document, response_body, res.status_code)
@@ -707,7 +715,7 @@ def send_submission_to_eta(
 		"status": doc.status,
 		"uuid": doc.eta_uuid,
 		"message": doc.integration_message,
-		"submission_id": (parsed.get("submission_id") if doc.submission_kind != "E-Receipt" else parsed.get("submission_id")),
+		"submission_id": (parsed.get("submission_id") if doc.submission_kind != "E-Receipt" else parsed.get("submission_id"))
 	}
 
 

@@ -22,7 +22,8 @@ def get_company_settings(company: str, branch: str | None = None) -> frappe._dic
 	company = (company or "").strip()
 	if not company:
 		frappe.throw(_("Company is required for ZATCA."), title=_("ZATCA"))
-	name = frappe.db.get_value("ZATCA Company Settings", {"company": company}, "name")
+	name = frappe.db.get_value("ZATCA Company Settings", {"company": company
+	}, "name")
 	if not name:
 		frappe.throw(
 			_("ZATCA Company Settings not found for {0}. Create settings under ZATCA workspace.").format(
@@ -101,7 +102,8 @@ def update_chain(settings: frappe._dict, icv: int, invoice_hash_hex: str) -> Non
 	frappe.db.set_value(
 		"ZATCA Company Settings",
 		settings.name,
-		{"icv_counter": icv, "last_invoice_hash": invoice_hash_hex},
+		{"icv_counter": icv, "last_invoice_hash": invoice_hash_hex
+	},
 		update_modified=True,
 	)
 
@@ -116,5 +118,5 @@ def settings_to_seller_dict(settings: frappe._dict) -> dict[str, Any]:
 		"city": settings.city,
 		"district": settings.district,
 		"postal_code": settings.postal_code,
-		"country": settings.country_code or "SA",
+		"country": settings.country_code or "SA"
 	}

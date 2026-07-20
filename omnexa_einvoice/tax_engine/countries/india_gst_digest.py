@@ -68,7 +68,7 @@ def sign_gst_irn_digest(
 		"signature_b64": sig_b64,
 		"signed_xml": signed_json,
 		"signer": "digest:gst-irn-scaffold",
-		"signing_family": "digest",
+		"signing_family": "digest"
 	}
 
 

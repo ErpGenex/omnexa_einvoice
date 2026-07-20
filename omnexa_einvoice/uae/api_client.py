@@ -57,15 +57,16 @@ def submit_to_asp(
 				"authority": "UAE_PEPPOL",
 				"uuid": asp_ref,
 				"asp_reference": asp_ref,
-				"peppol_sender": settings.peppol_sender_id,
-			}
+				"peppol_sender": settings.peppol_sender_id
+	}
 		frappe.throw(_("API Base URL missing on Country Tax Settings (UAE)."), title=_("UAE e-Invoice"))
 
 	if is_live_production_settings(settings):
 		validate_uae_asp_for_live(company, branch=branch)
 
 	url = f"{base}{path}"
-	headers = {"Accept": "application/json", "Content-Type": "application/json"}
+	headers = {"Accept": "application/json", "Content-Type": "application/json"
+	}
 	client_id = settings.client_id or ""
 	secret = ""
 	if settings.get("name"):
@@ -91,7 +92,7 @@ def submit_to_asp(
 		"buyerTin": buyer.get("tax_registration") or "",
 		"invoiceNumber": document.get("reference_name") or "",
 		"customizationId": settings.customization_id,
-		"profileId": settings.profile_id,
+		"profileId": settings.profile_id
 	}
 	idem = build_idempotency_key(country_code="AE", uuid=uuid, document=document)
 	headers["Idempotency-Key"] = idem
@@ -108,7 +109,8 @@ def submit_to_asp(
 	try:
 		body = res.json() if res.text else {}
 	except Exception:
-		body = {"raw": (res.text or "")[:4000]}
+		body = {"raw": (res.text or "")[:4000]
+	}
 
 	if res.status_code >= 400:
 		frappe.throw(_("UAE ASP error ({0}): {1}").format(res.status_code, body), title=_("UAE e-Invoice"))
@@ -120,14 +122,15 @@ def submit_to_asp(
 		"raw": body,
 		"status": body.get("status") or body.get("documentStatus") or "ACCEPTED",
 		"uuid": asp_ref,
-		"asp_reference": asp_ref,
+		"asp_reference": asp_ref
 	}
 
 
 @frappe.whitelist()
 def test_uae_asp_connection(branch: str | None = None, company: str | None = None) -> dict[str, Any]:
 	if not branch and company:
-		branch = frappe.db.get_value("Branch", {"company": company}, "name")
+		branch = frappe.db.get_value("Branch", {"company": company
+	}, "name")
 	if not branch:
 		frappe.throw(_("Select a branch."), title=_("UAE ASP"))
 	comp = company or frappe.db.get_value("Branch", branch, "company")
@@ -135,8 +138,8 @@ def test_uae_asp_connection(branch: str | None = None, company: str | None = Non
 	if not settings.seller_tin and not settings.get("tax_registration_number"):
 		return {
 			"ok": False,
-			"message": _("Set UAE seller TIN / tax registration on Branch Country Tax tab."),
-		}
+			"message": _("Set UAE seller TIN / tax registration on Branch Country Tax tab.")
+	}
 	base = (settings.api_base_url or "").strip()
 	cfg = parse_uae_config(settings)
 	cfg["api_base_url"] = base
@@ -151,14 +154,14 @@ def test_uae_asp_connection(branch: str | None = None, company: str | None = Non
 			"asp_reference": asp_ref,
 			"mode": "mock",
 			"asp_ready": not checklist,
-			"checklist": checklist or [_("Optional for mock: ASP URL + signing key before accredited ASP UAT.")],
-		}
+			"checklist": checklist or [_("Optional for mock: ASP URL + signing key before accredited ASP UAT.")]
+	}
 	if checklist:
 		return {
 			"ok": False,
 			"message": _("Complete UAE ASP / Peppol settings before live submit."),
-			"checklist": checklist,
-		}
+			"checklist": checklist
+	}
 	try:
 		res = requests.get(base.rstrip("/"), timeout=30)
 		return {
@@ -166,7 +169,8 @@ def test_uae_asp_connection(branch: str | None = None, company: str | None = Non
 			"message": _("ASP URL reachable ({0}). Signing key present — ready for ASP UAT.").format(
 				res.status_code
 			),
-			"asp_ready": True,
-		}
+			"asp_ready": True
+	}
 	except requests.RequestException as exc:
-		return {"ok": False, "message": str(exc), "checklist": checklist}
+		return {"ok": False, "message": str(exc), "checklist": checklist
+	}

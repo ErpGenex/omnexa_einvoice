@@ -26,10 +26,12 @@ class TestPhase1ItBrPl(FrappeTestCase):
 			"reference_name": ref,
 			"seller_name": "Seller",
 			"tax_registration_number": "12345678901",
-			"buyer": {"name": "Buyer", "tax_registration": "98765432109"},
-			"lines": [{"description": "Item", "qty": 1, "rate": 100, "amount": 100, "tax_amount": 22}],
-			"totals": {"net_total": 100, "tax_total": 22, "grand_total": 122},
-		}
+			"buyer": {"name": "Buyer", "tax_registration": "98765432109"
+	},
+			"lines": [{"description": "Item", "qty": 1, "rate": 100, "amount": 100, "tax_amount": 22
+	}],
+			"totals": {"net_total": 100, "tax_total": 22, "grand_total": 122}
+	}
 
 	def test_italy_phase1_phase2(self):
 		frappe.flags.in_test = True
@@ -38,7 +40,8 @@ class TestPhase1ItBrPl(FrappeTestCase):
 		self.assertIn("FatturaElettronica", xml)
 		self.assertIn("CodiceDestinatario", xml)
 		p2 = run_country_phase2(
-			{"company": "Test", "reference_name": "SI-IT-PH1", "phase1": p1},
+			{"company": "Test", "reference_name": "SI-IT-PH1", "phase1": p1
+	},
 			country_code="IT",
 			sync=True,
 		)
@@ -49,7 +52,8 @@ class TestPhase1ItBrPl(FrappeTestCase):
 		p1 = run_country_phase1(self._payload("SI-BR-PH1"), country_code="BR")
 		self.assertIn("nfeProc", p1.get("signed_xml") or "")
 		p2 = run_country_phase2(
-			{"company": "Test", "reference_name": "SI-BR-PH1", "phase1": p1},
+			{"company": "Test", "reference_name": "SI-BR-PH1", "phase1": p1
+	},
 			country_code="BR",
 			sync=True,
 		)
@@ -62,7 +66,8 @@ class TestPhase1ItBrPl(FrappeTestCase):
 		self.assertIn("Podmiot1", xml)
 		self.assertIn("<FA", xml)
 		p2 = run_country_phase2(
-			{"company": "Test", "reference_name": "SI-PL-PH1", "phase1": p1},
+			{"company": "Test", "reference_name": "SI-PL-PH1", "phase1": p1
+	},
 			country_code="PL",
 			sync=True,
 		)

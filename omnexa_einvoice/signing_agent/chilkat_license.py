@@ -5,7 +5,8 @@ Chilkat unlock — dynamic key (never hardcode your license in git).
 Priority (first match wins):
   1. POST /sign body: chilkat_unlock_code (from ERP Branch via sign_session)
   2. Environment: CHILKAT_UNLOCK_CODE
-  3. File next to agent: chilkat_config.json  →  { "unlock_code": "HALA4A...." }
+  3. File next to agent: chilkat_config.json  →  { "unlock_code": "HALA4A...." 
+	}
   4. Legacy built-in keys only if CHILKAT_ALLOW_BUILTIN_KEYS=1
 
 Version:
@@ -208,7 +209,7 @@ def unlock_status_for_health(chilkat2_module, request_data: dict | None = None) 
 		"unlock_source": source or None,
 		"has_unlock_code": bool(code),
 		"config_file": str(_CONFIG_FILE),
-		"config_file_exists": _CONFIG_FILE.is_file(),
+		"config_file_exists": _CONFIG_FILE.is_file()
 	}
 	try:
 		ok, note = unlock_chilkat_global(chilkat2_module, request_data=request_data, primary_unlock_code=code)

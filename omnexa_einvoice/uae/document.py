@@ -28,7 +28,7 @@ def _buyer_from_customer(customer: str | None) -> dict[str, Any]:
 		return {}
 	return {
 		"name": cust.customer_name or customer,
-		"tax_registration": (cust.tax_id or "").strip(),
+		"tax_registration": (cust.tax_id or "").strip()
 	}
 
 
@@ -53,15 +53,16 @@ def build_from_sales_invoice(si) -> dict[str, Any]:
 				"qty": qty,
 				"rate": rate,
 				"net_amount": net,
-				"tax_amount": tax_amt,
-			}
+				"tax_amount": tax_amt
+	}
 		)
 	issue_time = str(si.posting_time or "00:00:00")[:8]
 	return {
 		"uuid": str(uuid.uuid4()),
 		"reference_name": si.name,
 		"reference_doctype": "Sales Invoice",
-		"issue_datetime": f"{si.posting_date}T{issue_time}",
+		"issue_datetime": f"{si.posting_date}T{issue_time
+	}",
 		"currency": si.currency or CURRENCY_AED,
 		"company": si.company,
 		"branch": branch,
@@ -71,16 +72,16 @@ def build_from_sales_invoice(si) -> dict[str, Any]:
 			"name": seller_name,
 			"name_ar": settings.legal_name_ar or seller_name,
 			"tax_registration": seller_tin,
-			"peppol_id": settings.peppol_sender_id,
-		},
+			"peppol_id": settings.peppol_sender_id
+	},
 		"buyer": _buyer_from_customer(si.customer),
 		"lines": lines,
 		"totals": {
 			"net_total": flt(si.net_total),
 			"tax_total": flt(si.total_taxes_and_charges),
-			"grand_total": flt(si.grand_total),
-		},
-		"uae_settings": settings,
+			"grand_total": flt(si.grand_total)
+	},
+		"uae_settings": settings
 	}
 
 
@@ -109,11 +110,14 @@ def build_from_payload(payload: dict[str, Any]) -> dict[str, Any]:
 			"name": payload.get("seller_name") or "Seller",
 			"name_ar": payload.get("seller_name_ar") or "",
 			"tax_registration": payload.get("tax_registration_number") or settings.seller_tin or "",
-			"peppol_id": settings.peppol_sender_id,
-		},
-		"buyer": payload.get("buyer") or {"name": "Buyer", "tax_registration": payload.get("buyer_tin") or ""},
+			"peppol_id": settings.peppol_sender_id
+	},
+		"buyer": payload.get("buyer") or {"name": "Buyer", "tax_registration": payload.get("buyer_tin") or ""
+	},
 		"lines": payload.get("lines")
-		or [{"description": "Item", "qty": 1, "rate": 100, "net_amount": 100, "tax_amount": 5}],
-		"totals": payload.get("totals") or {"net_total": 100, "tax_total": 5, "grand_total": 105},
-		"uae_settings": settings,
+		or [{"description": "Item", "qty": 1, "rate": 100, "net_amount": 100, "tax_amount": 5
+	}],
+		"totals": payload.get("totals") or {"net_total": 100, "tax_total": 5, "grand_total": 105
+	},
+		"uae_settings": settings
 	}

@@ -44,8 +44,8 @@ def branch_intl_tax_as_settings(branch_doc) -> frappe._dict | None:
 			"uae_peppol_receiver_id": branch_doc.get("intl_uae_peppol_receiver_id") or "",
 			"uae_legal_name_ar": branch_doc.get("intl_uae_legal_name_ar") or "",
 			"uae_invoice_type_code": branch_doc.get("intl_uae_invoice_type_code") or "380",
-			"uae_asp_submit_path": branch_doc.get("intl_uae_asp_submit_path") or "/einvoice/v1/submit",
-		}
+			"uae_asp_submit_path": branch_doc.get("intl_uae_asp_submit_path") or "/einvoice/v1/submit"
+	}
 	)
 
 

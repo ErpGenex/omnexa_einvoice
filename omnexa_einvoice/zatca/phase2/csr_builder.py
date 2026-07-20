@@ -111,7 +111,7 @@ def build_zatca_csr(doc) -> dict[str, Any]:
 	return {
 		"private_key_pem": private_pem,
 		"csr_pem": csr_pem,
-		"csr_base64": base64.b64encode(csr_pem.encode()).decode("ascii"),
+		"csr_base64": base64.b64encode(csr_pem.encode()).decode("ascii")
 	}
 
 

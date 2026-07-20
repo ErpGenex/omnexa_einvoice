@@ -39,8 +39,7 @@ def get_jofotara_settings(company: str, *, branch: str | None = None) -> frappe.
 			"tin": (config.get("tin") or (settings.get("tax_registration_number") if settings else "") or "").strip(),
 			"client_id": (settings.get("client_id") if settings else "") or "",
 			"client_secret": get_settings_password(settings, "client_secret") if settings else None,
-			"api_token": get_settings_password(settings, "asp_api_key") if settings else None,
-		}
+			"api_token": get_settings_password(settings, "asp_api_key") if settings else None}
 	)
 
 
@@ -48,7 +47,8 @@ def validate_jofotara_for_live(company: str, *, branch: str | None = None) -> No
 	row = get_jofotara_settings(company, branch=branch)
 	throw_if_missing(
 		validate_required_fields(
-			{"tin": row.tin, "jofotara_base_url": row.jofotara_base_url},
+			{"tin": row.tin, "jofotara_base_url": row.jofotara_base_url
+	},
 			[("tin", _("tin")), ("jofotara_base_url", _("jofotara_base_url"))],
 		),
 		title=_("JoFotara"),
@@ -63,9 +63,10 @@ def _mock_jo(*, uuid: str, reference: str) -> dict[str, Any]:
 		"status": "ACCEPTED",
 		"uuid": ref,
 		"authority_reference": ref,
-		"raw": {"reference": reference},
+		"raw": {"reference": reference
+	},
 		"mode": "mock",
-		"framework": "JoFotara",
+		"framework": "JoFotara"
 	}
 
 
@@ -90,7 +91,8 @@ def submit_jofotara_invoice(
 		validate_jofotara_for_live(company, branch=branch)
 
 	url = f"{row.jofotara_base_url.rstrip('/')}{row.jofotara_submit_path}"
-	headers = {"Accept": "application/json", "Content-Type": "application/json"}
+	headers = {"Accept": "application/json", "Content-Type": "application/json"
+	}
 	apply_basic_auth(headers, row.client_id, row.client_secret)
 	apply_bearer(headers, row.api_token)
 	config = parse_configuration(get_country_tax_settings(company, "JO", branch=branch))
@@ -99,7 +101,7 @@ def submit_jofotara_invoice(
 		"invoiceHash": hash_b64,
 		"xml": base64.b64encode(signed_xml.encode("utf-8")).decode("ascii"),
 		"tin": row.tin,
-		"reference": reference,
+		"reference": reference
 	}
 	res = post_country_json(
 		country_code="JO",
@@ -113,7 +115,8 @@ def submit_jofotara_invoice(
 	try:
 		body = res.json() if res.text else {}
 	except Exception:
-		body = {"raw": (res.text or "")[:8000]}
+		body = {"raw": (res.text or "")[:8000]
+	}
 
 	if res.status_code >= 400:
 		frappe.throw(_("JoFotara error ({0}): {1}").format(res.status_code, body), title=_("JoFotara"))
@@ -127,22 +130,25 @@ def submit_jofotara_invoice(
 		"authority_reference": auth_ref,
 		"raw": body,
 		"mode": "live",
-		"framework": "JoFotara",
+		"framework": "JoFotara"
 	}
 
 
 @frappe.whitelist()
 def test_jofotara_connection(branch: str | None = None, company: str | None = None) -> dict[str, Any]:
 	if not branch and company:
-		branch = frappe.db.get_value("Branch", {"company": company}, "name")
+		branch = frappe.db.get_value("Branch", {"company": company
+	}, "name")
 	if not branch:
 		frappe.throw(_("Select a branch."), title=_("JoFotara"))
 	comp = company or frappe.db.get_value("Branch", branch, "company")
 	row = get_jofotara_settings(comp, branch=branch)
 	if not row.tin:
-		return {"ok": False, "message": _("Set Jordan TIN on Branch tax registration.")}
+		return {"ok": False, "message": _("Set Jordan TIN on Branch tax registration.")
+	}
 	checklist = validate_required_fields(
-		{"jofotara_base_url": row.jofotara_base_url},
+		{"jofotara_base_url": row.jofotara_base_url
+	},
 		[("jofotara_base_url", _("jofotara_base_url"))],
 	)
 	mock = _mock_jo(uuid=frappe.generate_hash(length=8), reference="TEST")
@@ -154,8 +160,8 @@ def test_jofotara_connection(branch: str | None = None, company: str | None = No
 			"ok": True,
 			"message": _("JoFotara sandbox OK (mock)."),
 			"authority_reference": mock["uuid"],
-			"mode": "mock",
-		},
+			"mode": "mock"
+	},
 		base_url=row.jofotara_base_url,
 		ready_label=_("JoFotara ready for ISTD UAT."),
 	)

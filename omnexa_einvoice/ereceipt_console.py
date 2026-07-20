@@ -36,8 +36,8 @@ def _latest_submissions(sales_invoice_names: list[str]) -> dict[str, frappe._dic
 			"reference_doctype": "Sales Invoice",
 			"reference_name": ["in", sales_invoice_names],
 			"submission_kind": "E-Receipt",
-			"operation": "submit",
-		},
+			"operation": "submit"
+	},
 		fields=[
 			"name",
 			"reference_name",
@@ -94,7 +94,7 @@ def get_ereceipt_queue(
 	params: dict[str, Any] = {
 		"ereceipt": "%E-Receipt%",
 		"ereceipt_exact": ETA_BILLING_ERECEIPT,
-		"limit": int(limit or 200),
+		"limit": int(limit or 200)
 	}
 	if int(include_drafts or 0):
 		conditions.append("si.docstatus IN (0, 1, 2)")
@@ -175,8 +175,8 @@ def get_ereceipt_queue(
 				"eta_uuid": sub.eta_uuid if sub else "",
 				"provider_reference": sub.provider_reference if sub else "",
 				"message": sub.integration_message if sub else "",
-				"error_code": sub.eta_error_code if sub else "",
-			}
+				"error_code": sub.eta_error_code if sub else ""
+	}
 		)
 	return rows
 
@@ -208,7 +208,7 @@ def preview_ereceipt(sales_invoice: str) -> dict[str, Any]:
 		"uuid": payload.get("header", {}).get("uuid", ""),
 		"receipt_number": payload.get("header", {}).get("receiptNumber", ""),
 		"document": payload,
-		"submission_body": body_bytes.decode("utf-8")[:8000],
+		"submission_body": body_bytes.decode("utf-8")[:8000]
 	}
 
 
@@ -230,10 +230,12 @@ def test_eta_receipt_connection(branch: str | None = None, company: str | None =
 	if not branch and company:
 		branch = frappe.db.get_value(
 			"Branch",
-			{"company": company, "is_head_office": 1},
+			{"company": company, "is_head_office": 1
+	},
 			"name",
 			order_by="creation asc",
-		) or frappe.db.get_value("Branch", {"company": company}, "name")
+		) or frappe.db.get_value("Branch", {"company": company
+	}, "name")
 	if not branch:
 		frappe.throw(_("Select a branch or company."), title=_("ETA"))
 
@@ -258,8 +260,8 @@ def test_eta_receipt_connection(branch: str | None = None, company: str | None =
 			"api_base_url": settings.eta_base_url,
 			"pos_serial": settings.device_serial_number,
 			"expires_in": state.get("expires_in"),
-			"message": _("ETA production authentication successful.") if creds["environment"] == "prod" else _("ETA authentication successful."),
-		}
+			"message": _("ETA production authentication successful.") if creds["environment"] == "prod" else _("ETA authentication successful.")
+	}
 	except Exception as exc:
 		err_text = str(exc)
 		checklist = [
@@ -287,15 +289,17 @@ def test_eta_receipt_connection(branch: str | None = None, company: str | None =
 			"token_url": token_url,
 			"api_base_url": settings.eta_base_url,
 			"pos_serial": settings.device_serial_number,
-			"pos_os_version": (creds.get("pos_headers") or {}).get("pososversion"),
+			"pos_os_version": (creds.get("pos_headers") or {
+	}).get("pososversion"),
 			"pos_model_framework": settings.pos_model_framework,
-			"has_preshared_key": bool((creds.get("pos_headers") or {}).get("presharedkey")),
+			"has_preshared_key": bool((creds.get("pos_headers") or {
+	}).get("presharedkey")),
 			"client_id_prefix": (creds.get("client_id") or "")[:8],
 			"error": err_text,
 			"summary": summary,
 			"checklist": checklist,
-			"message": summary,
-		}
+			"message": summary
+	}
 
 
 @frappe.whitelist()
@@ -353,7 +357,7 @@ def send_ereceipt(sales_invoice: str, force: int = 0) -> dict[str, Any]:
 		"uuid": sub.eta_uuid,
 		"provider_reference": sub.provider_reference,
 		"message": sub.integration_message,
-		"error_code": sub.eta_error_code,
+		"error_code": sub.eta_error_code
 	}
 
 
@@ -367,7 +371,8 @@ def bulk_prepare_ereceipts(sales_invoices) -> list[dict[str, Any]]:
 			results.append({"sales_invoice": name, "ok": True, **row})
 		except Exception as exc:
 			frappe.log_error(message=frappe.get_traceback(), title=f"E-Receipt prepare failed: {name}")
-			results.append({"sales_invoice": name, "ok": False, "error": str(exc)})
+			results.append({"sales_invoice": name, "ok": False, "error": str(exc)
+	})
 	return results
 
 
@@ -381,7 +386,8 @@ def bulk_send_ereceipts(sales_invoices) -> list[dict[str, Any]]:
 			results.append({"sales_invoice": name, "ok": bool(row.get("ok")), **row})
 		except Exception as exc:
 			frappe.log_error(message=frappe.get_traceback(), title=f"E-Receipt send failed: {name}")
-			results.append({"sales_invoice": name, "ok": False, "error": str(exc)})
+			results.append({"sales_invoice": name, "ok": False, "error": str(exc)
+	})
 	return results
 
 
@@ -413,7 +419,7 @@ def get_review_summary(sales_invoices) -> list[dict[str, Any]]:
 				"docstatus": inv.docstatus,
 				"submission": sub.name if sub else "",
 				"eta_status": sub.status if sub else "Not Registered",
-				"eta_uuid": sub.eta_uuid if sub else "",
-			}
+				"eta_uuid": sub.eta_uuid if sub else ""
+	}
 		)
 	return rows

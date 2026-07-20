@@ -21,10 +21,12 @@ class TestGoldenXmlSandbox(FrappeTestCase):
 			"reference_name": ref,
 			"seller_name": "Seller",
 			"tax_registration_number": "123456789012345",
-			"buyer": {"name": "Buyer", "tax_registration": "987654321098765"},
-			"lines": [{"description": "Item", "qty": 1, "rate": 100, "amount": 100, "tax_amount": 5}],
-			"totals": {"net_total": 100, "tax_total": 5, "grand_total": 105},
-		}
+			"buyer": {"name": "Buyer", "tax_registration": "987654321098765"
+	},
+			"lines": [{"description": "Item", "qty": 1, "rate": 100, "amount": 100, "tax_amount": 5
+	}],
+			"totals": {"net_total": 100, "tax_total": 5, "grand_total": 105}
+	}
 		if credit_note:
 			p["document_type"] = "credit_note"
 			p["is_return"] = 1

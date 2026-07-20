@@ -45,14 +45,15 @@ def process_phase2_job(payload: dict, log_name: str | None = None):
 				log_name,
 				{
 					"status": result.get("zatca_status") or "Submitted",
-					"response_payload": frappe.as_json(result.get("api") or {}),
-				},
+					"response_payload": frappe.as_json(result.get("api") or {})
+	},
 			)
 	except Exception as exc:
 		if log_name:
 			frappe.db.set_value(
 				"ZATCA Submission Log",
 				log_name,
-				{"status": "Failed", "error_message": str(exc)[:140]},
+				{"status": "Failed", "error_message": str(exc)[:140]
+	},
 			)
 		raise

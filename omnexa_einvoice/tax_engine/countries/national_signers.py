@@ -30,8 +30,7 @@ SIGNING_KEY_ALIASES: dict[str, tuple[str, ...]] = {
 		"a1_certificate_pem",
 		"asp_signing_certificate_pem",
 		"csd_certificate_pem",
-	),
-}
+	)}
 
 
 def _key_from_config(config: dict[str, Any], aliases: tuple[str, ...]) -> str:
@@ -103,7 +102,7 @@ def sign_ksef_fa2_token(
 		"signature_b64": session_digest,
 		"signed_xml": signed_xml,
 		"signer": "ksef:token-scaffold",
-		"signing_family": "ksef",
+		"signing_family": "ksef"
 	}
 
 
@@ -133,7 +132,8 @@ def sign_cufe_digest(xml_text: str, *, country_code: str = "CO") -> dict[str, An
 		"hash_b64": base64.b64encode(digest).decode("ascii"),
 		"signature_b64": cufe,
 		"signed_xml": signed_xml,
-		"signer": f"digest:{country_code.lower()}-cufe-scaffold",
+		"signer": f"digest:{country_code.lower()
+	}-cufe-scaffold",
 		"signing_family": "digest" if country_code in ("AR", "CL", "PE") else "xmldsig",
 	}
 

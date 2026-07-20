@@ -24,11 +24,13 @@ def build_from_sales_invoice(si, *, country_code: str, currency: str) -> dict[st
 		settings = get_country_tax_settings(si.company, country_code, branch=branch)
 		if settings and settings.get("tax_registration_number"):
 			tax_id = settings.tax_registration_number
-	elif frappe.db.exists("Country Tax Settings", {"company": si.company, "country_code": country_code}):
+	elif frappe.db.exists("Country Tax Settings", {"company": si.company, "country_code": country_code
+	}):
 		tax_id = (
 			frappe.db.get_value(
 				"Country Tax Settings",
-				{"company": si.company, "country_code": country_code},
+				{"company": si.company, "country_code": country_code
+	},
 				"tax_registration_number",
 			)
 			or tax_id
@@ -46,8 +48,8 @@ def build_from_sales_invoice(si, *, country_code: str, currency: str) -> dict[st
 			"qty": qty,
 			"rate": rate,
 			"amount": amount,
-			"tax_amount": tax_amt,
-		}
+			"tax_amount": tax_amt
+	}
 		if cc == "IN" and row.item_code:
 			hsn = getattr(row, "gst_hsn_code", None) or frappe.db.get_value(
 				"Item", row.item_code, "gst_hsn_code"
@@ -63,21 +65,21 @@ def build_from_sales_invoice(si, *, country_code: str, currency: str) -> dict[st
 		"reference_doctype": "Sales Invoice",
 		"document_type": doc_type,
 		"invoice_type_code": invoice_type_code,
-		"issue_datetime": f"{si.posting_date}T{si.posting_time or '00:00:00'}",
+		"issue_datetime": f"{si.posting_date}T{si.posting_time or '00:00:00'
+	}",
 		"currency": si.currency or currency,
 		"company": si.company,
 		"branch": branch,
 		"customer": si.customer,
 		"seller": {
 			"name": seller_name,
-			"tax_registration": tax_id,
-		},
+			"tax_registration": tax_id
+	},
 		"lines": lines,
 		"totals": {
 			"net_total": flt(si.net_total),
 			"tax_total": flt(si.total_taxes_and_charges),
-			"grand_total": flt(si.grand_total),
-		},
+			"grand_total": flt(si.grand_total)}
 	}
 
 
@@ -98,17 +100,19 @@ def build_from_payload(payload: dict[str, Any], *, country_code: str, currency: 
 		return doc
 	doc = {
 		"uuid": str(uuid.uuid4()),
-		"reference_name": ref or f"{country_code}-TEST",
+		"reference_name": ref or f"{country_code
+	}-TEST",
 		"issue_datetime": now_datetime().strftime("%Y-%m-%dT%H:%M:%S"),
 		"currency": currency,
 		"company": payload.get("company") or "",
 		"branch": payload.get("branch"),
 		"seller": {
 			"name": payload.get("seller_name") or "Seller",
-			"tax_registration": payload.get("tax_registration_number") or "",
-		},
-		"lines": payload.get("lines") or [{"description": "Item", "qty": 1, "rate": 100, "amount": 100, "tax_amount": 15}],
-		"totals": payload.get("totals") or {"net_total": 100, "tax_total": 15, "grand_total": 115},
+			"tax_registration": payload.get("tax_registration_number") or ""
+	},
+		"lines": payload.get("lines") or [{"description": "Item", "qty": 1, "rate": 100, "amount": 100, "tax_amount": 15
+	}],
+		"totals": payload.get("totals") or {"net_total": 100, "tax_total": 15, "grand_total": 115}
 	}
 	_apply_document_type(doc, payload)
 	return doc

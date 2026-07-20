@@ -9,7 +9,8 @@ from frappe.utils import nowdate
 
 class SigningProfile(Document):
 	def validate(self):
-		existing = frappe.db.get_value("Signing Profile", {"company": self.company}, "name")
+		existing = frappe.db.get_value("Signing Profile", {"company": self.company
+	}, "name")
 		if existing and existing != self.name:
 			frappe.throw(_("A Signing Profile already exists for company {0}.").format(self.company))
 		self._validate_signing_controls()

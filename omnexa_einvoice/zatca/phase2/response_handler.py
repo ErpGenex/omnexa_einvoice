@@ -55,8 +55,8 @@ def parse_submission_result(
 			"validation_results": validation,
 			"has_warnings": bool(validation.get("warningMessages")),
 			"has_errors": bool(validation.get("errorMessages")),
-			"raw": response_body,
-		}
+			"raw": response_body
+	}
 
 	if status_code == 303:
 		return {
@@ -64,8 +64,8 @@ def parse_submission_result(
 			"http_status": status_code,
 			"zatca_status": "FAILED",
 			"error_message": json.dumps(response_body.get("message", "")),
-			"raw": response_body,
-		}
+			"raw": response_body
+	}
 
 	if status_code == 400:
 		return {
@@ -74,8 +74,8 @@ def parse_submission_result(
 			"zatca_status": zatca_status or "FAILED",
 			"validation_results": validation,
 			"error_message": json.dumps(validation or response_body),
-			"raw": response_body,
-		}
+			"raw": response_body
+	}
 
 	if status_code == 401:
 		frappe.throw(_("ZATCA credentials rejected (401). Renew CSID tokens."), title=_("ZATCA"))
@@ -95,7 +95,8 @@ def format_validation_html(validation_results: Any) -> str:
 		try:
 			results = json.loads(validation_results)
 		except Exception:
-			results = {"errorMessages": [{"message": validation_results}]}
+			results = {"errorMessages": [{"message": validation_results}]
+	}
 	else:
 		results = validation_results or {}
 

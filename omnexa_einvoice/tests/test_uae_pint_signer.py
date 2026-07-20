@@ -48,11 +48,14 @@ class TestUaePintSigner(FrappeTestCase):
 				"company": "Test",
 				"reference_name": "SI-AE-SIG",
 				"issue_datetime": "2026-05-20",
-				"seller": {"tax_registration": "100000000000003", "name": "Seller AE"},
-				"buyer": {"tax_registration": "100000000000004", "name": "Buyer"},
-				"lines": [{"description": "Service", "qty": 1, "rate": 100, "amount": 100}],
-				"totals": {"net_total": 100, "tax_total": 5, "grand_total": 105},
-			}
+				"seller": {"tax_registration": "100000000000003", "name": "Seller AE"
+	},
+				"buyer": {"tax_registration": "100000000000004", "name": "Buyer"
+	},
+				"lines": [{"description": "Service", "qty": 1, "rate": 100, "amount": 100
+	}],
+				"totals": {"net_total": 100, "tax_total": 5, "grand_total": 105}
+	}
 		)
 		out = sign_pint_ae_xml(xml, private_key_pem=private_pem, certificate_pem=cert_pem)
 		self.assertIn("Signature", out["signed_xml"])
@@ -64,10 +67,11 @@ class TestUaePintSigner(FrappeTestCase):
 			{
 				"company": "Test",
 				"reference_name": "SI-AE-2",
-				"seller": {"tax_registration": "100000000000003", "name": "S"},
+				"seller": {"tax_registration": "100000000000003", "name": "S"
+	},
 				"lines": [],
-				"totals": {},
-			}
+				"totals": {}
+	}
 		)
 		ctx = build_signing_context(
 			country_code="AE",
@@ -75,8 +79,8 @@ class TestUaePintSigner(FrappeTestCase):
 			config={
 				"signing_mode": "xmldsig",
 				"asp_signing_private_key_pem": private_pem,
-				"asp_signing_certificate_pem": cert_pem,
-			},
+				"asp_signing_certificate_pem": cert_pem
+	},
 		)
 		out = sign_with_provider(xml, ctx)
 		self.assertEqual(out["signer"], "xmldsig:ae-scaffold")

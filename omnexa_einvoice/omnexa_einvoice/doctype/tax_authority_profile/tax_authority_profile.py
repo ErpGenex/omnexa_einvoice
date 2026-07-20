@@ -8,7 +8,8 @@ from frappe.model.document import Document
 
 class TaxAuthorityProfile(Document):
 	def validate(self):
-		existing = frappe.db.get_value("Tax Authority Profile", {"company": self.company}, "name")
+		existing = frappe.db.get_value("Tax Authority Profile", {"company": self.company
+	}, "name")
 		if existing and existing != self.name:
 			frappe.throw(_("A Tax Authority Profile already exists for company {0}.").format(self.company))
 		self._validate_policy_controls()

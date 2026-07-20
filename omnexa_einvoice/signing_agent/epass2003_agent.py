@@ -74,8 +74,8 @@ CORS(app, resources={
         ],
         "expose_headers": ["Content-Type"],
         "supports_credentials": False,
-        "max_age": 3600,
-    }
+        "max_age": 3600
+	}
 })
 
 
@@ -1108,7 +1108,8 @@ class EPass2003Signer:
                 signed_document_json = loo_Json.Emit()
             else:
                 signed_document = json.loads(json_signed)
-                signed_document["signatures"] = [{"signatureType": "I", "value": sig_b64}]
+                signed_document["signatures"] = [{"signatureType": "I", "value": sig_b64
+	}]
                 signed_document_json = json.dumps(
                     signed_document, separators=(",", ":"), ensure_ascii=False, sort_keys=True
                 )
@@ -1667,8 +1668,7 @@ def sign_invoice():
                 if os.getenv('AGENT_DISABLE_PKCS11_FALLBACK', '').strip() == '1':
                     return jsonify({
                         'success': False,
-                        'message': user_facing_sign_error(chilkat_error),
-                    }), 500
+                        'message': user_facing_sign_error(chilkat_error)}), 500
                 logger.warning(
                     "🔄 PKCS#11 fallback — may fail ETA 4062; fix Chilkat v10 unlock instead"
                 )

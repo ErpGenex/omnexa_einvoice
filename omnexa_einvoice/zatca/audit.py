@@ -30,7 +30,7 @@ def log_zatca_event(
 		"phase": phase,
 		"document_type": document_type,
 		"ok": ok,
-		"details": details or {},
+		"details": details or {}
 	}
 	try:
 		frappe.logger("zatca").info(json.dumps(payload, ensure_ascii=False, default=str))

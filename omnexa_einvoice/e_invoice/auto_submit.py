@@ -60,14 +60,18 @@ def maybe_enqueue_live_send_after_sign(submission_name: str) -> dict:
 	"""
 	doc = frappe.get_doc("E Invoice Submission", submission_name)
 	if doc.submission_kind == "E-Receipt":
-		return {"enqueued": False, "browser_live": False}
+		return {"enqueued": False, "browser_live": False
+	}
 	branch = (doc.branch or "").strip()
 	if branch_submission_mode(branch) != SUBMISSION_MODE_LIVE:
-		return {"enqueued": False, "browser_live": False}
+		return {"enqueued": False, "browser_live": False
+	}
 	if live_send_requires_browser(branch):
-		return {"enqueued": False, "browser_live": True}
+		return {"enqueued": False, "browser_live": True
+	}
 	_enqueue_send(submission_name, job_name=f"eta_live_{submission_name}")
-	return {"enqueued": True, "browser_live": False}
+	return {"enqueued": True, "browser_live": False
+	}
 
 
 def _enqueue_send(submission_name: str, *, job_name: str) -> None:
@@ -120,8 +124,8 @@ def get_signed_submissions_for_batch(branch: str, *, limit: int | None = None) -
 			"submission_kind": "E-Invoice",
 			"branch": branch,
 			"status": "Signed",
-			"docstatus": 0,
-		},
+			"docstatus": 0
+	},
 		pluck="name",
 		order_by="modified asc",
 		limit=limit,
@@ -157,7 +161,8 @@ def autosubmit_einvoice_batch_process() -> None:
 	"""Hourly: send signed E-Invoices for branches in Batch mode."""
 	branches = frappe.get_all(
 		"Branch",
-		filters={"eta_einvoice_enabled": 1, "eta_einvoice_submission_mode": "Batch"},
+		filters={"eta_einvoice_enabled": 1, "eta_einvoice_submission_mode": "Batch"
+	},
 		pluck="name",
 	)
 	for branch in branches:

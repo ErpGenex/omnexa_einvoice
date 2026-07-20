@@ -57,8 +57,8 @@ MOCK_TAX_IDS: dict[str, str] = {
 	"ZA": "4123456789",
 	"KE": "P051234567X",
 	"UG": "1000123456",
-	"TR": "1234567890",
-}
+	"TR": "1234567890"
+	}
 
 
 def _sandbox_url(code: str, path: str = "") -> str:
@@ -71,23 +71,21 @@ def _configuration_for_country(code: str) -> dict[str, Any]:
 	engine = entry.engine if entry else "peppol_ubl"
 	cfg: dict[str, Any] = {
 		"uat_seed": True,
-		"signing_mode": "scaffold",
+		"signing_mode": "scaffold"
 	}
 	if engine == "cfdi":
 		cfg.update(
 			{
 				"signing_mode": "csd",
 				"pac_provider": "uat-pac",
-				"pac_base_url": _sandbox_url(code, "/timbrado"),
-			}
+				"pac_base_url": _sandbox_url(code, "/timbrado")}
 		)
 	elif engine == "gst_irn":
 		cfg.update(
 			{
 				"signing_mode": "digest",
 				"gstin": MOCK_TAX_IDS.get(code, ""),
-				"gsp_base_url": _sandbox_url(code, "/einvoice"),
-			}
+				"gsp_base_url": _sandbox_url(code, "/einvoice")}
 		)
 	elif engine == "nfe":
 		cfg.update(
@@ -96,78 +94,72 @@ def _configuration_for_country(code: str) -> dict[str, Any]:
 				"cnpj": MOCK_TAX_IDS.get(code, ""),
 				"uf": "35",
 				"ambiente": "homologacao",
-				"sefaz_base_url": _sandbox_url(code, "/nfe"),
-			}
+				"sefaz_base_url": _sandbox_url(code, "/nfe")}
 		)
 	elif engine == "fatturapa":
 		cfg.update(
 			{
 				"signing_mode": "cades",
 				"partita_iva": MOCK_TAX_IDS.get(code, ""),
-				"sdi_base_url": _sandbox_url(code, "/sdi"),
-			}
+				"sdi_base_url": _sandbox_url(code, "/sdi")}
 		)
 	elif engine == "ksef_fa2":
 		cfg.update(
 			{
 				"signing_mode": "ksef",
 				"nip": MOCK_TAX_IDS.get(code, ""),
-				"ksef_base_url": _sandbox_url(code, "/ksef"),
-			}
+				"ksef_base_url": _sandbox_url(code, "/ksef")}
 		)
 	elif engine == "facturae":
 		cfg.update(
 			{
 				"signing_mode": "xmldsig",
 				"nif": MOCK_TAX_IDS.get(code, ""),
-				"aeat_base_url": _sandbox_url(code, "/facturae"),
-			}
+				"aeat_base_url": _sandbox_url(code, "/facturae")}
 		)
 	elif engine == "dian_ubl":
 		cfg.update(
 			{
 				"signing_mode": "digest",
 				"nit": MOCK_TAX_IDS.get(code, ""),
-				"dian_base_url": _sandbox_url(code, "/dian"),
-			}
+				"dian_base_url": _sandbox_url(code, "/dian")}
 		)
 	elif engine == "xrechnung":
 		cfg.update(
 			{
 				"signing_mode": "xmldsig",
 				"leitweg_id": "04011000-12345-67",
-				"gateway_base_url": _sandbox_url(code, "/xrechnung"),
-			}
+				"gateway_base_url": _sandbox_url(code, "/xrechnung")}
 		)
 	elif engine == "facturx":
 		cfg.update(
 			{
 				"signing_mode": "xmldsig",
 				"siret": MOCK_TAX_IDS.get(code, ""),
-				"pdp_base_url": _sandbox_url(code, "/facturx"),
-			}
+				"pdp_base_url": _sandbox_url(code, "/facturx")}
 		)
 	elif engine == "latam_invoice":
-		key = {"AR": "cuit", "CL": "rut", "PE": "ruc"}.get(code, "tax_id")
+		key = {"AR": "cuit", "CL": "rut", "PE": "ruc"
+	}.get(code, "tax_id")
 		cfg.update(
 			{
 				"signing_mode": "digest",
 				key: MOCK_TAX_IDS.get(code, ""),
-				"authority_base_url": _sandbox_url(code, "/authority"),
-			}
+				"authority_base_url": _sandbox_url(code, "/authority")}
 		)
 	elif engine == "jofotara":
 		cfg.update(
 			{
 				"signing_mode": "digest",
 				"tin": MOCK_TAX_IDS.get(code, ""),
-				"jofotara_base_url": _sandbox_url(code, "/jofotara"),
-			}
+				"jofotara_base_url": _sandbox_url(code, "/jofotara")}
 		)
 	elif engine == "pint_ae":
-		cfg.update({"signing_mode": "xmldsig", "asp_submit_path": "/einvoice/v1/submit"})
+		cfg.update({"signing_mode": "xmldsig", "asp_submit_path": "/einvoice/v1/submit"
+	})
 	elif engine in ("pint_gulf", "peppol_ubl"):
-		cfg.update({"signing_mode": "xmldsig"})
+		cfg.update({"signing_mode": "xmldsig"
+	})
 	return cfg
 
 
@@ -247,8 +239,7 @@ def seed_uat_branches(company: str | None = None, *, update_existing: bool = Tru
 		"created": created,
 		"updated": updated,
 		"skipped": skipped,
-		"message": _("Seeded {0} UAT branches on company {1}.").format(len(codes), company),
-	}
+		"message": _("Seeded {0} UAT branches on company {1}.").format(len(codes), company)}
 
 
 def _seed_loop(
@@ -308,7 +299,7 @@ def _seed_loop(
 				"country_iso": code,
 				"country_code": branch_country_label_for_code(code),
 				"country_name": country_display_name(code),
-				"tax_provider": resolve_adapter_name(code),
-			},
+				"tax_provider": resolve_adapter_name(code)
+	},
 			update_modified=False,
 		)

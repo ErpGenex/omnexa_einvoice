@@ -69,7 +69,8 @@ def canonical_comprobante_bytes(xml_text: str) -> bytes:
 		# Wrap or find Comprobante
 		found = root.xpath(
 			"//*[local-name()='Comprobante']",
-			namespaces={"cfdi": CFDI_NS},
+			namespaces={"cfdi": CFDI_NS
+	},
 		)
 		if not found:
 			frappe.throw(_("XML must contain a CFDI Comprobante root."), title=_("Mexico CSD"))
@@ -141,7 +142,7 @@ def sign_cfdi_csd(
 		"signature_b64": sello_b64,
 		"signed_xml": signed_xml,
 		"signer": "csd:cades-scaffold",
-		"signing_family": "cades",
+		"signing_family": "cades"
 	}
 
 

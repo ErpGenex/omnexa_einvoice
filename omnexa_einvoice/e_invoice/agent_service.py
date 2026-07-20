@@ -49,16 +49,20 @@ def signing_agent_health(agent_url: str, timeout: int = 5) -> dict[str, Any]:
 	try:
 		res = requests.get(f"{base}/health", timeout=timeout)
 	except requests.RequestException as exc:
-		return {"ok": False, "message": str(exc)}
+		return {"ok": False, "message": str(exc)
+	}
 	try:
 		body = res.json()
 	except Exception:
-		body = {"raw": res.text}
-	return {"ok": res.status_code < 400, "status_code": res.status_code, "body": body}
+		body = {"raw": res.text
+	}
+	return {"ok": res.status_code < 400, "status_code": res.status_code, "body": body
+	}
 
 
 def _signing_check(ok: bool, step: str, message: str) -> dict[str, Any]:
-	return {"ok": bool(ok), "step": step, "message": message}
+	return {"ok": bool(ok), "step": step, "message": message
+	}
 
 
 def _connection_hint(agent_url: str) -> str:
@@ -106,7 +110,7 @@ def sign_invoice_via_signing_agent(
 		"pin": (pin or "").strip(),
 		"use_chilkat": bool(use_chilkat),
 		"token_type": (token_type or "epass2003").strip() or "epass2003",
-		"verify": bool(verify),
+		"verify": bool(verify)
 	}
 	try:
 		res = requests.post(url, json=payload, timeout=timeout)
@@ -145,28 +149,33 @@ def _prepare_branch_usb_signing_test(branch: str) -> dict[str, Any]:
 
 	if not branch:
 		add(False, "branch", _("Branch name is required."))
-		return {"ok": False, "checks": checks, "browser_signing": False}
+		return {"ok": False, "checks": checks, "browser_signing": False
+	}
 	if not frappe.db.exists("Branch", branch):
 		add(False, "branch", _("Branch {0} does not exist.").format(branch))
-		return {"ok": False, "checks": checks, "browser_signing": False}
+		return {"ok": False, "checks": checks, "browser_signing": False
+	}
 	add(True, "branch", _("Branch {0} found.").format(branch))
 
 	if not frappe.db.get_value("Branch", branch, "eta_einvoice_enabled"):
 		add(False, "einvoice", _("E-Invoice is not enabled on this branch."))
-		return {"ok": False, "checks": checks, "browser_signing": False}
+		return {"ok": False, "checks": checks, "browser_signing": False
+	}
 	add(True, "einvoice", _("E-Invoice is enabled."))
 
 	signer_mode = (frappe.db.get_value("Branch", branch, "eta_signer_mode") or "remote").strip().lower()
 	if signer_mode not in ("signing_agent", "agent"):
 		add(False, "signer_mode", _("Signer mode must be Signing Agent (current: {0}).").format(signer_mode or "—"))
-		return {"ok": False, "checks": checks, "browser_signing": False}
+		return {"ok": False, "checks": checks, "browser_signing": False
+	}
 	add(True, "signer_mode", _("Signing Agent mode is selected."))
 
 	try:
 		settings = get_eta_invoice_branch_settings(branch)
 	except Exception as exc:
 		add(False, "settings", str(exc))
-		return {"ok": False, "checks": checks, "browser_signing": False}
+		return {"ok": False, "checks": checks, "browser_signing": False
+	}
 
 	agent_url = normalize_signing_agent_url(settings.signing_agent_url or DEFAULT_AGENT_URL)
 	add(True, "agent_url", agent_url)
@@ -175,12 +184,14 @@ def _prepare_branch_usb_signing_test(branch: str) -> dict[str, Any]:
 
 	if not branch_usb_pin(branch):
 		add(False, "usb_pin", _("USB Token PIN missing on Branch."))
-		return {"ok": False, "checks": checks, "browser_signing": True, "agent_url": agent_url}
+		return {"ok": False, "checks": checks, "browser_signing": True, "agent_url": agent_url
+	}
 	add(True, "usb_pin", _("USB Token PIN is saved."))
 
 	if not (settings.rin or "").strip():
 		add(False, "rin", _("E-Invoice RIN required on Branch."))
-		return {"ok": False, "checks": checks, "browser_signing": True, "agent_url": agent_url}
+		return {"ok": False, "checks": checks, "browser_signing": True, "agent_url": agent_url
+	}
 	add(True, "rin", _("Taxpayer RIN is set."))
 
 	try:
@@ -189,7 +200,8 @@ def _prepare_branch_usb_signing_test(branch: str) -> dict[str, Any]:
 		add(True, "test_invoice", _("Valid test invoice ({0}).").format(document["internalID"]))
 	except ETAInvoiceValidationError as exc:
 		add(False, "test_invoice", str(exc))
-		return {"ok": False, "checks": checks, "browser_signing": True, "agent_url": agent_url}
+		return {"ok": False, "checks": checks, "browser_signing": True, "agent_url": agent_url
+	}
 
 	add(True, "erp_server", _("ERP server OS: {0}").format(platform.system()))
 	pin_b64 = base64.b64encode(branch_usb_pin(branch).encode("utf-8")).decode("ascii")
@@ -203,7 +215,7 @@ def _prepare_branch_usb_signing_test(branch: str) -> dict[str, Any]:
 		"token_type": token_type,
 		"usb_pin_b64": pin_b64,
 		"document": document,
-		"internal_id": document.get("internalID"),
+		"internal_id": document.get("internalID")
 	}
 
 
@@ -223,7 +235,8 @@ def run_branch_usb_signing_test_on_server(branch: str) -> dict[str, Any]:
 		_signing_check(True, "release", _("Signing bridge release {0} (web worker).").format(SIGNING_BRIDGE_RELEASE)),
 	)
 	if not data.get("ok"):
-		return {**data, "checks": checks, "server_only": True, "summary": _("Fix failed checks and Save Branch.")}
+		return {**data, "checks": checks, "server_only": True, "summary": _("Fix failed checks and Save Branch.")
+	}
 
 	agent_url = data.get("agent_url") or DEFAULT_AGENT_URL
 	browser_sign_required = False
@@ -260,7 +273,7 @@ def run_branch_usb_signing_test_on_server(branch: str) -> dict[str, Any]:
 		"server_only": True,
 		"browser_sign_required": browser_sign_required,
 		"summary": summary,
-		"signing_bridge_release": SIGNING_BRIDGE_RELEASE,
+		"signing_bridge_release": SIGNING_BRIDGE_RELEASE
 	}
 
 
@@ -274,8 +287,8 @@ def test_signing_agent_connection(agent_url: str | None = None, branch: str | No
 			"ok": False,
 			"agent_url": url,
 			"message": _("Pass branch=BRANCH_NAME for server-side test."),
-			"hint": _("Branch → Egypt ETA → Test USB Signing"),
-		}
+			"hint": _("Branch → Egypt ETA → Test USB Signing")
+	}
 	result = signing_agent_health(url)
 	result["agent_url"] = url
 	result["hint"] = _connection_hint(url) if not result.get("ok") else ""
@@ -293,4 +306,5 @@ def report_branch_usb_signing_test_result(
 		signature_length,
 		(message or "")[:200],
 	)
-	return {"logged": True}
+	return {"logged": True
+	}

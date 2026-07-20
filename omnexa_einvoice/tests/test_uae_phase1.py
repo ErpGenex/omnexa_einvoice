@@ -17,11 +17,14 @@ class TestUaePhase1(FrappeTestCase):
 			"issue_datetime": "2026-05-19T10:00:00",
 			"currency": "AED",
 			"invoice_type_code": "380",
-			"seller": {"name": "Seller LLC", "tax_registration": "100000000000003"},
-			"buyer": {"name": "Buyer LLC", "tax_registration": "200000000000004"},
-			"lines": [{"description": "Service", "qty": 1, "rate": 100, "net_amount": 100, "tax_amount": 5}],
-			"totals": {"net_total": 100, "tax_total": 5, "grand_total": 105},
-		}
+			"seller": {"name": "Seller LLC", "tax_registration": "100000000000003"
+	},
+			"buyer": {"name": "Buyer LLC", "tax_registration": "200000000000004"
+	},
+			"lines": [{"description": "Service", "qty": 1, "rate": 100, "net_amount": 100, "tax_amount": 5
+	}],
+			"totals": {"net_total": 100, "tax_total": 5, "grand_total": 105}
+	}
 		xml = build_pint_ae_ubl(document)
 		self.assertIn(CUSTOMIZATION_ID, xml)
 		self.assertIn(PROFILE_ID, xml)
@@ -36,8 +39,8 @@ class TestUaePhase1(FrappeTestCase):
 				"reference_name": "SI-AE-PINT-TEST",
 				"company": "Test",
 				"tax_registration_number": "100000000000003",
-				"seller_name": "Test Seller",
-			}
+				"seller_name": "Test Seller"
+	}
 		)
 		self.assertTrue(result.get("ok"))
 		self.assertEqual(result.get("framework"), "PINT-AE")
@@ -46,7 +49,8 @@ class TestUaePhase1(FrappeTestCase):
 	def test_phase2_mock(self):
 		frappe.flags.in_test = True
 		result = run_phase2(
-			{"reference_name": "SI-AE-P2-TEST", "company": "Test", "tax_registration_number": "100000000000003"},
+			{"reference_name": "SI-AE-P2-TEST", "company": "Test", "tax_registration_number": "100000000000003"
+	},
 			sync=True,
 		)
 		self.assertTrue(result.get("ok"))

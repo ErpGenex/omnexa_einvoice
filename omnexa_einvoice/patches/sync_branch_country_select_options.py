@@ -23,7 +23,8 @@ def execute():
 		return
 	frappe.db.set_value(
 		"DocField",
-		{"parent": "Branch", "fieldname": "country_code"},
+		{"parent": "Branch", "fieldname": "country_code"
+	},
 		"options",
 		options,
 		update_modified=False,
@@ -33,7 +34,8 @@ def execute():
 	# Select value = label; country_iso = 2-letter code for depends_on / routing
 	for name, raw in frappe.get_all("Branch", fields=["name", "country_code"], as_list=True):
 		code = normalize_country_code(raw)
-		updates = {"country_code": branch_country_label_for_code(code)}
+		updates = {"country_code": branch_country_label_for_code(code)
+	}
 		if frappe.get_meta("Branch").has_field("country_iso"):
 			updates["country_iso"] = code
 		if frappe.get_meta("Branch").has_field("country_name"):

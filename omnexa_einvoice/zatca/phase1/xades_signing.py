@@ -98,5 +98,4 @@ def sign_ubl_xml(
 		"hash_b64": hash_b64,
 		"signature_b64": signature_b64,
 		"signed_properties_b64": signed_props_b64,
-		"canonical_xml": canonical.decode("utf-8", errors="replace"),
-	}
+		"canonical_xml": canonical.decode("utf-8", errors="replace")}

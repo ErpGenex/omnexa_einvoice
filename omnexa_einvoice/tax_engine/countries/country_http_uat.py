@@ -95,8 +95,8 @@ def connection_test_result(
 		return {
 			"ok": False,
 			"message": _("Complete configuration before live submission."),
-			"checklist": checklist,
-		}
+			"checklist": checklist
+	}
 	try:
 		res = requests.get(base_url.rstrip("/"), headers=headers or {}, timeout=30)
 		return {
@@ -105,10 +105,11 @@ def connection_test_result(
 				res.status_code,
 				ready_label or _("Ready for UAT."),
 			),
-			"ready": True,
-		}
+			"ready": True
+	}
 	except requests.RequestException as exc:
-		return {"ok": False, "message": str(exc), "checklist": checklist}
+		return {"ok": False, "message": str(exc), "checklist": checklist
+	}
 
 
 def throw_if_missing(missing: list[str], *, title: str) -> None:

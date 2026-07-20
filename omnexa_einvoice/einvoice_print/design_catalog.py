@@ -36,7 +36,7 @@ _FAMILY_STYLES: dict[str, dict[str, str]] = {
 		"title_en": "Tax Invoice",
 		"title_ar": "فاتورة ضريبية",
 		"footer_en": "Egyptian Tax Authority (ETA) — e-Invoice",
-		"footer_ar": "مصلحة الضرائب المصرية — فاتورة إلكترونية",
+		"footer_ar": "مصلحة الضرائب المصرية — فاتورة إلكترونية"
 	},
 	"sa_zatca": {
 		"primary": "#006C35",
@@ -45,7 +45,7 @@ _FAMILY_STYLES: dict[str, dict[str, str]] = {
 		"title_en": "Tax Invoice",
 		"title_ar": "فاتورة ضريبية",
 		"footer_en": "ZATCA — Fatoora e-Invoice",
-		"footer_ar": "هيئة الزكاة والضريبة والجمارك — فاتورة إلكترونية",
+		"footer_ar": "هيئة الزكاة والضريبة والجمارك — فاتورة إلكترونية"
 	},
 	"gulf_pint": {
 		"primary": "#0F3D75",
@@ -54,7 +54,7 @@ _FAMILY_STYLES: dict[str, dict[str, str]] = {
 		"title_en": "Tax Invoice",
 		"title_ar": "فاتورة ضريبية",
 		"footer_en": "PINT e-Invoice (Gulf)",
-		"footer_ar": "فاتورة إلكترونية — دول الخليج",
+		"footer_ar": "فاتورة إلكترونية — دول الخليج"
 	},
 	"peppol_eu": {
 		"primary": "#003399",
@@ -63,7 +63,7 @@ _FAMILY_STYLES: dict[str, dict[str, str]] = {
 		"title_en": "Tax Invoice",
 		"title_ar": "فاتورة ضريبية",
 		"footer_en": "PEPPOL BIS Billing 3.0",
-		"footer_ar": "فاتورة إلكترونية — PEPPOL",
+		"footer_ar": "فاتورة إلكترونية — PEPPOL"
 	},
 	"mx_cfdi": {
 		"primary": "#006341",
@@ -72,7 +72,7 @@ _FAMILY_STYLES: dict[str, dict[str, str]] = {
 		"title_en": "CFDI Invoice",
 		"title_ar": "فاتورة CFDI",
 		"footer_en": "Mexico SAT — CFDI 4.0",
-		"footer_ar": "المكسيك SAT — CFDI",
+		"footer_ar": "المكسيك SAT — CFDI"
 	},
 	"br_nfe": {
 		"primary": "#009C3B",
@@ -81,7 +81,7 @@ _FAMILY_STYLES: dict[str, dict[str, str]] = {
 		"title_en": "NF-e Invoice",
 		"title_ar": "فاتورة NF-e",
 		"footer_en": "Brazil SEFAZ — NF-e",
-		"footer_ar": "البرازيل SEFAZ — NF-e",
+		"footer_ar": "البرازيل SEFAZ — NF-e"
 	},
 	"latam": {
 		"primary": "#1E3A5F",
@@ -90,7 +90,7 @@ _FAMILY_STYLES: dict[str, dict[str, str]] = {
 		"title_en": "Electronic Tax Invoice",
 		"title_ar": "فاتورة ضريبية إلكترونية",
 		"footer_en": "Latin America e-Invoice",
-		"footer_ar": "فاتورة إلكترونية — أمريكا اللاتينية",
+		"footer_ar": "فاتورة إلكترونية — أمريكا اللاتينية"
 	},
 	"jordan": {
 		"primary": "#007A3D",
@@ -99,9 +99,8 @@ _FAMILY_STYLES: dict[str, dict[str, str]] = {
 		"title_en": "Tax Invoice",
 		"title_ar": "فاتورة ضريبية",
 		"footer_en": "Jordan ISTD — JoFotara",
-		"footer_ar": "الأردن — JoFotara",
-	},
-}
+		"footer_ar": "الأردن — JoFotara"}
+	}
 
 
 def _template_family(code: str, engine: str) -> str:

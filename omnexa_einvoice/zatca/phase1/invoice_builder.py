@@ -49,8 +49,8 @@ def build_invoice_payload(
 			"unit_price": 100,
 			"net_amount": 100,
 			"tax_rate": 15,
-			"tax_amount": 15,
-		}
+			"tax_amount": 15
+	}
 	]
 	t = totals or {}
 	net = flt(t.get("net_total") or sum(flt(row.get("net_amount")) for row in lines))
@@ -69,14 +69,13 @@ def build_invoice_payload(
 		"seller": {
 			"name": seller_name,
 			"name_ar": seller_name_ar or seller_name,
-			"vat_registration": vat_registration,
-		},
+			"vat_registration": vat_registration
+	},
 		"lines": lines,
 		"totals": {
 			"net_total": net,
 			"tax_total": tax,
-			"grand_total": grand,
-		},
+			"grand_total": grand}
 	}
 
 
@@ -87,8 +86,8 @@ def build_ubl_xml_skeleton(payload: dict[str, Any]) -> str:
 		{
 			"xmlns": "urn:oasis:names:specification:ubl:schema:xsd:Invoice-2",
 			"xmlns:cac": "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
-			"xmlns:cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
-		},
+			"xmlns:cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
+	},
 	)
 	ET.SubElement(root, "cbc:ID").text = payload.get("reference_name") or ""
 	ET.SubElement(root, "cbc:UUID").text = payload.get("uuid") or ""

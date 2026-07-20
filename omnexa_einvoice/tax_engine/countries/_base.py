@@ -24,7 +24,8 @@ def default_hub_result(payload: dict[str, Any], *, meta: CountryTaxMeta) -> Inte
 		message=_(
 			"{0}: enable e-invoice on Branch → Country Tax tab for this branch."
 		).format(meta.label, payload.get("company") or ""),
-		data={"country_code": meta.country_code, "scaffold": True},
+		data={"country_code": meta.country_code, "scaffold": True
+	},
 	)
 
 
@@ -46,8 +47,8 @@ def dispatch_sales_invoice_scaffold(
 			"status": "queued",
 			"country_code": meta.country_code,
 			"message": _("{0} settings found; API integration pending.").format(meta.label),
-			"settings": settings.name,
-		}
+			"settings": settings.name
+	}
 	frappe.msgprint(
 		_(
 			"{0} is not fully integrated yet. Create <b>Country Tax Settings</b> for {1} / {2}."
@@ -59,5 +60,5 @@ def dispatch_sales_invoice_scaffold(
 		"ok": True,
 		"status": "scaffold",
 		"country_code": meta.country_code,
-		"adapter": meta.adapter_name,
+		"adapter": meta.adapter_name
 	}

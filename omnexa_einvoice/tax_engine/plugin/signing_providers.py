@@ -26,9 +26,10 @@ def sign_xml_scaffold(xml_text: str, *, country_code: str) -> dict[str, Any]:
 	return {
 		"hash_hex": hash_hex,
 		"hash_b64": base64.b64encode(digest).decode("ascii"),
-		"signature_b64": base64.b64encode(f"{country_code}-SCAFFOLD:{hash_hex}".encode()).decode("ascii"),
+		"signature_b64": base64.b64encode(f"{country_code}-SCAFFOLD:{hash_hex
+	}".encode()).decode("ascii"),
 		"signed_xml": xml_text,
-		"signer": "scaffold",
+		"signer": "scaffold"
 	}
 
 
@@ -57,7 +58,7 @@ def _sign_with_certificate(xml_text: str, pem: str, key_pem: str, passphrase: st
 		"hash_b64": base64.b64encode(digest).decode("ascii"),
 		"signature_b64": base64.b64encode(signature).decode("ascii"),
 		"signed_xml": signed,
-		"signer": "certificate",
+		"signer": "certificate"
 	}
 
 
@@ -75,8 +76,8 @@ ENGINE_SIGNING_FAMILY: dict[str, str] = {
 	"pint_gulf": "xmldsig",
 	"jofotara": "digest",
 	"latam_invoice": "digest",
-	"peppol_ubl": "xmldsig",
-}
+	"peppol_ubl": "xmldsig"
+	}
 
 
 @dataclass(frozen=True)

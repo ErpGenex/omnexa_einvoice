@@ -38,10 +38,10 @@ def main() -> int:
 		"filename": ZIP_NAME,
 		"size_bytes": zip_path.stat().st_size,
 		"port": 5002,
-		"health_url": "http://127.0.0.1:5002/health",
+		"health_url": "http://127.0.0.1:5002/health"
 	}
 	VERSION_FILE.write_text(json.dumps(meta, indent=2), encoding="utf-8")
-	print(f"Wrote {zip_path} ({meta['size_bytes']:,} bytes)")
+	print(f"Wrote {zip_path} ({meta['size_bytes']:} bytes)")
 	print(f"Wrote {VERSION_FILE}")
 	return 0
 

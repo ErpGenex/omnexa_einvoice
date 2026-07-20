@@ -16,7 +16,7 @@ def extract_qr_tlv_base64(cleared_invoice_xml: str) -> str | None:
 
 	namespaces = {
 		"cac": "urn:oasis:names:specification:ubl:schema:xsd:CommonAggregateComponents-2",
-		"cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2",
+		"cbc": "urn:oasis:names:specification:ubl:schema:xsd:CommonBasicComponents-2"
 	}
 	root = etree.fromstring(cleared_invoice_xml.encode("utf-8"))
 	for ref in root.findall(".//cac:AdditionalDocumentReference", namespaces):

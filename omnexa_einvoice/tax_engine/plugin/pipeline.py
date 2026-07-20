@@ -74,8 +74,8 @@ def run_country_phase1(payload: dict[str, Any], *, country_code: str) -> dict[st
 			"phase": "phase1",
 			"framework": engine.framework,
 			"signer": sign_data.get("signer"),
-			"production": not allow_mock_api(),
-		},
+			"production": not allow_mock_api()
+	},
 	)
 	idem = build_idempotency_key(
 		country_code=code,
@@ -90,8 +90,8 @@ def run_country_phase1(payload: dict[str, Any], *, country_code: str) -> dict[st
 			"reference_name": document.get("reference_name"),
 			"reference_doctype": document.get("reference_doctype") or "Sales Invoice",
 			"idempotency_key": idem,
-			"signing_family": sign_family,
-		},
+			"signing_family": sign_family
+	},
 		country_code=code,
 		phase="phase1",
 		status="Signed",
@@ -119,7 +119,7 @@ def run_country_phase1(payload: dict[str, Any], *, country_code: str) -> dict[st
 		"signer": sign_data.get("signer"),
 		"document": document,
 		"archive_paths": paths,
-		"log_name": log_name,
+		"log_name": log_name
 	}
 
 
@@ -156,7 +156,7 @@ def execute_country_phase2_submit(
 	log_updates: dict[str, Any] = {
 		"status": log_status,
 		"authority_status": api_result.get("status"),
-		"response_payload": frappe.as_json(api_result.get("raw") or api_result),
+		"response_payload": frappe.as_json(api_result.get("raw") or api_result)
 	}
 	if api_result.get("idempotency_key"):
 		log_updates["idempotency_key"] = api_result["idempotency_key"]
@@ -202,7 +202,7 @@ def execute_country_phase2_submit(
 		"status": "submitted",
 		"phase1": phase1,
 		"api": api_result,
-		"log_name": log_name,
+		"log_name": log_name
 	}
 
 
@@ -226,7 +226,7 @@ def run_country_phase2(payload: dict[str, Any], *, country_code: str, sync: bool
 			"status": "queued",
 			"job_id": job_id,
 			"phase1": phase1,
-			"log_name": log_name,
-		}
+			"log_name": log_name
+	}
 
 	return execute_country_phase2_submit(payload, country_code=code, phase1=phase1)

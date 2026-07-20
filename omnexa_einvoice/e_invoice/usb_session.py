@@ -79,7 +79,7 @@ def client_signing_secrets(branch: str) -> dict:
 	return {
 		"signing_secret_b64": b64,
 		"usb_pin_b64": b64,
-		"has_signing_secret": bool(b64),
+		"has_signing_secret": bool(b64)
 	}
 
 
@@ -117,7 +117,8 @@ def _store_session(branch: str) -> str:
 	pin = require_branch_usb_pin(branch)
 	chilkat_code = branch_chilkat_unlock_code(branch)
 	session_id = frappe.generate_hash(length=32)
-	payload = {"pin": pin, "user": frappe.session.user, "branch": branch}
+	payload = {"pin": pin, "user": frappe.session.user, "branch": branch
+	}
 	if chilkat_code:
 		payload["chilkat_unlock_code"] = chilkat_code
 	frappe.cache().set_value(
@@ -138,7 +139,7 @@ def build_agent_session_body(unsigned: dict, branch: str, token_type: str, sessi
 		"erp_base_url": erp_public_base_url(),
 		"token_type": (token_type or "epass2003").strip() or "epass2003",
 		"use_chilkat": True,
-		"verify": False,
+		"verify": False
 	}
 
 
@@ -156,7 +157,7 @@ def build_agent_sign_payload(unsigned: dict, branch: str, token_type: str = "epa
 		"signing_secret_b64": pin_b64,
 		"token_type": (token_type or "epass2003").strip() or "epass2003",
 		"use_chilkat": True,
-		"verify": False,
+		"verify": False
 	}
 	chilkat_code = branch_chilkat_unlock_code(branch)
 	if chilkat_code:
@@ -177,7 +178,8 @@ def resolve_usb_sign_session(session_id: str) -> dict:
 	pin = (data.get("pin") or "").strip()
 	if not pin:
 		frappe.throw(_("USB PIN missing in signing session."), frappe.PermissionError)
-	out = {"pin": pin, "usb_token_pin": pin}
+	out = {"pin": pin, "usb_token_pin": pin
+	}
 	chilkat_code = (data.get("chilkat_unlock_code") or "").strip()
 	if chilkat_code:
 		out["chilkat_unlock_code"] = chilkat_code
@@ -217,7 +219,7 @@ def create_usb_sign_session_for_submission(name: str, for_send: int = 0) -> dict
 		"erp_base_url": agent_body["erp_base_url"],
 		"internal_id": unsigned.get("internalID"),
 		"pin_mode": "sign_session",
-		"agent_scan_ports": list(AGENT_SCAN_PORTS),
+		"agent_scan_ports": list(AGENT_SCAN_PORTS)
 	}
 
 
@@ -235,5 +237,5 @@ def create_usb_sign_session_for_branch_test(branch: str) -> dict:
 		"branch": branch,
 		"agent_url": (settings.signing_agent_url or DEFAULT_AGENT_URL).strip(),
 		"agent_body": agent_body,
-		"internal_id": document.get("internalID"),
+		"internal_id": document.get("internalID")
 	}

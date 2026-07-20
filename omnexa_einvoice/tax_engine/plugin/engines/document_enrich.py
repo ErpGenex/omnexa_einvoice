@@ -27,7 +27,8 @@ def _buyer_from_customer(customer: str | None) -> dict[str, Any]:
 	)
 	if not row:
 		return {}
-	return {"name": row.customer_name or customer, "tax_registration": (row.tax_id or "").strip()}
+	return {"name": row.customer_name or customer, "tax_registration": (row.tax_id or "").strip()
+	}
 
 
 def build_enriched_document(payload: dict[str, Any], *, country_code: str) -> dict[str, Any]:
@@ -65,29 +66,32 @@ def build_enriched_document(payload: dict[str, Any], *, country_code: str) -> di
 					document["italy"] = {
 						"partita_iva": cfg.get("partita_iva") or seller.get("tax_registration"),
 						"codice_destinatario": cfg.get("codice_destinatario"),
-						"regime_fiscale": cfg.get("regime_fiscale"),
-					}
+						"regime_fiscale": cfg.get("regime_fiscale")
+	}
 				if code == "PL":
-					document["poland"] = {"nip": cfg.get("nip") or seller.get("tax_registration")}
+					document["poland"] = {"nip": cfg.get("nip") or seller.get("tax_registration")
+	}
 				if code == "ES":
-					document["spain"] = {"nif": cfg.get("nif") or seller.get("tax_registration")}
+					document["spain"] = {"nif": cfg.get("nif") or seller.get("tax_registration")
+	}
 				if code == "CO":
 					document["colombia"] = {
 						"nit": cfg.get("nit") or seller.get("tax_registration"),
-						"software_id": cfg.get("software_id"),
-					}
+						"software_id": cfg.get("software_id")
+	}
 				if code == "DE":
-					document["germany"] = {"leitweg_id": cfg.get("leitweg_id")}
+					document["germany"] = {"leitweg_id": cfg.get("leitweg_id")
+	}
 				if code == "FR":
 					document["france"] = {
 						"siret": cfg.get("siret") or seller.get("tax_registration"),
-						"profile": cfg.get("profile"),
-					}
+						"profile": cfg.get("profile")
+	}
 				if code == "IN":
 					document["india"] = {
 						"gstin": cfg.get("gstin") or seller.get("tax_registration"),
-						"gsp_base_url": cfg.get("gsp_base_url"),
-					}
+						"gsp_base_url": cfg.get("gsp_base_url")
+	}
 		except json.JSONDecodeError:
 			pass
 	if code == "IN":

@@ -22,10 +22,12 @@ def _resolve_branch(branch: str | None, company: str | None) -> str:
 	if company:
 		name = frappe.db.get_value(
 			"Branch",
-			{"company": company, "is_head_office": 1},
+			{"company": company, "is_head_office": 1
+	},
 			"name",
 			order_by="creation asc",
-		) or frappe.db.get_value("Branch", {"company": company}, "name")
+		) or frappe.db.get_value("Branch", {"company": company
+	}, "name")
 		if name:
 			return name
 	frappe.throw(_("Select a branch or company."), title=_("Tax connection test"))
@@ -51,8 +53,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"button_label": _("Test tax connection"),
 			"button_group": _("Tax"),
 			"configured": False,
-			"needs_branch": True,
-		}
+			"needs_branch": True
+	}
 	try:
 		branch = _resolve_branch(branch, company)
 	except frappe.ValidationError:
@@ -64,8 +66,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"button_label": _("Test tax connection"),
 			"button_group": _("Tax"),
 			"configured": False,
-			"needs_branch": True,
-		}
+			"needs_branch": True
+	}
 	code = _branch_country(branch)
 	tab_label = country_tab_label(code)
 	doc = frappe.get_doc("Branch", branch)
@@ -78,8 +80,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"tab_label": tab_label,
 			"button_label": _("Test India GSP / IRN connection"),
 			"button_group": tab_label,
-			"configured": bool(doc.get("intl_tax_enabled")),
-		}
+			"configured": bool(doc.get("intl_tax_enabled"))
+	}
 
 	if code == "MX":
 		return {
@@ -89,8 +91,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"tab_label": tab_label,
 			"button_label": _("Test Mexico PAC connection"),
 			"button_group": tab_label,
-			"configured": bool(doc.get("intl_tax_enabled")),
-		}
+			"configured": bool(doc.get("intl_tax_enabled"))
+	}
 
 	if code == "IT":
 		return {
@@ -100,8 +102,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"tab_label": tab_label,
 			"button_label": _("Test Italy SDI connection"),
 			"button_group": tab_label,
-			"configured": bool(doc.get("intl_tax_enabled")),
-		}
+			"configured": bool(doc.get("intl_tax_enabled"))
+	}
 
 	if code == "BR":
 		return {
@@ -111,8 +113,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"tab_label": tab_label,
 			"button_label": _("Test Brazil SEFAZ connection"),
 			"button_group": tab_label,
-			"configured": bool(doc.get("intl_tax_enabled")),
-		}
+			"configured": bool(doc.get("intl_tax_enabled"))
+	}
 
 	if code == "PL":
 		return {
@@ -122,8 +124,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"tab_label": tab_label,
 			"button_label": _("Test Poland KSeF connection"),
 			"button_group": tab_label,
-			"configured": bool(doc.get("intl_tax_enabled")),
-		}
+			"configured": bool(doc.get("intl_tax_enabled"))
+	}
 
 	if code == "ES":
 		return {
@@ -133,8 +135,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"tab_label": tab_label,
 			"button_label": _("Test Spain AEAT connection"),
 			"button_group": tab_label,
-			"configured": bool(doc.get("intl_tax_enabled")),
-		}
+			"configured": bool(doc.get("intl_tax_enabled"))
+	}
 
 	if code == "CO":
 		return {
@@ -144,8 +146,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"tab_label": tab_label,
 			"button_label": _("Test Colombia DIAN connection"),
 			"button_group": tab_label,
-			"configured": bool(doc.get("intl_tax_enabled")),
-		}
+			"configured": bool(doc.get("intl_tax_enabled"))
+	}
 
 	if code == "DE":
 		return {
@@ -155,8 +157,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"tab_label": tab_label,
 			"button_label": _("Test Germany XRechnung connection"),
 			"button_group": tab_label,
-			"configured": bool(doc.get("intl_tax_enabled")),
-		}
+			"configured": bool(doc.get("intl_tax_enabled"))
+	}
 
 	if code == "FR":
 		return {
@@ -166,8 +168,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"tab_label": tab_label,
 			"button_label": _("Test France PDP connection"),
 			"button_group": tab_label,
-			"configured": bool(doc.get("intl_tax_enabled")),
-		}
+			"configured": bool(doc.get("intl_tax_enabled"))
+	}
 
 	if code == "AE":
 		return {
@@ -177,8 +179,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"tab_label": tab_label,
 			"button_label": _("Test UAE ASP connection"),
 			"button_group": tab_label,
-			"configured": bool(doc.get("intl_tax_enabled")),
-		}
+			"configured": bool(doc.get("intl_tax_enabled"))
+	}
 
 	if code == "EG":
 		if doc.get("eta_ereceipt_enabled"):
@@ -197,8 +199,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"tab_label": tab_label,
 			"button_label": btn,
 			"button_group": tab_label,
-			"configured": bool(doc.get("eta_ereceipt_enabled") or doc.get("eta_einvoice_enabled")),
-		}
+			"configured": bool(doc.get("eta_ereceipt_enabled") or doc.get("eta_einvoice_enabled"))
+	}
 
 	if code == "SA":
 		return {
@@ -208,8 +210,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"tab_label": tab_label,
 			"button_label": _("Test ZATCA connection"),
 			"button_group": tab_label,
-			"configured": branch_has_zatca(branch),
-		}
+			"configured": branch_has_zatca(branch)
+	}
 
 	if code in PLUGIN_COUNTRY_CODES:
 		return {
@@ -220,8 +222,8 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 			"button_label": _("Test {0} connection").format(tab_label),
 			"button_group": tab_label,
 			"configured": bool(doc.get("intl_tax_enabled")),
-			"provider": resolve_adapter_name(code),
-		}
+			"provider": resolve_adapter_name(code)
+	}
 
 	return {
 		"branch": branch,
@@ -230,7 +232,7 @@ def get_branch_tax_test_spec(branch: str | None = None, company: str | None = No
 		"tab_label": tab_label,
 		"button_label": _("Test tax connection"),
 		"button_group": tab_label,
-		"configured": False,
+		"configured": False
 	}
 
 
@@ -258,8 +260,7 @@ def _test_eg(branch: str) -> dict[str, Any]:
 			_("Set Country Code to EG."),
 			_("Open Egypt ETA tab → enable e-Invoice and/or E-Receipt."),
 			_("Save the branch, then run the test again."),
-		],
-	}
+		]}
 
 
 def _test_sa(branch: str) -> dict[str, Any]:
@@ -272,8 +273,8 @@ def _test_sa(branch: str) -> dict[str, Any]:
 			"branch": branch,
 			"country_code": "SA",
 			"kind": "zatca",
-			"message": _("Branch country is not SA."),
-		}
+			"message": _("Branch country is not SA.")
+	}
 	if not doc.get("zatca_enabled"):
 		return {
 			"ok": False,
@@ -281,8 +282,7 @@ def _test_sa(branch: str) -> dict[str, Any]:
 			"country_code": "SA",
 			"kind": "zatca",
 			"message": _("Enable ZATCA on Branch → Saudi ZATCA tab."),
-			"checklist": [_("Enable ZATCA on the Saudi ZATCA tab."), _("Save the branch.")],
-		}
+			"checklist": [_("Enable ZATCA on the Saudi ZATCA tab."), _("Save the branch.")]}
 
 	required = [
 		("zatca_vat_registration_number", _("VAT registration number")),
@@ -300,8 +300,7 @@ def _test_sa(branch: str) -> dict[str, Any]:
 			"country_code": "SA",
 			"kind": "zatca",
 			"message": _("Complete ZATCA branch settings before testing."),
-			"checklist": [_("Missing: {0}").format(", ".join(missing))],
-		}
+			"checklist": [_("Missing: {0}").format(", ".join(missing))]}
 
 	has_cert = bool((doc.get("zatca_certificate_pem") or "").strip())
 	has_csr = bool((doc.get("zatca_csr_pem") or "").strip())
@@ -322,8 +321,8 @@ def _test_sa(branch: str) -> dict[str, Any]:
 			"vat": settings.get("vat_registration_number") or "",
 			"phase": settings.get("zatca_phase") or doc.get("zatca_phase"),
 			"message": _("ZATCA branch configuration looks valid. Use Sales Invoice → ZATCA Phase 1 for a live API test."),
-			"checklist": checklist,
-		}
+			"checklist": checklist
+	}
 	except Exception as exc:
 		return {
 			"ok": False,
@@ -331,8 +330,8 @@ def _test_sa(branch: str) -> dict[str, Any]:
 			"country_code": "SA",
 			"kind": "zatca",
 			"message": str(exc),
-			"checklist": checklist,
-		}
+			"checklist": checklist
+	}
 
 
 def _test_plugin(branch: str, code: str) -> dict[str, Any]:
@@ -345,8 +344,7 @@ def _test_plugin(branch: str, code: str) -> dict[str, Any]:
 			"country_code": code,
 			"kind": "plugin",
 			"message": _("Enable e-invoice on Branch → {0} tab.").format(tab_label),
-			"checklist": [_("Turn on intl_tax_enabled on the Country Tax tab."), _("Save the branch.")],
-		}
+			"checklist": [_("Turn on intl_tax_enabled on the Country Tax tab."), _("Save the branch.")]}
 	try:
 		from omnexa_einvoice.tax_engine.plugin.production_validate import validate_production_settings
 
@@ -368,8 +366,8 @@ def _test_plugin(branch: str, code: str) -> dict[str, Any]:
 			"api_base_url": base,
 			"live_production": live,
 			"provider": resolve_adapter_name(code),
-			"message": _("{0} branch settings validated for Phase 1.").format(tab_label),
-		}
+			"message": _("{0} branch settings validated for Phase 1.").format(tab_label)
+	}
 	except frappe.ValidationError as exc:
 		return {
 			"ok": False,
@@ -381,8 +379,7 @@ def _test_plugin(branch: str, code: str) -> dict[str, Any]:
 				_("Complete Branch → Country Tax tab fields."),
 				_("Set API Base URL and Tax Registration Number."),
 				_("For live production, enable Live Production and API credentials."),
-			],
-		}
+			]}
 
 
 @frappe.whitelist()
@@ -475,8 +472,8 @@ def test_branch_tax_connection(branch: str | None = None, company: str | None = 
 			"ok": False,
 			"branch": branch,
 			"country_code": code,
-			"message": _("Country {0} is not configured for tax testing.").format(code),
-		}
+			"message": _("Country {0} is not configured for tax testing.").format(code)
+	}
 
 	out["tab_label"] = spec.get("tab_label") or country_tab_label(code)
 	out["button_label"] = spec.get("button_label")

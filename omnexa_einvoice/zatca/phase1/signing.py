@@ -38,8 +38,8 @@ def sign_invoice_xml(
 			"invoice_hash": hash_hex,
 			"signature": placeholder,
 			"signature_b64": placeholder,
-			"signed_xml": xml_text,
-		}
+			"signed_xml": xml_text
+	}
 
 	# Real ECDSA / XAdES integration — Phase 1.1 task
 	_ = certificate_pem

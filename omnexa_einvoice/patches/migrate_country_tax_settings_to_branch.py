@@ -17,7 +17,8 @@ def execute():
 	for row in frappe.get_all("Country Tax Settings", fields=["*"]):
 		branches = frappe.get_all(
 			"Branch",
-			filters={"company": row.company, "country_code": row.country_code},
+			filters={"company": row.company, "country_code": row.country_code
+	},
 			pluck="name",
 		)
 		for branch_name in branches:

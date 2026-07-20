@@ -14,8 +14,8 @@ PAYLOAD = {
 	"reference_name": "SI-PLUGIN-TEST",
 	"company": "Test",
 	"seller_name": "Test Seller",
-	"tax_registration_number": "100000000000003",
-}
+	"tax_registration_number": "100000000000003"
+	}
 
 
 class TestTaxEnginePlugin(FrappeTestCase):
@@ -26,7 +26,8 @@ class TestTaxEnginePlugin(FrappeTestCase):
 	def test_phase1_all_countries(self):
 		for code in sorted(PLUGIN_COUNTRY_CODES):
 			with self.subTest(country=code):
-				result = run_phase1({**PAYLOAD, "reference_name": f"SI-{code}-P1"}, country_code=code)
+				result = run_phase1({**PAYLOAD, "reference_name": f"SI-{code}-P1"
+	}, country_code=code)
 				self.assertTrue(result.get("ok"))
 				self.assertEqual(result.get("phase"), "phase1")
 				self.assertTrue(result.get("signed_xml"))
@@ -38,7 +39,8 @@ class TestTaxEnginePlugin(FrappeTestCase):
 		for code in sorted(PLUGIN_COUNTRY_CODES):
 			with self.subTest(country=code):
 				result = run_phase2(
-					{**PAYLOAD, "reference_name": f"SI-{code}-P2"},
+					{**PAYLOAD, "reference_name": f"SI-{code}-P2"
+	},
 					country_code=code,
 					sync=True,
 				)
@@ -53,8 +55,8 @@ class TestTaxEnginePlugin(FrappeTestCase):
 			{
 				"reference_name": "SI-MX-HUB",
 				"document_type": "invoice",
-				"company": "Test",
-			},
+				"company": "Test"
+	},
 			idempotency_key="mx-hub-phase1",
 		)
 		self.assertEqual(result.status, "completed")

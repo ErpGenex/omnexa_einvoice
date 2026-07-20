@@ -39,8 +39,8 @@ def get_india_gsp_settings(company: str, *, branch: str | None = None) -> frappe
 			"gsp_client_id": (config.get("gsp_client_id") or (settings.get("client_id") if settings else "") or "").strip(),
 			"gsp_client_secret": get_settings_password(settings, "client_secret") if settings else None,
 			"gsp_api_key": get_settings_password(settings, "asp_api_key") if settings else None,
-			"gst_signing_secret": (config.get("gst_signing_secret") or "").strip(),
-		}
+			"gst_signing_secret": (config.get("gst_signing_secret") or "").strip()
+	}
 	)
 
 
@@ -51,8 +51,8 @@ def validate_india_gsp_for_live(company: str, *, branch: str | None = None) -> N
 			"gstin": gsp.gstin,
 			"gsp_base_url": gsp.gsp_base_url,
 			"gsp_client_id": gsp.gsp_client_id,
-			"gsp_api_key": gsp.gsp_api_key,
-		}
+			"gsp_api_key": gsp.gsp_api_key
+	}
 	)
 	if missing:
 		frappe.throw(
@@ -62,7 +62,8 @@ def validate_india_gsp_for_live(company: str, *, branch: str | None = None) -> N
 
 
 def _auth_headers(gsp: frappe._dict) -> dict[str, str]:
-	headers = {"Accept": "application/json", "Content-Type": "application/json"}
+	headers = {"Accept": "application/json", "Content-Type": "application/json"
+	}
 	if gsp.gsp_client_id and gsp.gsp_client_secret:
 		token = base64.b64encode(f"{gsp.gsp_client_id}:{gsp.gsp_client_secret}".encode()).decode("ascii")
 		headers["Authorization"] = f"Basic {token}"
@@ -88,10 +89,10 @@ def _mock_irn_response(*, uuid: str, einvoice_json: dict[str, Any]) -> dict[str,
 			"AckNo": "MOCK-ACK-001",
 			"AckDt": frappe.utils.now(),
 			"SignedQRCode": signed_qr,
-			"DocNo": doc_no,
-		},
+			"DocNo": doc_no
+	},
 		"mode": "mock",
-		"framework": "GST-IRN",
+		"framework": "GST-IRN"
 	}
 
 
@@ -128,7 +129,7 @@ def submit_gst_irn(
 		"eInvoiceJson": einvoice_json,
 		"gstin": gsp.gstin,
 		"country": "IN",
-		"framework": spec.authority_code,
+		"framework": spec.authority_code
 	}
 
 	idem = build_idempotency_key(country_code="IN", uuid=uuid, document=document)
@@ -146,7 +147,8 @@ def submit_gst_irn(
 	try:
 		body = res.json() if res.text else {}
 	except Exception:
-		body = {"raw": (res.text or "")[:8000]}
+		body = {"raw": (res.text or "")[:8000]
+	}
 
 	if res.status_code >= 400:
 		frappe.throw(_("India GSP error ({0}): {1}").format(res.status_code, body), title=_("India GSP"))
@@ -164,7 +166,7 @@ def submit_gst_irn(
 		"raw": body,
 		"mode": "live",
 		"environment": settings.api_environment if settings else "sandbox",
-		"framework": "GST-IRN",
+		"framework": "GST-IRN"
 	}
 
 
@@ -172,7 +174,8 @@ def submit_gst_irn(
 def test_india_gsp_connection(branch: str | None = None, company: str | None = None) -> dict[str, Any]:
 	"""Desk test — mock IRN in sandbox, ping GSP in live when configured."""
 	if not branch and company:
-		branch = frappe.db.get_value("Branch", {"company": company}, "name")
+		branch = frappe.db.get_value("Branch", {"company": company
+	}, "name")
 	if not branch:
 		frappe.throw(_("Select a branch."), title=_("India GSP"))
 	comp = company or frappe.db.get_value("Branch", branch, "company")
@@ -180,31 +183,32 @@ def test_india_gsp_connection(branch: str | None = None, company: str | None = N
 	if not gsp.gstin:
 		return {
 			"ok": False,
-			"message": _("Set GSTIN on Branch → Country Tax (Tax Registration Number or configuration_json.gstin)."),
-		}
+			"message": _("Set GSTIN on Branch → Country Tax (Tax Registration Number or configuration_json.gstin).")
+	}
 	cfg_check = {
 		"gstin": gsp.gstin,
 		"gsp_base_url": gsp.gsp_base_url,
 		"gsp_client_id": gsp.gsp_client_id,
-		"gsp_api_key": gsp.gsp_api_key,
+		"gsp_api_key": gsp.gsp_api_key
 	}
 	gsp_checklist = validate_gsp_config(cfg_check)
 	if allow_mock_api() or not gsp.gsp_base_url:
-		mock = _mock_irn_response(uuid=frappe.generate_hash(length=12), einvoice_json={"DocDtls": {"No": "TEST"}})
+		mock = _mock_irn_response(uuid=frappe.generate_hash(length=12), einvoice_json={"DocDtls": {"No": "TEST"}
+	})
 		return {
 			"ok": True,
 			"message": _("India GSP sandbox OK (mock IRN)."),
 			"irn": mock["irn"],
 			"mode": "mock",
 			"gsp_ready": not gsp_checklist,
-			"checklist": gsp_checklist or [_("Optional for mock: complete GSP URL and credentials before NIC UAT.")],
-		}
+			"checklist": gsp_checklist or [_("Optional for mock: complete GSP URL and credentials before NIC UAT.")]
+	}
 	if gsp_checklist:
 		return {
 			"ok": False,
 			"message": _("Complete GSP configuration before live IRN generation."),
-			"checklist": gsp_checklist,
-		}
+			"checklist": gsp_checklist
+	}
 	url = f"{gsp.gsp_base_url.rstrip('/')}/health"
 	try:
 		res = requests.get(url, headers=_auth_headers(gsp), timeout=30)
@@ -212,7 +216,8 @@ def test_india_gsp_connection(branch: str | None = None, company: str | None = N
 			"ok": res.status_code < 500,
 			"message": _("GSP endpoint reachable ({0}). Ready for IRN UAT.").format(res.status_code),
 			"gsp_base_url": gsp.gsp_base_url,
-			"gsp_ready": True,
-		}
+			"gsp_ready": True
+	}
 	except requests.RequestException as exc:
-		return {"ok": False, "message": str(exc), "checklist": gsp_checklist}
+		return {"ok": False, "message": str(exc), "checklist": gsp_checklist
+	}

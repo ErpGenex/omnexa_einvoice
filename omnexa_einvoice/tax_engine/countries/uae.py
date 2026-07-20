@@ -25,7 +25,8 @@ def process_hub_payload(payload: dict[str, Any], *, meta=META):
 		status="completed",
 		provider_reference=f"AE-{dt.upper()}-{ref}",
 		message=_("{0} Phase 1 (PINT AE UBL) completed.").format(meta.label),
-		data={"country_code": "AE", "phase1": result, "framework": "PINT-AE"},
+		data={"country_code": "AE", "phase1": result, "framework": "PINT-AE"
+	},
 	)
 
 
@@ -34,7 +35,7 @@ def dispatch_sales_invoice(doc, *, branch=None, phase=None, **kwargs):
 		"reference_name": doc.name,
 		"company": doc.company,
 		"document_type": "invoice",
-		"branch": branch,
+		"branch": branch
 	}
 	ph = (phase or kwargs.get("phase") or "phase1").strip().lower()
 	if ph == "phase2":

@@ -38,7 +38,8 @@ def invoice_canonical_json(data: dict) -> str:
 
 def eta_invoice_signature_block(signature_value: str) -> list[dict[str, str]]:
 	"""ETA production schema expects signatureType (not type)."""
-	return [{"signatureType": "I", "value": (signature_value or "").strip()}]
+	return [{"signatureType": "I", "value": (signature_value or "").strip()
+	}]
 
 
 def _default_delivery_block() -> dict[str, Any]:
@@ -51,7 +52,7 @@ def _default_delivery_block() -> dict[str, Any]:
 		"countryOfOrigin": "",
 		"grossWeight": 0,
 		"netWeight": 0,
-		"terms": "",
+		"terms": ""
 	}
 
 
@@ -111,9 +112,8 @@ def _branch_invoice_context(branch: str) -> frappe._dict:
 				"floor": (row.get("eta_address_floor") or "1").strip(),
 				"room": (row.get("eta_address_room") or "1").strip(),
 				"landmark": (row.get("eta_address_landmark") or "").strip(),
-				"additionalInformation": (row.get("eta_address_additional") or "").strip(),
-			},
-		}
+				"additionalInformation": (row.get("eta_address_additional") or "").strip()}
+	}
 	)
 
 
@@ -135,10 +135,10 @@ def _resolve_receiver(source_doc) -> dict[str, Any]:
 			"floor": "",
 			"room": "",
 			"landmark": "",
-			"additionalInformation": "",
-		},
+			"additionalInformation": ""
+	},
 		"type": receiver_type,
-		"name": name,
+		"name": name
 	}
 	if receiver_type == "B":
 		receiver["id"] = tax_id
@@ -201,17 +201,18 @@ def build_eta_invoice_document(source_doc, branch: str | None = None) -> dict:
 				"valueDifference": 0.0,
 				"totalTaxableFees": 0.0,
 				"itemsDiscount": _q5(discount),
-				"unitValue": {"currencySold": source_doc.get("currency") or "EGP", "amountEGP": _q5(unit_price)},
-				"discount": {"rate": 0.0, "amount": _q5(discount)},
+				"unitValue": {"currencySold": source_doc.get("currency") or "EGP", "amountEGP": _q5(unit_price)
+	},
+				"discount": {"rate": 0.0, "amount": _q5(discount)
+	},
 				"taxableItems": [
 					{
 						"taxType": "T1",
 						"amount": tax_f,
 						"subType": "V009",
-						"rate": _q2_rate(tax_rate),
-					}
-				],
-			}
+						"rate": _q2_rate(tax_rate)
+	}
+				]}
 		)
 		total_sales += line_sales
 		net_total += line_sales
@@ -222,7 +223,8 @@ def build_eta_invoice_document(source_doc, branch: str | None = None) -> dict:
 	if not invoice_lines:
 		frappe.throw(_("At least one invoice line is required."), title=_("E-Invoice"))
 
-	tax_totals = [{"taxType": "T1", "amount": _q5(total_tax)}]
+	tax_totals = [{"taxType": "T1", "amount": _q5(total_tax)
+	}]
 	total_amount = _q5(net_total + total_tax)
 
 	return {
@@ -230,8 +232,8 @@ def build_eta_invoice_document(source_doc, branch: str | None = None) -> dict:
 			"address": ctx.address,
 			"type": "B",
 			"id": str(ctx.rin).replace("-", ""),
-			"name": ctx.trade_name,
-		},
+			"name": ctx.trade_name
+	},
 		"receiver": _resolve_receiver(source_doc),
 		"documentType": "I",
 		"documentTypeVersion": "1.0",
@@ -249,8 +251,8 @@ def build_eta_invoice_document(source_doc, branch: str | None = None) -> dict:
 			"bankAccountNo": "",
 			"bankAccountIBAN": "",
 			"swiftCode": "",
-			"terms": "C",
-		},
+			"terms": "C"
+	},
 		"delivery": _default_delivery_block(),
 		"invoiceLines": invoice_lines,
 		"totalDiscountAmount": 0.0,
@@ -259,7 +261,7 @@ def build_eta_invoice_document(source_doc, branch: str | None = None) -> dict:
 		"taxTotals": tax_totals,
 		"totalAmount": total_amount,
 		"extraDiscountAmount": 0.0,
-		"totalItemsDiscountAmount": 0.0,
+		"totalItemsDiscountAmount": 0.0
 	}
 
 
@@ -368,8 +370,8 @@ def parse_invoice_submission_response(response_body: dict, http_status: int) -> 
 			"message": _("ETA request blocked (firewall/WAF)."),
 			"error_code": "ETA_WAF_BLOCKED",
 			"accepted_count": 0,
-			"rejected_count": 0,
-		}
+			"rejected_count": 0
+	}
 
 	accepted = (
 		response_body.get("acceptedDocuments")
@@ -428,7 +430,7 @@ def parse_invoice_submission_response(response_body: dict, http_status: int) -> 
 		"message": str(message)[:140],
 		"error_code": str(response_body.get("errorCode") or header.get("code") or "")[:140],
 		"accepted_count": len(accepted),
-		"rejected_count": len(rejected),
+		"rejected_count": len(rejected)
 	}
 
 
@@ -461,17 +463,18 @@ def build_usb_signing_test_document(branch: str) -> dict:
 			"valueDifference": 0.0,
 			"totalTaxableFees": 0.0,
 			"itemsDiscount": 0.0,
-			"unitValue": {"currencySold": "EGP", "amountEGP": line_net},
-			"discount": {"rate": 0.0, "amount": 0.0},
+			"unitValue": {"currencySold": "EGP", "amountEGP": line_net
+	},
+			"discount": {"rate": 0.0, "amount": 0.0
+	},
 			"taxableItems": [
 				{
 					"taxType": "T1",
 					"amount": tax_amount,
 					"subType": "V009",
-					"rate": _q2_rate(tax_rate),
-				}
-			],
-		}
+					"rate": _q2_rate(tax_rate)
+	}
+			]}
 	]
 
 	return {
@@ -479,8 +482,8 @@ def build_usb_signing_test_document(branch: str) -> dict:
 			"address": ctx.address,
 			"type": "B",
 			"id": rin_clean,
-			"name": ctx.trade_name or branch,
-		},
+			"name": ctx.trade_name or branch
+	},
 		"receiver": {
 			"address": {
 				"country": "EG",
@@ -492,12 +495,12 @@ def build_usb_signing_test_document(branch: str) -> dict:
 				"floor": "",
 				"room": "",
 				"landmark": "",
-				"additionalInformation": "",
-			},
+				"additionalInformation": ""
+	},
 			"type": "P",
 			"id": "",
-			"name": "USB Test Customer",
-		},
+			"name": "USB Test Customer"
+	},
 		"documentType": "I",
 		"documentTypeVersion": "1.0",
 		"dateTimeIssued": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -514,15 +517,16 @@ def build_usb_signing_test_document(branch: str) -> dict:
 			"bankAccountNo": "",
 			"bankAccountIBAN": "",
 			"swiftCode": "",
-			"terms": "C",
-		},
+			"terms": "C"
+	},
 		"delivery": _default_delivery_block(),
 		"invoiceLines": invoice_lines,
 		"totalDiscountAmount": 0.0,
 		"totalSalesAmount": line_net,
 		"netAmount": line_net,
-		"taxTotals": [{"taxType": "T1", "amount": tax_amount}],
+		"taxTotals": [{"taxType": "T1", "amount": tax_amount
+	}],
 		"totalAmount": line_total,
 		"extraDiscountAmount": 0.0,
-		"totalItemsDiscountAmount": 0.0,
+		"totalItemsDiscountAmount": 0.0
 	}

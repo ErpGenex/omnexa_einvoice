@@ -29,8 +29,8 @@ def _ensure_print_format(name: str, html: str, *, default_language: str = "en") 
 				"print_format_type": "Jinja",
 				"disabled": 0,
 				"standard": "Yes",
-				"default_print_language": default_language,
-			},
+				"default_print_language": default_language
+	},
 			update_modified=True,
 		)
 		return
@@ -45,8 +45,8 @@ def _ensure_print_format(name: str, html: str, *, default_language: str = "en") 
 			"standard": "Yes",
 			"disabled": 0,
 			"default_print_language": default_language,
-			"html": html,
-		}
+			"html": html
+	}
 	)
 	doc.insert(ignore_permissions=True)
 

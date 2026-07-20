@@ -35,8 +35,7 @@ def sales_invoice_before_submit(doc, method=None) -> None:
 		{
 			"reference_doctype": "Sales Invoice",
 			"reference_name": doc.name,
-			"status": ["in", ["Queued", "Completed"]],
-		},
+			"status": ["in", ["Queued", "Completed"]]},
 	)
 	if ok:
 		return

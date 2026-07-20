@@ -21,7 +21,8 @@ from omnexa_einvoice.tax_engine.plugin.specs import CountryPluginSpec
 
 
 def _auth_headers(settings, config: dict[str, Any]) -> dict[str, str]:
-	headers = {"Accept": "application/json", "Content-Type": "application/json"}
+	headers = {"Accept": "application/json", "Content-Type": "application/json"
+	}
 	client_id = (settings.get("client_id") or "").strip()
 	secret = get_settings_password(settings, "client_secret")
 	if client_id and secret:
@@ -71,8 +72,8 @@ def submit_invoice_api(
 				"mock": True,
 				"status": "ACCEPTED",
 				"authority": spec.authority_code,
-				"mode": "mock",
-			}
+				"mode": "mock"
+	}
 		frappe.throw(_("API Base URL missing on Country Tax Settings."), title=_("Tax Plugin"))
 
 	url = f"{base}{spec.submit_path}"
@@ -113,7 +114,8 @@ def submit_invoice_api(
 	try:
 		body = res.json() if res.text else {}
 	except Exception:
-		body = {"raw": (res.text or "")[:8000]}
+		body = {"raw": (res.text or "")[:8000]
+	}
 
 	if res.status_code >= 400:
 		frappe.throw(_("Tax API error ({0}): {1}").format(res.status_code, body), title=_("Tax Plugin"))
@@ -126,5 +128,5 @@ def submit_invoice_api(
 		"status": status,
 		"mode": "live",
 		"environment": settings.api_environment,
-		"idempotency_key": idem,
+		"idempotency_key": idem
 	}

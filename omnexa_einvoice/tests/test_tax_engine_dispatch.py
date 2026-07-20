@@ -22,7 +22,8 @@ class TestTaxEngineDispatch(FrappeTestCase):
 	@patch("omnexa_einvoice.tax_engine.dispatch.resolve_tax_provider_for_branch")
 	@patch("frappe.get_doc")
 	def test_dispatch_mx_phase1(self, mock_get_doc, mock_routing, _mock_egypt):
-		mock_routing.return_value = {"country_code": "MX", "tax_provider": "einvoice_mx"}
+		mock_routing.return_value = {"country_code": "MX", "tax_provider": "einvoice_mx"
+	}
 		mock_get_doc.return_value = frappe._dict(
 			name="SI-MX-DISPATCH",
 			company="Test",
@@ -41,7 +42,8 @@ class TestTaxEngineDispatch(FrappeTestCase):
 	def test_dispatch_rejects_eg_pos_invoice(self):
 		with patch(
 			"omnexa_einvoice.tax_engine.dispatch.resolve_tax_provider_for_branch",
-			return_value={"country_code": "EG", "tax_provider": "einvoice_eta"},
+			return_value={"country_code": "EG", "tax_provider": "einvoice_eta"
+	},
 		):
 			with patch(
 				"omnexa_einvoice.tax_engine.dispatch.is_egypt_branch",

@@ -19,8 +19,8 @@ class TestZatcaPhase1(FrappeTestCase):
 				"company": "Test Company SA",
 				"taxpayer_registration_id": "300000000000003",
 				"seller_name": "Test Seller EN",
-				"seller_name_ar": "بائع تجريبي",
-			}
+				"seller_name_ar": "بائع تجريبي"
+	}
 		)
 		self.assertTrue(out.get("ok"))
 		self.assertTrue(out.get("qr_base64"))
@@ -37,8 +37,8 @@ class TestZatcaPhase1(FrappeTestCase):
 				"phase": "phase1",
 				"company": "Test Company SA",
 				"taxpayer_registration_id": "300000000000003",
-				"seller_name": "Simplified Seller",
-			}
+				"seller_name": "Simplified Seller"
+	}
 		)
 		self.assertEqual(result.status, "completed")
 		self.assertTrue(result.provider_reference.startswith("ZATCA-SIMPLIFIED_INVOICE"))

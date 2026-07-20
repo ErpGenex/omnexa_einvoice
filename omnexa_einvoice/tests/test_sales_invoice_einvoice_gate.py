@@ -101,13 +101,13 @@ class TestSalesInvoiceEinvoiceGate(FrappeTestCase):
 				"adapter_name": "einvoice_stub",
 				"document_type": "invoice",
 				"operation": "submit",
-				**stub_submission_fields(self._co),
-			}
+				**stub_submission_fields(self._co)}
 		)
 		# No real Sales Invoice row in DB for this test name; skip custom validate + link check.
 		sub.flags.ignore_validate = True
 		sub.insert(ignore_permissions=True, ignore_links=True)
-		sub_name = frappe.db.get_value("E Invoice Submission", {"reference_name": si_name}, "name")
+		sub_name = frappe.db.get_value("E Invoice Submission", {"reference_name": si_name
+	}, "name")
 		frappe.db.set_value("E Invoice Submission", sub_name, "status", "Queued")
 		doc = frappe._dict(
 			doctype="Sales Invoice",
@@ -133,12 +133,12 @@ class TestSalesInvoiceEinvoiceGate(FrappeTestCase):
 				"adapter_name": "einvoice_stub",
 				"document_type": "invoice",
 				"operation": "submit",
-				**stub_submission_fields(self._co),
-			}
+				**stub_submission_fields(self._co)}
 		)
 		sub.flags.ignore_validate = True
 		sub.insert(ignore_permissions=True, ignore_links=True)
-		sub_name = frappe.db.get_value("E Invoice Submission", {"reference_name": si_name}, "name")
+		sub_name = frappe.db.get_value("E Invoice Submission", {"reference_name": si_name
+	}, "name")
 		frappe.db.set_value("E Invoice Submission", sub_name, "status", "Completed")
 		doc = frappe._dict(
 			doctype="Sales Invoice",

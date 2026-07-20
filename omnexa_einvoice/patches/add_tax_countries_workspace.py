@@ -17,10 +17,14 @@ def execute():
 		return
 
 	content = [
-		{"id": "tc-h1", "type": "header", "data": {"text": "International e-Invoicing", "col": 12}},
-		{"id": "tc-s1", "type": "shortcut", "data": {"shortcut_name": "Country Tax Settings", "col": 4}},
-		{"id": "tc-s2", "type": "shortcut", "data": {"shortcut_name": "ZATCA Company Settings", "col": 4}},
-		{"id": "tc-s3", "type": "shortcut", "data": {"shortcut_name": "ZATCA Console", "col": 4}},
+		{"id": "tc-h1", "type": "header", "data": {"text": "International e-Invoicing", "col": 12}
+	},
+		{"id": "tc-s1", "type": "shortcut", "data": {"shortcut_name": "Country Tax Settings", "col": 4}
+	},
+		{"id": "tc-s2", "type": "shortcut", "data": {"shortcut_name": "ZATCA Company Settings", "col": 4}
+	},
+		{"id": "tc-s3", "type": "shortcut", "data": {"shortcut_name": "ZATCA Console", "col": 4}
+	},
 	]
 
 	frappe.get_doc(
@@ -38,22 +42,21 @@ def execute():
 					"type": "DocType",
 					"link_to": "Country Tax Settings",
 					"icon": "globe",
-					"color": "Cyan",
-				},
+					"color": "Cyan"
+	},
 				{
 					"label": "ZATCA Company Settings",
 					"type": "DocType",
 					"link_to": "ZATCA Company Settings",
 					"icon": "setting",
-					"color": "Blue",
-				},
+					"color": "Blue"
+	},
 				{
 					"label": "ZATCA Console",
 					"type": "Page",
 					"link_to": "zatca-console",
 					"icon": "dashboard",
-					"color": "Purple",
-				},
-			],
-		}
+					"color": "Purple"
+	},
+			]}
 	).insert(ignore_permissions=True)

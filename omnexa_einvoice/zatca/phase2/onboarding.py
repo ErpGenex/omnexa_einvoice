@@ -27,7 +27,8 @@ def generate_csr_for_settings(settings_name: str) -> dict[str, Any]:
 	doc.private_key = csr_data["private_key_pem"]
 	doc.csr_pem = csr_data["csr_pem"]
 	doc.save(ignore_permissions=True)
-	return {"ok": True, "csr_base64": csr_data["csr_base64"]}
+	return {"ok": True, "csr_base64": csr_data["csr_base64"]
+	}
 
 
 @frappe.whitelist()
@@ -61,7 +62,8 @@ def onboard_compliance_csid(settings_name: str, otp: str) -> dict[str, Any]:
 		doc.certificate_pem = cert_body
 		doc.public_key_pem = create_public_key_pem(cert_body)
 	doc.save(ignore_permissions=True)
-	return {"ok": True, "compliance_request_id": request_id}
+	return {"ok": True, "compliance_request_id": request_id
+	}
 
 
 @frappe.whitelist()
@@ -86,4 +88,5 @@ def onboard_production_csid(settings_name: str) -> dict[str, Any]:
 		doc.public_key_pem = create_public_key_pem(cert_body)
 	doc.zatca_phase = "Phase 2"
 	doc.save(ignore_permissions=True)
-	return {"ok": True, "disposition": body.get("dispositionMessage")}
+	return {"ok": True, "disposition": body.get("dispositionMessage")
+	}

@@ -42,8 +42,7 @@ def get_germany_xrechnung_settings(company: str, *, branch: str | None = None) -
 			"gateway_submit_path": (config.get("gateway_submit_path") or "/xrechnung/v1/invoices").strip(),
 			"leitweg_id": (config.get("leitweg_id") or "").strip(),
 			"client_id": (settings.get("client_id") if settings else "") or "",
-			"client_secret": get_settings_password(settings, "client_secret") if settings else None,
-		}
+			"client_secret": get_settings_password(settings, "client_secret") if settings else None}
 	)
 
 
@@ -55,9 +54,10 @@ def _mock_gateway(*, uuid: str, reference: str) -> dict[str, Any]:
 		"status": "ACCEPTED",
 		"tracking_id": tracking,
 		"uuid": tracking,
-		"raw": {"trackingId": tracking, "reference": reference},
+		"raw": {"trackingId": tracking, "reference": reference
+	},
 		"mode": "mock",
-		"framework": "XRechnung",
+		"framework": "XRechnung"
 	}
 
 
@@ -89,14 +89,15 @@ def submit_xrechnung_invoice(
 		)
 
 	url = f"{cfg.gateway_base_url.rstrip('/')}{cfg.gateway_submit_path}"
-	headers = {"Accept": "application/json", "Content-Type": "application/json"}
+	headers = {"Accept": "application/json", "Content-Type": "application/json"
+	}
 	apply_basic_auth(headers, cfg.client_id, cfg.client_secret)
 
 	payload = {
 		"uuid": uuid,
 		"invoiceHash": hash_b64,
 		"xml": base64.b64encode(signed_xml.encode("utf-8")).decode("ascii"),
-		"leitwegId": cfg.leitweg_id,
+		"leitwegId": cfg.leitweg_id
 	}
 	res = post_country_json(
 		country_code="DE",
@@ -110,7 +111,8 @@ def submit_xrechnung_invoice(
 	try:
 		body = res.json() if res.text else {}
 	except Exception:
-		body = {"raw": (res.text or "")[:8000]}
+		body = {"raw": (res.text or "")[:8000]
+	}
 
 	if res.status_code >= 400:
 		frappe.throw(_("Germany XRechnung error ({0}): {1}").format(res.status_code, body), title=_("Germany XRechnung"))
@@ -124,20 +126,22 @@ def submit_xrechnung_invoice(
 		"uuid": tracking,
 		"raw": body,
 		"mode": "live",
-		"framework": "XRechnung",
+		"framework": "XRechnung"
 	}
 
 
 @frappe.whitelist()
 def test_germany_xrechnung_connection(branch: str | None = None, company: str | None = None) -> dict[str, Any]:
 	if not branch and company:
-		branch = frappe.db.get_value("Branch", {"company": company}, "name")
+		branch = frappe.db.get_value("Branch", {"company": company
+	}, "name")
 	if not branch:
 		frappe.throw(_("Select a branch."), title=_("Germany XRechnung"))
 	comp = company or frappe.db.get_value("Branch", branch, "company")
 	cfg = get_germany_xrechnung_settings(comp, branch=branch)
 	checklist = validate_required_fields(
-		{"gateway_base_url": cfg.gateway_base_url},
+		{"gateway_base_url": cfg.gateway_base_url
+	},
 		[("gateway_base_url", _("gateway_base_url"))],
 	)
 	mock = _mock_gateway(uuid=frappe.generate_hash(length=10), reference="TEST")
@@ -149,8 +153,8 @@ def test_germany_xrechnung_connection(branch: str | None = None, company: str | 
 			"ok": True,
 			"message": _("Germany XRechnung sandbox OK (mock)."),
 			"tracking_id": mock["tracking_id"],
-			"mode": "mock",
-		},
+			"mode": "mock"
+	},
 		base_url=cfg.gateway_base_url,
 		ready_label=_("KoSIT / XRechnung UAT ready."),
 	)

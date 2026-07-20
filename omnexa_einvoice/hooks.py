@@ -67,8 +67,8 @@ doctype_js = {
 		"public/js/zatca_qr_display.js",
 		"public/js/branch_eta_settings.js",
 	],
-	"Country Tax Settings": "doctype/country_tax_settings/country_tax_settings.js",
-}
+	"Country Tax Settings": "doctype/country_tax_settings/country_tax_settings.js"
+	}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -102,8 +102,7 @@ doctype_js = {
 jinja = {
 	"methods": [
 		"omnexa_einvoice.einvoice_print.jinja_methods.einvoice_print_context",
-	],
-}
+	]}
 
 # Installation
 # ------------
@@ -168,8 +167,7 @@ doc_events = {
 		"validate": [
 			"omnexa_einvoice.tax_engine.branch_validate.validate_branch_tax_country",
 			"omnexa_einvoice.branch_eta.validate_branch_eta_settings",
-		],
-	},
+		]},
 	"Sales Invoice": {
 		"before_validate": "omnexa_einvoice.sales_invoice_eta.normalize_sales_invoice_eta_billing_type_field",
 		"validate": "omnexa_einvoice.sales_invoice_eta.validate_sales_invoice_eta_billing_type",
@@ -177,12 +175,10 @@ doc_events = {
 		"on_submit": [
 			"omnexa_einvoice.e_invoice_hooks.sales_invoice_on_submit",
 			"omnexa_einvoice.international_tax_hooks.sales_invoice_international_tax_on_submit",
-		],
-	},
+		]},
 	"POS Invoice": {
-		"on_submit": "omnexa_einvoice.e_invoice_hooks.pos_invoice_on_submit",
-	},
-}
+		"on_submit": "omnexa_einvoice.e_invoice_hooks.pos_invoice_on_submit"}
+	}
 
 # Scheduled Tasks
 # ---------------
@@ -190,8 +186,7 @@ doc_events = {
 scheduler_events = {
 	"hourly_long": [
 		"omnexa_einvoice.e_invoice.auto_submit.autosubmit_einvoice_batch_process",
-	],
-}
+	]}
 
 # Testing
 # -------
@@ -236,22 +231,22 @@ before_request = ["omnexa_einvoice.license_gate.before_request"]
 
 # user_data_fields = [
 # 	{
-# 		"doctype": "{doctype_1}",
-# 		"filter_by": "{filter_by}",
-# 		"redact_fields": ["{field_1}", "{field_2}"],
+# 		"doctype": "{}",
+# 		"filter_by": "{}",
+# 		"redact_fields": ["{}", "{}"],
 # 		"partial": 1,
 # 	},
 # 	{
-# 		"doctype": "{doctype_2}",
-# 		"filter_by": "{filter_by}",
+# 		"doctype": "{}",
+# 		"filter_by": "{}",
 # 		"partial": 1,
 # 	},
 # 	{
-# 		"doctype": "{doctype_3}",
+# 		"doctype": "{}",
 # 		"strict": False,
 # 	},
 # 	{
-# 		"doctype": "{doctype_4}"
+# 		"doctype": "{}"
 # 	}
 # ]
 

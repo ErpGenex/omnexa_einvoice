@@ -34,8 +34,8 @@ def get_mexico_pac_settings(company: str, *, branch: str | None = None) -> frapp
 			"pac_username": (config.get("pac_username") or settings.get("client_id") or "").strip(),
 			"pac_password": get_settings_password(settings, "client_secret"),
 			"csd_certificate_pem": config.get("csd_certificate_pem") or "",
-			"csd_private_key_pem": config.get("csd_private_key_pem") or "",
-		}
+			"csd_private_key_pem": config.get("csd_private_key_pem") or ""
+	}
 	)
 
 

@@ -18,26 +18,29 @@ PAGE_SHORTCUTS = [
 		"label": "USB Signing Agent (Windows)",
 		"type": "Page",
 		"link_to": "eta-signing-agent",
-		"icon": "download",
+		"icon": "download"
 	},
 	{
 		"label": "ETA E-Invoice Console",
 		"type": "Page",
 		"link_to": "eta-einvoice-console",
-		"icon": "file",
+		"icon": "file"
 	},
 	{
 		"label": "ETA E-Receipt Console",
 		"type": "Page",
 		"link_to": "eta-ereceipt-console",
-		"icon": "receipt",
+		"icon": "receipt"
 	},
 ]
 
 CONTENT_SHORTCUTS = [
-	{"id": "e-invoice-op4", "type": "shortcut", "data": {"shortcut_name": "USB Signing Agent (Windows)", "col": 4}},
-	{"id": "e-invoice-op5", "type": "shortcut", "data": {"shortcut_name": "ETA E-Invoice Console", "col": 4}},
-	{"id": "e-invoice-op6", "type": "shortcut", "data": {"shortcut_name": "ETA E-Receipt Console", "col": 4}},
+	{"id": "e-invoice-op4", "type": "shortcut", "data": {"shortcut_name": "USB Signing Agent (Windows)", "col": 4}
+	},
+	{"id": "e-invoice-op5", "type": "shortcut", "data": {"shortcut_name": "ETA E-Invoice Console", "col": 4}
+	},
+	{"id": "e-invoice-op6", "type": "shortcut", "data": {"shortcut_name": "ETA E-Receipt Console", "col": 4}
+	},
 ]
 
 
@@ -53,7 +56,8 @@ def _content_shortcut_names(content: list) -> set[str]:
 	names: set[str] = set()
 	for block in content:
 		if block.get("type") == "shortcut":
-			names.add((block.get("data") or {}).get("shortcut_name") or "")
+			names.add((block.get("data") or {
+	}).get("shortcut_name") or "")
 	return {n for n in names if n}
 
 
@@ -95,9 +99,10 @@ def execute():
 			{
 				"label": dl_label,
 				"type": "URL",
-				"url": f"/assets/omnexa_einvoice/downloads/{ZIP_NAME}",
-				"icon": "download",
-			},
+				"url": f"/assets/omnexa_einvoice/downloads/{ZIP_NAME
+	}",
+				"icon": "download"
+	},
 		)
 		existing_labels.add(dl_label)
 
@@ -110,8 +115,8 @@ def execute():
 				{
 					"id": "e-invoice-op-dl",
 					"type": "shortcut",
-					"data": {"shortcut_name": dl_label, "col": 4},
-				}
+					"data": {"shortcut_name": dl_label, "col": 4}
+	}
 			],
 		)
 
@@ -132,8 +137,8 @@ def execute():
 				"icon": sc.get("icon"),
 				"is_query_report": 0,
 				"hidden": 0,
-				"onboard": 0,
-			},
+				"onboard": 0
+	},
 		)
 
 	ws.save(ignore_permissions=True)

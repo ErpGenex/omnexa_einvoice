@@ -41,7 +41,7 @@ def process_country_tax_invoice(
 	payload = {
 		"reference_name": reference_name.strip(),
 		"company": company or frappe.defaults.get_user_default("company"),
-		"document_type": "invoice",
+		"document_type": "invoice"
 	}
 	ph = (phase or "phase1").strip().lower()
 	if ph == "phase2":

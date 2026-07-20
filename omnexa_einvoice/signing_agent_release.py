@@ -37,12 +37,13 @@ def get_signing_agent_release() -> dict:
 	out = {
 		"available": available,
 		"filename": ZIP_NAME,
-		"download_url": f"/assets/omnexa_einvoice/downloads/{ZIP_NAME}" if available else None,
+		"download_url": f"/assets/omnexa_einvoice/downloads/{ZIP_NAME
+	}" if available else None,
 		"size_bytes": zip_path.stat().st_size if available else 0,
 		"version": meta.get("version") or "",
 		"port": meta.get("port") or 5002,
 		"health_url": meta.get("health_url") or "http://127.0.0.1:5002/health",
-		"build_path": "omnexa_einvoice/signing_agent/build_signing_agent_exe.bat",
+		"build_path": "omnexa_einvoice/signing_agent/build_signing_agent_exe.bat"
 	}
 	if not available:
 		out["message"] = _(

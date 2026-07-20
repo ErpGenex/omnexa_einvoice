@@ -38,7 +38,8 @@ def get_country_tax_settings(
 		return None
 	name = frappe.db.get_value(
 		"Country Tax Settings",
-		{"company": company, "country_code": country_code, "enabled": 1},
+		{"company": company, "country_code": country_code, "enabled": 1
+	},
 		"name",
 	)
 	if not name:
@@ -53,8 +54,8 @@ def get_settings_password(settings: frappe._dict, fieldname: str) -> str:
 	if settings.get("_from_branch") and settings.get("name"):
 		branch_field = {
 			"client_secret": "intl_tax_client_secret",
-			"asp_api_key": "intl_tax_asp_api_key",
-		}.get(fieldname, fieldname)
+			"asp_api_key": "intl_tax_asp_api_key"
+	}.get(fieldname, fieldname)
 		return get_password_from_branch(settings.name, branch_field)
 	if settings.get("name") and frappe.db.exists("Country Tax Settings", settings.name):
 		try:

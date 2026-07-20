@@ -51,11 +51,14 @@ class TestMexicoCsdSigner(FrappeTestCase):
 			{
 				"reference_name": "SI-MX-CSD",
 				"issue_datetime": "2026-05-20T12:00:00",
-				"seller": {"tax_registration": "EKU9003173C9", "name": "Emisor"},
-				"buyer": {"tax_registration": "XAXX010101000", "name": "Receptor"},
-				"lines": [{"description": "Servicio", "qty": 1, "rate": 100, "net_amount": 100}],
-				"totals": {"net_total": 100, "tax_total": 16, "grand_total": 116},
-			}
+				"seller": {"tax_registration": "EKU9003173C9", "name": "Emisor"
+	},
+				"buyer": {"tax_registration": "XAXX010101000", "name": "Receptor"
+	},
+				"lines": [{"description": "Servicio", "qty": 1, "rate": 100, "net_amount": 100
+	}],
+				"totals": {"net_total": 100, "tax_total": 16, "grand_total": 116}
+	}
 		)
 		out = sign_cfdi_csd(xml, private_key_pem=private_pem, certificate_pem=cert_pem)
 		self.assertIn("Sello=", out["signed_xml"])
@@ -64,15 +67,17 @@ class TestMexicoCsdSigner(FrappeTestCase):
 
 	def test_signing_provider_routes_mx_csd(self):
 		private_pem, cert_pem = _test_csd_pems()
-		xml = build_cfdi_xml({"reference_name": "X", "totals": {}, "lines": []})
+		xml = build_cfdi_xml({"reference_name": "X", "totals": {
+	}, "lines": []
+	})
 		ctx = build_signing_context(
 			country_code="MX",
 			settings=frappe._dict(api_environment="sandbox"),
 			config={
 				"signing_mode": "csd",
 				"csd_private_key_pem": private_pem,
-				"csd_certificate_pem": cert_pem,
-			},
+				"csd_certificate_pem": cert_pem
+	},
 		)
 		out = sign_with_provider(xml, ctx)
 		self.assertEqual(out["signer"], "csd:cades-scaffold")

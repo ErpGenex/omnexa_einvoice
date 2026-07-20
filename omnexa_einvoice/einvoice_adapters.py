@@ -39,7 +39,8 @@ class EgyptETAAdapter:
 			status="queued",
 			provider_reference=provider_ref,
 			message=f"Queued for ETA {operation}",
-			data={"operation": operation, "signer_mode": signer_mode},
+			data={"operation": operation, "signer_mode": signer_mode
+	},
 		)
 
 

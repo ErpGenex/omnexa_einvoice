@@ -33,17 +33,18 @@ def _seller_from_company(company: str) -> dict[str, str]:
 	) or {}
 	return {
 		"name": row.get("company_name") or company,
-		"tax_id": (row.get("tax_id") or "").strip(),
+		"tax_id": (row.get("tax_id") or "").strip()
 	}
 
 
 def _buyer_from_customer(customer: str | None) -> dict[str, str]:
 	if not customer:
-		return {"name": "", "tax_id": ""}
+		return {"name": "", "tax_id": ""
+	}
 	row = frappe.db.get_value("Customer", customer, ["customer_name", "tax_id"], as_dict=True) or {}
 	return {
 		"name": row.get("customer_name") or customer,
-		"tax_id": (row.get("tax_id") or "").strip(),
+		"tax_id": (row.get("tax_id") or "").strip()
 	}
 
 
@@ -55,7 +56,7 @@ def _tax_submission_for_invoice(doc, country_code: str) -> dict[str, Any]:
 		"qr_tlv_base64": "",
 		"qr_image_base64": "",
 		"status": "",
-		"authority_status": "",
+		"authority_status": ""
 	}
 	ref = doc.name
 	company = doc.company
@@ -63,7 +64,8 @@ def _tax_submission_for_invoice(doc, country_code: str) -> dict[str, Any]:
 	if country_code == "EG":
 		rows = frappe.get_all(
 			"E Invoice Submission",
-			filters={"reference_name": ref, "reference_doctype": "Sales Invoice"},
+			filters={"reference_name": ref, "reference_doctype": "Sales Invoice"
+	},
 			fields=["eta_uuid", "canonical_hash", "status", "authority_uuid"],
 			order_by="modified desc",
 			limit=1,
@@ -77,7 +79,8 @@ def _tax_submission_for_invoice(doc, country_code: str) -> dict[str, Any]:
 	elif country_code == "SA" and frappe.db.table_exists("tabZATCA Submission Log"):
 		rows = frappe.get_all(
 			"ZATCA Submission Log",
-			filters={"reference_name": ref, "company": company},
+			filters={"reference_name": ref, "company": company
+	},
 			fields=["uuid", "invoice_hash", "qr_base64", "status", "zatca_status"],
 			order_by="modified desc",
 			limit=1,
@@ -100,7 +103,8 @@ def _tax_submission_for_invoice(doc, country_code: str) -> dict[str, Any]:
 	elif frappe.db.table_exists("tabCountry Tax Submission Log"):
 		rows = frappe.get_all(
 			"Country Tax Submission Log",
-			filters={"reference_name": ref, "company": company, "country_code": country_code},
+			filters={"reference_name": ref, "company": company, "country_code": country_code
+	},
 			fields=["uuid", "invoice_hash", "status", "authority_status", "response_payload"],
 			order_by="modified desc",
 			limit=1,
@@ -171,8 +175,7 @@ def get_sales_invoice_print_context(doc, *, lang: str | None = None) -> dict[str
 				"description": desc,
 				"qty": flt(getattr(row, "qty", 0)),
 				"rate": flt(getattr(row, "rate", 0)),
-				"amount": flt(getattr(row, "amount", 0)),
-			}
+				"amount": flt(getattr(row, "amount", 0))}
 		)
 
 	return {
@@ -201,7 +204,7 @@ def get_sales_invoice_print_context(doc, *, lang: str | None = None) -> dict[str
 			getattr(doc, "total_taxes_and_charges", None) or getattr(doc, "total_tax", 0)
 		),
 		"grand_total": flt(getattr(doc, "grand_total", 0)),
-		"footer": design.footer_ar if use_ar else design.footer_en,
+		"footer": design.footer_ar if use_ar else design.footer_en
 	}
 
 
@@ -219,5 +222,5 @@ def _design_to_dict(design: EInvoicePrintDesign) -> dict[str, str]:
 		"invoice_title_ar": design.invoice_title_ar,
 		"footer_en": design.footer_en,
 		"footer_ar": design.footer_ar,
-		"template_family": design.template_family,
+		"template_family": design.template_family
 	}

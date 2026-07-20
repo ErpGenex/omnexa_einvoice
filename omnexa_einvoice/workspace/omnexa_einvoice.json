@@ -1,0 +1,52 @@
+{
+    "name": "Omnexa Einvoice",
+    "module": "omnexa_einvoice",
+    "is_standard": 1,
+    "shortcuts": [],
+    "links": [
+        {
+            "label": "Omnexa Einvoice List",
+            "name": "omnexa_einvoice",
+            "type": "List",
+            "link_to": "omnexa_einvoice",
+            "onboard": 1
+        }
+    ],
+    "onboarding": [],
+    "charts": [
+        {
+            "label": "Activity Chart",
+            "chart_name": "omnexa_einvoice_activity",
+            "chart_type": "Line",
+            "is_standard": 1
+        }
+    ],
+    "number_cards": [
+        {
+            "label": "Total Records",
+            "number_card_name": "omnexa_einvoice_total",
+            "number_card_doc_type": "Number Card",
+            "is_standard": 1
+        }
+    ],
+    "reports": [
+        {
+            "label": "Omnexa Einvoice Report",
+            "name": "omnexa_einvoice_report",
+            "type": "Report",
+            "is_standard": 1
+        }
+    ],
+    "operations": [
+        {
+            "label": "Create Omnexa Einvoice",
+            "name": "create_omnexa_einvoice",
+            "type": "Action",
+            "is_standard": 1
+        }
+    ],
+    "card": {
+        "card_name": "omnexa_einvoice",
+        "card_style": "Default"
+    }
+}

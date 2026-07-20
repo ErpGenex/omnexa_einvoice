@@ -32,13 +32,14 @@ class TestETASigningAgent(unittest.TestCase):
 		if getattr(cls, "_branch", None):
 			frappe.delete_doc("Branch", cls._branch, force=1, ignore_permissions=True)
 	def test_sign_invoice_via_agent_success(self):
-		doc = {"documentType": "I", "internalID": "INV-1"}
+		doc = {"documentType": "I", "internalID": "INV-1"
+	}
 		mock_resp = MagicMock()
 		mock_resp.status_code = 200
 		mock_resp.json.return_value = {
 			"success": True,
-			"signatures": [{"signatureType": "I", "value": "c2lnbmF0dXJl"}],
-		}
+			"signatures": [{"signatureType": "I", "value": "c2lnbmF0dXJl"}]
+	}
 		with patch("omnexa_einvoice.e_invoice.agent_service.requests.post", return_value=mock_resp) as post:
 			sig = sign_invoice_via_signing_agent(doc, agent_url="http://127.0.0.1:5002", pin="1234")
 		self.assertEqual(sig, "c2lnbmF0dXJl")
@@ -51,11 +52,13 @@ class TestETASigningAgent(unittest.TestCase):
 	def test_sign_invoice_via_agent_failure(self):
 		mock_resp = MagicMock()
 		mock_resp.status_code = 500
-		mock_resp.json.return_value = {"success": False, "message": "Token not found"}
+		mock_resp.json.return_value = {"success": False, "message": "Token not found"
+	}
 		mock_resp.text = ""
 		with patch("omnexa_einvoice.e_invoice.agent_service.requests.post", return_value=mock_resp):
 			with self.assertRaises(frappe.ValidationError):
-				sign_invoice_via_signing_agent({"internalID": "x"}, agent_url="http://127.0.0.1:5002")
+				sign_invoice_via_signing_agent({"internalID": "x"
+	}, agent_url="http://127.0.0.1:5002")
 
 	def test_usb_signing_test_document_validates(self):
 		branch = self._branch

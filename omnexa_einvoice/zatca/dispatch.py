@@ -42,7 +42,8 @@ def validate_zatca_payload(payload: dict[str, Any]) -> dict[str, str]:
 			raise IntegrationHubError(
 				_("ZATCA Phase 2 requires company or csid_reference in the payload.")
 			)
-	return {"reference": reference, "document_type": document_type, "phase": phase}
+	return {"reference": reference, "document_type": document_type, "phase": phase
+	}
 
 
 def process_zatca_hub_request(payload: dict[str, Any]) -> IntegrationResult:
@@ -78,7 +79,8 @@ def process_zatca_hub_request(payload: dict[str, Any]) -> IntegrationResult:
 			phase=phase,
 			document_type=document_type,
 			ok=False,
-			details={"error": str(exc)},
+			details={"error": str(exc)
+	},
 		)
 		raise
 
@@ -87,5 +89,6 @@ def process_zatca_hub_request(payload: dict[str, Any]) -> IntegrationResult:
 		status=status if status in {"queued", "completed", "failed"} else "queued",
 		provider_reference=provider_ref,
 		message=message,
-		data={"adapter": ADAPTER_NAME, "phase": phase, "zatca": result},
+		data={"adapter": ADAPTER_NAME, "phase": phase, "zatca": result
+	},
 	)

@@ -25,8 +25,8 @@ def execute():
 				"label": "International Tax Console",
 				"type": "Page",
 				"link_to": "international-tax-console",
-				"icon": "globe",
-			},
+				"icon": "globe"
+	},
 		)
 	content = json.loads(ws.content or "[]")
 	ids = {c.get("id") for c in content}
@@ -35,8 +35,8 @@ def execute():
 			{
 				"id": "tc-s4",
 				"type": "shortcut",
-				"data": {"shortcut_name": "International Tax Console", "col": 4},
-			}
+				"data": {"shortcut_name": "International Tax Console", "col": 4}
+	}
 		)
 	ws.content = json.dumps(content)
 	ws.save(ignore_permissions=True)

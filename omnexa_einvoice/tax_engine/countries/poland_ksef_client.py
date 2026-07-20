@@ -45,8 +45,8 @@ def get_poland_ksef_settings(company: str, *, branch: str | None = None) -> frap
 			"client_id": (settings.get("client_id") if settings else "") or "",
 			"client_secret": get_settings_password(settings, "client_secret") if settings else None,
 			"ksef_private_key_pem": config.get("ksef_private_key_pem") or config.get("signing_private_key_pem") or "",
-			"ksef_certificate_pem": config.get("ksef_certificate_pem") or config.get("signing_certificate_pem") or "",
-		}
+			"ksef_certificate_pem": config.get("ksef_certificate_pem") or config.get("signing_certificate_pem") or ""
+	}
 	)
 
 
@@ -55,7 +55,8 @@ def validate_poland_ksef_for_live(company: str, *, branch: str | None = None) ->
 
 	ksef = get_poland_ksef_settings(company, branch=branch)
 	missing = validate_required_fields(
-		{"nip": ksef.nip, "ksef_base_url": ksef.ksef_base_url},
+		{"nip": ksef.nip, "ksef_base_url": ksef.ksef_base_url
+	},
 		[("nip", _("nip")), ("ksef_base_url", _("ksef_base_url"))],
 	)
 	if not ksef.token and not ksef.ksef_private_key_pem:
@@ -71,9 +72,10 @@ def _mock_ksef(*, uuid: str, reference: str) -> dict[str, Any]:
 		"status": "ACCEPTED",
 		"ksef_number": ksef_ref,
 		"uuid": ksef_ref,
-		"raw": {"ksefReferenceNumber": ksef_ref, "reference": reference},
+		"raw": {"ksefReferenceNumber": ksef_ref, "reference": reference
+	},
 		"mode": "mock",
-		"framework": "KSeF-FA2",
+		"framework": "KSeF-FA2"
 	}
 
 
@@ -98,7 +100,8 @@ def submit_ksef_invoice(
 		validate_poland_ksef_for_live(company, branch=branch)
 
 	url = f"{ksef.ksef_base_url.rstrip('/')}{ksef.ksef_submit_path}"
-	headers = {"Accept": "application/json", "Content-Type": "application/json"}
+	headers = {"Accept": "application/json", "Content-Type": "application/json"
+	}
 	apply_bearer(headers, ksef.token)
 	if not headers.get("Authorization"):
 		apply_basic_auth(headers, ksef.client_id, ksef.client_secret)
@@ -107,7 +110,7 @@ def submit_ksef_invoice(
 		"uuid": uuid,
 		"invoiceHash": hash_b64,
 		"invoiceXml": base64.b64encode(signed_xml.encode("utf-8")).decode("ascii"),
-		"nip": ksef.nip,
+		"nip": ksef.nip
 	}
 	res = post_country_json(
 		country_code="PL",
@@ -121,7 +124,8 @@ def submit_ksef_invoice(
 	try:
 		body = res.json() if res.text else {}
 	except Exception:
-		body = {"raw": (res.text or "")[:8000]}
+		body = {"raw": (res.text or "")[:8000]
+	}
 
 	if res.status_code >= 400:
 		frappe.throw(_("KSeF error ({0}): {1}").format(res.status_code, body), title=_("KSeF"))
@@ -135,22 +139,25 @@ def submit_ksef_invoice(
 		"uuid": ksef_ref,
 		"raw": body,
 		"mode": "live",
-		"framework": "KSeF-FA2",
+		"framework": "KSeF-FA2"
 	}
 
 
 @frappe.whitelist()
 def test_poland_ksef_connection(branch: str | None = None, company: str | None = None) -> dict[str, Any]:
 	if not branch and company:
-		branch = frappe.db.get_value("Branch", {"company": company}, "name")
+		branch = frappe.db.get_value("Branch", {"company": company
+	}, "name")
 	if not branch:
 		frappe.throw(_("Select a branch."), title=_("KSeF"))
 	comp = company or frappe.db.get_value("Branch", branch, "company")
 	ksef = get_poland_ksef_settings(comp, branch=branch)
 	if not ksef.nip:
-		return {"ok": False, "message": _("Set NIP on Branch tax registration or configuration_json.nip.")}
+		return {"ok": False, "message": _("Set NIP on Branch tax registration or configuration_json.nip.")
+	}
 	checklist = validate_required_fields(
-		{"ksef_base_url": ksef.ksef_base_url},
+		{"ksef_base_url": ksef.ksef_base_url
+	},
 		[("ksef_base_url", _("ksef_base_url"))],
 	)
 	if not ksef.token and not ksef.ksef_private_key_pem:
@@ -164,8 +171,8 @@ def test_poland_ksef_connection(branch: str | None = None, company: str | None =
 			"ok": True,
 			"message": _("KSeF sandbox OK (mock)."),
 			"ksef_number": mock["ksef_number"],
-			"mode": "mock",
-		},
+			"mode": "mock"
+	},
 		base_url=ksef.ksef_base_url,
 		ready_label=_("KSeF ready for FA(2) UAT."),
 	)

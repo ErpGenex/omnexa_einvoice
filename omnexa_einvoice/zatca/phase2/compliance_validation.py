@@ -29,8 +29,8 @@ def _submit_compliance_sample(settings, document_type: str, reference: str) -> t
 			"document_type": document_type,
 			"taxpayer_registration_id": settings.vat_registration_number,
 			"seller_name": settings.organization_name,
-			"seller_name_ar": settings.organization_name_ar,
-		}
+			"seller_name_ar": settings.organization_name_ar
+	}
 	)
 	signed_xml = phase1.get("signed_xml") or ""
 	payload = build_invoice_api_payload(
@@ -77,4 +77,5 @@ def validate_compliance_invoices(settings_name: str) -> dict[str, Any]:
 			_("Compliance validation incomplete: {0}").format(results),
 			title=_("ZATCA Compliance"),
 		)
-	return {"ok": True, "results": results}
+	return {"ok": True, "results": results
+	}

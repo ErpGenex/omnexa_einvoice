@@ -85,7 +85,7 @@ def analyze_itida_cms_der(der: bytes) -> dict[str, Any]:
 		"likely_attached_document": False,
 		"encap_content_type": None,
 		"encap_content_len": 0,
-		"outer_content_type": None,
+		"outer_content_type": None
 	}
 
 	try:

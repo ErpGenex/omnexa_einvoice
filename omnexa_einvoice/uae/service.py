@@ -39,14 +39,15 @@ def run_phase1(payload: dict[str, Any]) -> dict[str, Any]:
 		uuid=document.get("uuid") or "",
 		xml_text=sign_data.get("signed_xml") or xml_text,
 		document=document,
-		extra={"authority": "UAE_PEPPOL", "phase": "phase1", "framework": "PINT-AE"},
+		extra={"authority": "UAE_PEPPOL", "phase": "phase1", "framework": "PINT-AE"
+	},
 	)
 	log_name = create_log(
 		{
 			"company": company,
 			"reference_name": document.get("reference_name"),
-			"reference_doctype": document.get("reference_doctype") or "Sales Invoice",
-		},
+			"reference_doctype": document.get("reference_doctype") or "Sales Invoice"
+	},
 		country_code="AE",
 		phase="phase1",
 		status="Signed",
@@ -71,7 +72,7 @@ def run_phase1(payload: dict[str, Any]) -> dict[str, Any]:
 		"hash_b64": sign_data.get("hash_b64"),
 		"document": document,
 		"archive_paths": paths,
-		"log_name": log_name,
+		"log_name": log_name
 	}
 
 
@@ -84,7 +85,8 @@ def execute_uae_phase2_submit(payload: dict[str, Any], *, phase1: dict[str, Any]
 	status = "Submitted"
 
 	if allow_mock_api():
-		api_result = {"ok": True, "mock": True, "status": "ACCEPTED", "authority": "UAE_PEPPOL"}
+		api_result = {"ok": True, "mock": True, "status": "ACCEPTED", "authority": "UAE_PEPPOL"
+	}
 	else:
 		try:
 			api_result = submit_to_asp(
@@ -113,7 +115,7 @@ def execute_uae_phase2_submit(payload: dict[str, Any], *, phase1: dict[str, Any]
 		"status": "submitted",
 		"phase1": phase1,
 		"api": api_result,
-		"log_name": log_name,
+		"log_name": log_name
 	}
 
 
@@ -131,7 +133,7 @@ def run_phase2(payload: dict[str, Any], *, sync: bool = False) -> dict[str, Any]
 			"status": "queued",
 			"job_id": job_id,
 			"phase1": phase1,
-			"log_name": log_name,
-		}
+			"log_name": log_name
+	}
 
 	return execute_uae_phase2_submit(payload, phase1=phase1)

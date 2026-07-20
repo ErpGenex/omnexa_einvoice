@@ -55,5 +55,5 @@ def submit_reporting(
 		"qr_tlv": qr_tlv,
 		"validation_results": result.get("validation_results"),
 		"http_status": status_code,
-		"raw": body,
+		"raw": body
 	}

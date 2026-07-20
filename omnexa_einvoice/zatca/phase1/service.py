@@ -37,7 +37,8 @@ def _resolve_settings(payload: dict[str, Any]):
 
 		if branch_has_zatca(branch):
 			return get_company_settings(company, branch=branch)
-	if company and frappe.db.exists("ZATCA Company Settings", {"company": company, "enabled": 1}):
+	if company and frappe.db.exists("ZATCA Company Settings", {"company": company, "enabled": 1
+	}):
 		return get_company_settings(company, branch=branch)
 	seller = payload.get("document", {}).get("seller") if isinstance(payload.get("document"), dict) else {}
 	seller = seller or {}
@@ -50,8 +51,8 @@ def _resolve_settings(payload: dict[str, Any]):
 			"vat_registration_number": seller.get("vat_registration")
 			or payload.get("taxpayer_registration_id"),
 			"certificate_pem": "",
-			"public_key_pem": "",
-		}
+			"public_key_pem": ""
+	}
 	)
 
 
@@ -66,8 +67,8 @@ def _build_document_payload(payload: dict[str, Any], settings, seller: dict) -> 
 			"issue_datetime": doc.get("issue_datetime"),
 			"currency": doc.get("currency") or "SAR",
 			"lines": doc.get("lines"),
-			"totals": doc.get("totals"),
-		}
+			"totals": doc.get("totals")
+	}
 	return build_invoice_payload(
 		document_type,
 		company=settings.company or payload.get("company") or "",
@@ -90,8 +91,8 @@ def run_phase1(payload: dict[str, Any]) -> dict[str, Any]:
 		seller = {
 			"name": payload.get("seller_name") or "Seller",
 			"name_ar": payload.get("seller_name_ar") or payload.get("seller_name") or "بائع",
-			"vat_registration": payload.get("taxpayer_registration_id") or "",
-		}
+			"vat_registration": payload.get("taxpayer_registration_id") or ""
+	}
 		icv, pih = 1, ""
 		private_key = None
 		certificate = ""
@@ -136,7 +137,8 @@ def run_phase1(payload: dict[str, Any]) -> dict[str, Any]:
 		xml_text=signed_xml,
 		json_text=json_text,
 		qr_base64=qr_b64,
-		meta={"icv": icv, "hash": sign_data.get("hash_hex")},
+		meta={"icv": icv, "hash": sign_data.get("hash_hex")
+	},
 	)
 
 	if settings.name and sign_data.get("hash_hex"):
@@ -149,7 +151,8 @@ def run_phase1(payload: dict[str, Any]) -> dict[str, Any]:
 		phase="phase1",
 		document_type=inv.get("document_type"),
 		ok=True,
-		details={"uuid": inv_uuid, "icv": icv},
+		details={"uuid": inv_uuid, "icv": icv
+	},
 	)
 
 	log_name = None
@@ -179,5 +182,5 @@ def run_phase1(payload: dict[str, Any]) -> dict[str, Any]:
 		"signed_xml": signed_xml,
 		"json": inv,
 		"archive_paths": paths,
-		"icv": icv,
+		"icv": icv
 	}

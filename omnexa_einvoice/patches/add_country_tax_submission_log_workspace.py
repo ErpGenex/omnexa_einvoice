@@ -24,8 +24,8 @@ def execute():
 				"label": "Country Tax Submission Log",
 				"type": "DocType",
 				"link_to": "Country Tax Submission Log",
-				"icon": "list",
-			},
+				"icon": "list"
+	},
 		)
 	content = json.loads(ws.content or "[]")
 	ids = {c.get("id") for c in content}
@@ -34,8 +34,8 @@ def execute():
 			{
 				"id": "tc-s5",
 				"type": "shortcut",
-				"data": {"shortcut_name": "Country Tax Submission Log", "col": 4},
-			}
+				"data": {"shortcut_name": "Country Tax Submission Log", "col": 4}
+	}
 		)
 	ws.content = json.dumps(content)
 	ws.save(ignore_permissions=True)

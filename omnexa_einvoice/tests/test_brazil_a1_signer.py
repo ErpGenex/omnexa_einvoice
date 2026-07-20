@@ -48,10 +48,12 @@ class TestBrazilA1Signer(FrappeTestCase):
 				"uuid": "BRTESTUUID123",
 				"reference_name": "SI-BR-A1",
 				"issue_datetime": "2026-05-20T12:00:00",
-				"seller": {"tax_registration": "11222333000181", "name": "Emit"},
-				"lines": [{"description": "Produto", "qty": 1, "rate": 10, "net_amount": 10}],
-				"totals": {"net_total": 10, "grand_total": 10},
-			}
+				"seller": {"tax_registration": "11222333000181", "name": "Emit"
+	},
+				"lines": [{"description": "Produto", "qty": 1, "rate": 10, "net_amount": 10
+	}],
+				"totals": {"net_total": 10, "grand_total": 10}
+	}
 		)
 		out = sign_nfe_a1(xml, private_key_pem=private_pem, certificate_pem=cert_pem)
 		self.assertIn("Signature", out["signed_xml"])
@@ -59,15 +61,17 @@ class TestBrazilA1Signer(FrappeTestCase):
 
 	def test_provider_routes_br_a1(self):
 		private_pem, cert_pem = _test_a1_pems()
-		xml = build_nfe_xml({"uuid": "X", "reference_name": "1", "totals": {}, "lines": []})
+		xml = build_nfe_xml({"uuid": "X", "reference_name": "1", "totals": {
+	}, "lines": []
+	})
 		ctx = build_signing_context(
 			country_code="BR",
 			settings=frappe._dict(api_environment="sandbox"),
 			config={
 				"signing_mode": "a1",
 				"a1_private_key_pem": private_pem,
-				"a1_certificate_pem": cert_pem,
-			},
+				"a1_certificate_pem": cert_pem
+	},
 		)
 		out = sign_with_provider(xml, ctx)
 		self.assertEqual(out["signer"], "a1:xmldsig-scaffold")

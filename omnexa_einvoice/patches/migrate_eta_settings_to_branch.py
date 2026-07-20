@@ -27,7 +27,8 @@ def execute():
 		updates: dict = {}
 		tap_name = row.get("tax_authority_profile") if has_profile_links else None
 		if not tap_name and row.get("company"):
-			tap_name = frappe.db.get_value("Tax Authority Profile", {"company": row.company}, "name")
+			tap_name = frappe.db.get_value("Tax Authority Profile", {"company": row.company
+	}, "name")
 		if tap_name and frappe.db.exists("Tax Authority Profile", tap_name):
 			tap = frappe.db.get_value(
 				"Tax Authority Profile",
@@ -80,13 +81,14 @@ def execute():
 						"eta_address_room": tap.get("eta_address_room"),
 						"eta_address_landmark": tap.get("eta_address_landmark"),
 						"eta_address_additional": tap.get("eta_address_additional"),
-						"eta_require_einvoice_before_si_submit": tap.get("require_e_invoice_for_sales_invoice"),
-					}
+						"eta_require_einvoice_before_si_submit": tap.get("require_e_invoice_for_sales_invoice")
+	}
 				)
 
 		sp_name = row.get("signing_profile") if has_profile_links else None
 		if not sp_name and row.get("company"):
-			sp_name = frappe.db.get_value("Signing Profile", {"company": row.company}, "name")
+			sp_name = frappe.db.get_value("Signing Profile", {"company": row.company
+	}, "name")
 		if sp_name and frappe.db.exists("Signing Profile", sp_name):
 			sp = frappe.db.get_value(
 				"Signing Profile",
@@ -105,8 +107,8 @@ def execute():
 						"eta_signer_mode": sp.get("default_signer_mode"),
 						"eta_signing_secret": sp.get("signing_secret"),
 						"eta_windows_signer_command": sp.get("windows_signer_command"),
-						"eta_certificate_reference": sp.get("certificate_reference"),
-					}
+						"eta_certificate_reference": sp.get("certificate_reference")
+	}
 				)
 
 		if updates:

@@ -20,7 +20,8 @@ class TestZatcaPhase2Payload(unittest.TestCase):
 	def test_parse_success_clearance(self):
 		r = parse_submission_result(
 			200,
-			{"clearanceStatus": "CLEARED", "validationResults": {}},
+			{"clearanceStatus": "CLEARED", "validationResults": {}
+	},
 			status_field="clearanceStatus",
 		)
 		self.assertTrue(r["ok"])

@@ -19,8 +19,8 @@ class TestTaxEngineCountries(FrappeTestCase):
 			"AE": "einvoice_ae",
 			"DE": "einvoice_de",
 			"IT": "einvoice_it",
-			"IN": "einvoice_in",
-		}
+			"IN": "einvoice_in"
+	}
 		for code, adapter in expected.items():
 			self.assertEqual(resolve_adapter_name(code), adapter)
 
@@ -37,8 +37,8 @@ class TestTaxEngineCountries(FrappeTestCase):
 			{
 				"reference_name": "SI-MX-TEST",
 				"document_type": "invoice",
-				"company": "Test",
-			},
+				"company": "Test"
+	},
 			idempotency_key="mx-test-1",
 		)
 		self.assertEqual(result.status, "completed")

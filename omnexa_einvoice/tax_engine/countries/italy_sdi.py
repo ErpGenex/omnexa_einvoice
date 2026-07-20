@@ -61,8 +61,8 @@ def validate_italy_sdi_for_live(company: str, *, branch: str | None = None) -> N
 			{
 				"partita_iva": sdi.partita_iva,
 				"sdi_base_url": sdi.sdi_base_url,
-				"fatturapa_private_key_pem": sdi.fatturapa_private_key_pem,
-			},
+				"fatturapa_private_key_pem": sdi.fatturapa_private_key_pem
+	},
 			[
 				("partita_iva", _("partita_iva")),
 				("sdi_base_url", _("sdi_base_url")),
@@ -81,9 +81,10 @@ def _mock_sdi(*, uuid: str, reference: str) -> dict[str, Any]:
 		"status": "RC",
 		"sdi_id": sdi_id,
 		"uuid": sdi_id,
-		"raw": {"sdiId": sdi_id, "reference": reference, "esito": "RC"},
+		"raw": {"sdiId": sdi_id, "reference": reference, "esito": "RC"
+	},
 		"mode": "mock",
-		"framework": "FatturaPA",
+		"framework": "FatturaPA"
 	}
 
 
@@ -108,7 +109,8 @@ def submit_fatturapa_sdi(
 		validate_italy_sdi_for_live(company, branch=branch)
 
 	url = f"{sdi.sdi_base_url.rstrip('/')}{sdi.sdi_submit_path}"
-	headers = {"Accept": "application/json", "Content-Type": "application/json"}
+	headers = {"Accept": "application/json", "Content-Type": "application/json"
+	}
 	apply_basic_auth(headers, sdi.client_id, sdi.client_secret)
 
 	payload = {
@@ -116,7 +118,7 @@ def submit_fatturapa_sdi(
 		"invoiceHash": hash_b64,
 		"xml": base64.b64encode(signed_xml.encode("utf-8")).decode("ascii"),
 		"partitaIVA": sdi.partita_iva,
-		"codiceDestinatario": sdi.codice_destinatario,
+		"codiceDestinatario": sdi.codice_destinatario
 	}
 	res = post_country_json(
 		country_code="IT",
@@ -130,7 +132,8 @@ def submit_fatturapa_sdi(
 	try:
 		body = res.json() if res.text else {}
 	except Exception:
-		body = {"raw": (res.text or "")[:8000]}
+		body = {"raw": (res.text or "")[:8000]
+	}
 
 	if res.status_code >= 400:
 		frappe.throw(_("Italy SDI error ({0}): {1}").format(res.status_code, body), title=_("Italy SDI"))
@@ -144,24 +147,27 @@ def submit_fatturapa_sdi(
 		"uuid": sdi_id,
 		"raw": body,
 		"mode": "live",
-		"framework": "FatturaPA",
+		"framework": "FatturaPA"
 	}
 
 
 @frappe.whitelist()
 def test_italy_sdi_connection(branch: str | None = None, company: str | None = None) -> dict[str, Any]:
 	if not branch and company:
-		branch = frappe.db.get_value("Branch", {"company": company}, "name")
+		branch = frappe.db.get_value("Branch", {"company": company
+	}, "name")
 	if not branch:
 		frappe.throw(_("Select a branch."), title=_("Italy SDI"))
 	comp = company or frappe.db.get_value("Branch", branch, "company")
 	sdi = get_italy_sdi_settings(comp, branch=branch)
 	if not sdi.partita_iva:
-		return {"ok": False, "message": _("Set Partita IVA on Branch tax registration or configuration_json.partita_iva.")}
+		return {"ok": False, "message": _("Set Partita IVA on Branch tax registration or configuration_json.partita_iva.")
+	}
 	from omnexa_einvoice.tax_engine.countries.country_http_uat import validate_required_fields
 
 	checklist = validate_required_fields(
-		{"sdi_base_url": sdi.sdi_base_url, "fatturapa_private_key_pem": sdi.fatturapa_private_key_pem},
+		{"sdi_base_url": sdi.sdi_base_url, "fatturapa_private_key_pem": sdi.fatturapa_private_key_pem
+	},
 		[
 			("sdi_base_url", _("sdi_base_url")),
 			("fatturapa_private_key_pem", _("fatturapa_private_key_pem")),
@@ -176,8 +182,8 @@ def test_italy_sdi_connection(branch: str | None = None, company: str | None = N
 			"ok": True,
 			"message": _("Italy SDI sandbox OK (mock)."),
 			"sdi_id": mock["sdi_id"],
-			"mode": "mock",
-		},
+			"mode": "mock"
+	},
 		base_url=sdi.sdi_base_url,
 		ready_label=_("SDI ready for FatturaPA UAT."),
 	)

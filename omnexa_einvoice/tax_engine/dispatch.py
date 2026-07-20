@@ -40,7 +40,7 @@ def build_hub_payload_for_branch(
 		"operation": operation,
 		"company": extra.get("company") if extra else None,
 		"branch": branch,
-		"country_code": routing["country_code"],
+		"country_code": routing["country_code"]
 	}
 	if extra:
 		payload.update(extra)
