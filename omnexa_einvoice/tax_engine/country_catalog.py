@@ -282,7 +282,8 @@ def normalize_country_code(raw: str | None) -> str:
 def country_display_name(country_code: str, *, lang: str | None = None) -> str:
 	"""Human-readable country name for Branch UI (EN or AR)."""
 	code = normalize_country_code(country_code)
-	use_ar = (lang or "").startswith("ar") if lang else (frappe.local.lang or "en").startswith("ar")
+	current_lang = lang or getattr(frappe.local, "lang", "en")
+	use_ar = (current_lang or "en").startswith("ar")
 	if code == "EG":
 		return "مصر" if use_ar else "Egypt"
 	if code == "SA":
