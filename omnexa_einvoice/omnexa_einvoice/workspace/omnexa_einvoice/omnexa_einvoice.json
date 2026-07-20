@@ -1,0 +1,194 @@
+{
+ "charts": [],
+ "content": "[{\"id\":\"omx-einv-h1\",\"type\":\"header\",\"data\":{\"text\":\"<span class=\\\"h4\\\"><b>E-Invoice</b></span>\",\"col\":12}},{\"id\":\"omx-einv-c1\",\"type\":\"card\",\"data\":{\"card_name\":\"Submissions\",\"col\":4}},{\"id\":\"omx-einv-c2\",\"type\":\"card\",\"data\":{\"card_name\":\"Company setup\",\"col\":4}},{\"id\":\"omx-einv-c3\",\"type\":\"card\",\"data\":{\"card_name\":\"Related accounting\",\"col\":4}}]",
+ "custom_blocks": [],
+ "docstatus": 0,
+ "doctype": "Workspace",
+ "for_user": "",
+ "hide_custom": 0,
+ "icon": "integration",
+ "idx": 0,
+ "is_hidden": 0,
+ "label": "E-Invoice",
+ "links": [
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Submissions",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "icon": "file",
+   "label": "ETA E-Invoice Console",
+   "link_count": 0,
+   "link_to": "eta-einvoice-console",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "icon": "receipt",
+   "label": "ETA E-Receipt Console",
+   "link_count": 0,
+   "link_to": "eta-ereceipt-console",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "E Invoice Submission",
+   "link_count": 0,
+   "link_to": "E Invoice Submission",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "ETA E-Invoice Review Queue",
+   "link_count": 0,
+   "link_to": "ETA E-Invoice Review Queue",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 1,
+   "label": "ETA E-Receipt Review Queue",
+   "link_count": 0,
+   "link_to": "ETA E-Receipt Review Queue",
+   "link_type": "Report",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Branch ETA setup",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Branch (Egypt ETA tab)",
+   "link_count": 0,
+   "link_to": "Branch",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "USB Signing Agent (Windows)",
+   "link_count": 0,
+   "link_to": "eta-signing-agent",
+   "link_type": "Page",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Related accounting",
+   "link_count": 0,
+   "onboard": 0,
+   "type": "Card Break"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "Sales Invoice",
+   "link_count": 0,
+   "link_to": "Sales Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  },
+  {
+   "hidden": 0,
+   "is_query_report": 0,
+   "label": "POS Sales Invoice",
+   "link_count": 0,
+   "link_to": "Sales Invoice",
+   "link_type": "DocType",
+   "onboard": 0,
+   "type": "Link"
+  }
+ ],
+ "modified": "2026-04-14 00:00:00",
+ "modified_by": "Administrator",
+ "module": "Omnexa Einvoice",
+ "name": "E-Invoice",
+ "number_cards": [],
+ "owner": "Administrator",
+ "parent_page": "",
+ "public": 1,
+ "quick_lists": [],
+ "restrict_to_domain": "",
+ "roles": [
+  {"role": "System Manager"},
+  {"role": "Accounts Manager"},
+  {"role": "Accounts User"}
+ ],
+ "sequence_id": 8.0,
+ "shortcuts": [
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "format": "",
+   "icon": "download",
+   "label": "USB Signing Agent (Windows)",
+   "link_to": "eta-signing-agent",
+   "stats_filter": "",
+   "type": "Page",
+   "url": ""
+  },
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "format": "",
+   "icon": "file",
+   "label": "ETA E-Invoice Console",
+   "link_to": "eta-einvoice-console",
+   "stats_filter": "",
+   "type": "Page",
+   "url": ""
+  },
+  {
+   "color": "Blue",
+   "doc_view": "",
+   "format": "",
+   "icon": "receipt",
+   "label": "ETA E-Receipt Console",
+   "link_to": "eta-ereceipt-console",
+   "stats_filter": "",
+   "type": "Page",
+   "url": ""
+  },
+  {
+   "color": "Green",
+   "doc_view": "",
+   "format": "",
+   "icon": "download",
+   "label": "Download Signing Agent ZIP",
+   "link_to": "",
+   "stats_filter": "",
+   "type": "URL",
+   "url": "/assets/omnexa_einvoice/downloads/OmnexaESigningAgent-win64.zip"
+  }
+ ],
+ "title": "E-Invoice"
+}

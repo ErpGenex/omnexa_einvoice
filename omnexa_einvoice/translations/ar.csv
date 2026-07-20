@@ -1,0 +1,841 @@
+1. On invoicing.eta.gov.eg register POS device with serial {0} (exact match).,1. On invoicing. eta. gov. eg register POS device with serial { 0 } (exact match).
+2. Use Client ID/Secret created for that POS device (not B2B e-Invoice credentials).,2. Use Client معرف Secret created لـ that POS device (not B2B e - فاتورة credentials).
+"3. If ETA gave a Pre-Shared Key, paste it in Branch → POS Pre-Shared Key.","3. If ETA gave a Pre - Shared مفتاح, paste it in فرع → POS Pre - Shared مفتاح."
+4. POS OS Version = windows for production (do not use os in prod).,4. POS OS إصدار = windows لـ production (do not use os in prod).
+5. Taxpayer profile must allow e-Receipt (B2C / receipt tag on ETA).,5. Taxpayer ملف must allow e - Receipt (B2C receipt tag on ETA).
+A Signing Profile already exists for company {0}.,A Signing ملف already exists لـ شركة { 0 }.
+A Tax Authority Profile already exists for company {0}.,A Tax Authority ملف already exists لـ شركة { 0 }.
+A1 private key (a1_private_key_pem) is required.,A1 private مفتاح (a1 private مفتاح pem) is required.
+a1_certificate_pem,a1 certificate pem
+a1_private_key_pem,a1 private مفتاح pem
+Acknowledgement Code,Acknowledgement كود
+Actions,إجراءات
+Adapter,Adapter
+Adapter Configuration,Adapter تهيئة
+Adapter is required.,Adapter is required.
+Additional Address Info,Additional عنوان Info
+AEAT / VeriFactu UAT ready.,AEAT Veri Factu UAT ready.
+aeat_base_url,aeat base url
+"After extract, run","After extract, run"
+Agent /health OK.,Agent صحة OK.
+Agent must return signed_document (update epass2003_agent.py on Windows). ITIDA rejects mismatched JSON.,Agent must return signed مستند (تحديث epass2003 agent. py on Windows). ITIDA rejects mismatched JSON.
+Agent must return signed_document and signed_document_json. Update Omnexa signing agent on Windows.,Agent must return signed مستند و signed مستند json. تحديث Omnexa signing agent on Windows.
+Agent must return signed_document_json (Chilkat Emit). Update epass2003_agent.py on Windows — fixes ETA 4043.,Agent must return signed مستند json (Chilkat Emit). تحديث epass2003 agent. py on Windows — fixes ETA 4043.
+Agent signed but missing signed_document_json — update Windows agent.,Agent signed but missing signed مستند json — تحديث Windows agent.
+Agent URL,Agent URL
+All,All
+Already accepted by ETA. Use force only to resubmit after rejection.,Already accepted حسب ETA. Use force only إلى resubmit after rejection.
+Amount,مبلغ
+API,API
+API Base URL,API Base URL
+API Base URL is required for live production ({0}).,API Base URL is required لـ live production ({ 0 }).
+API Base URL missing on Country Tax Settings (UAE).,API Base URL missing on Country Tax إعدادات (UAE).
+API Base URL missing on Country Tax Settings.,API Base URL missing on Country Tax إعدادات.
+API URL,API URL
+Archive Paths,Archive Paths
+ASP API Key (Bearer),ASP API مفتاح (Bearer)
+ASP Ref,ASP Ref
+ASP signing private key (asp_signing_private_key_pem) is required.,ASP signing private مفتاح (asp signing private مفتاح pem) is required.
+ASP Submit Path,ASP اعتماد Path
+ASP URL reachable ({0}). Signing key present — ready for ASP UAT.,ASP URL reachable ({ 0 }). Signing مفتاح present — ready لـ ASP UAT.
+asp_signing_private_key_pem,asp signing private مفتاح pem
+At least one invoice line is required.,At least one فاتورة line is required.
+At least one receipt line item is required.,At least one receipt line صنف is required.
+Authentication failed; refresh ETA token or check credentials.,Authentication فشل; refresh ETA token or فحص credentials.
+Authority Status,Authority حالة
+Authority UUID,Authority UUID
+authority_base_url or API Base URL,authority base url or API Base URL
+authority_uuid is required for ETA cancel operation.,authority uuid is required لـ ETA cancel operation.
+Auto-submit on Sales Invoice Submit,Auto - اعتماد on مبيعات فاتورة اعتماد
+blocked or agent not running (see details below),blocked or agent not running (see تفاصيل below)
+Branch,الفرع
+Branch (Egypt ETA tab),فرع (Egypt ETA tab)
+Branch country is not SA.,فرع country is not SA.
+Branch ETA setup,فرع ETA إعداد
+Branch is mandatory for ETA. Set Branch on the invoice or configure Egypt ETA on the branch.,فرع is mandatory لـ ETA. Set فرع on the فاتورة or configure Egypt ETA on the فرع.
+Branch is required for e-Invoice.,فرع is required لـ e - فاتورة.
+Branch is required for ETA billing types.,فرع is required لـ ETA فوترة types.
+Branch is required for ETA send.,فرع is required لـ ETA send.
+Branch is required for ZATCA.,فرع is required لـ ZATCA.
+Branch is required on the Sales Invoice.,فرع is required on the مبيعات فاتورة.
+Branch is required. Set Branch on the source document.,فرع is required. Set فرع on the source مستند.
+Branch name is required.,فرع اسم is required.
+Branch signer mode is not Signing Agent.,فرع signer mode is not Signing Agent.
+Branch {0} does not exist.,فرع { 0 } does not exist.
+Branch {0} found.,فرع { 0 } found.
+Branch {0} is not a Saudi (SA) branch.,فرع { 0 } is not a Saudi (SA) فرع.
+Branch → Egypt ETA → <b>Signing Agent URL</b> = <code>http://127.0.0.1:5002</code> (never the cloud server IP).,فرع → Egypt ETA → < b > Signing Agent URL < b > = < كود > http: 127. 0. 0. 1: 5002 < كود > (never the cloud server IP).
+Branch → Egypt ETA → Test USB Signing,فرع → Egypt ETA → Test USB Signing
+Brazil A1,Brazil A1
+Brazil live SEFAZ requires: {0},Brazil live SEFAZ requires: { 0 }
+Browser returns signed_document_json to cloud ERP,Browser returns signed مستند json إلى cloud ERP
+Building Number,Building رقم
+Bulk result,Bulk result
+Cancelled,ملغى
+Cannot reach signing agent at {0}. {1} Error: {2},Cannot reach signing agent at { 0 }. { 1 } خطأ: { 2 }
+Canonical Hash,Canonical Hash
+"Certificate (PEM body, no headers)","Certificate (PEM body, no headers)"
+Certificate / Token Reference,Certificate Token Reference
+Certificate / Token Reference is mandatory for windows_app signer mode.,Certificate Token Reference is mandatory لـ windows app signer mode.
+Certificate signing failed: {0},Certificate signing فشل: { 0 }
+Certificates (encrypted),Certificates (encrypted)
+Chave NFe,Chave NFe
+Checking branch signing settings…,Checking فرع signing إعدادات …
+City,City
+Clear,Clear
+Clearance Status,Clearance حالة
+clearedInvoice missing from ZATCA clearance response.,cleared فاتورة missing from ZATCA clearance response.
+Client ID,Client معرف
+Client Secret,Client Secret
+Close,Close
+Cloud ERP (HTTPS) + USB token on your PC,Cloud ERP (HTTPS) + USB token on your PC
+Cloud ERP builds unsigned ETA JSON,Cloud ERP builds unsigned ETA JSON
+Cloud ERP sends the signed document to ETA,Cloud ERP sends the signed مستند إلى ETA
+Cloud ↔ local signing — connection failed,Cloud ↔ local signing — connection فشل
+Cloud ↔ local signing — connection OK,Cloud ↔ local signing — connection OK
+cnpj (or Branch Tax Registration Number),cnpj (or فرع Tax Registration رقم)
+Colombia DIAN,Colombia DIAN
+Colombia DIAN error ({0}): {1},Colombia DIAN خطأ ({ 0 }): { 1 }
+Colombia DIAN sandbox OK (mock).,Colombia DIAN sandbox OK (mock).
+Company,الشركة
+Company is mandatory for e-invoice submission.,شركة is mandatory لـ e - فاتورة submission.
+Company is required for ZATCA.,شركة is required لـ ZATCA.
+Company setup,تهيئة الشركة
+company with ZATCA Company Settings or csid_reference is required for Phase 2.,شركة with ZATCA شركة إعدادات or csid reference is required لـ Phase 2.
+Complete A1 + SEFAZ settings before live NF-e.,Complete A1 + SEFAZ إعدادات before live NF - e.
+Complete Branch → Country Tax tab fields.,Complete فرع → Country Tax tab fields.
+Complete configuration before live submission.,Complete تهيئة before live submission.
+Complete GSP configuration before live IRN generation.,Complete GSP تهيئة before live IRN generation.
+Complete UAE ASP / Peppol settings before live submit.,Complete UAE ASP Peppol إعدادات before live اعتماد.
+Complete ZATCA branch settings before testing.,Complete ZATCA فرع إعدادات before testing.
+Completed,مكتمل
+Compliance,الامتثال
+Compliance checks complete,امتثال checks complete
+Compliance CSID (OTP),امتثال CSID (OTP)
+Compliance CSID saved,امتثال CSID saved
+Compliance CSID Secret,امتثال CSID Secret
+Compliance CSID Token,امتثال CSID Token
+Compliance CSID token/secret missing.,امتثال CSID token secret missing.
+Compliance Request ID,امتثال طلب معرف
+Compliance validation,امتثال تحقق
+Compliance validation incomplete: {0},امتثال تحقق incomplete: { 0 }
+Configuration,الإعدادات
+Configuration JSON,تهيئة JSON
+Configuration JSON must be an object.,تهيئة JSON must be an object.
+Configuration JSON must be valid.,تهيئة JSON must be valid.
+Connection successful.,Connection successful.
+Country,Country
+Country Code,Country كود
+Country Tax,Country Tax
+Country Tax Settings,Country Tax إعدادات
+Country Tax Submission Log,Country Tax Submission سجل
+Country {0} is integration tier «{1}» — not government-certified for live use yet.,Country { 0 } is تكامل tier « { 1 } » — not government - certified لـ live use yet.
+Country {0} is not configured for tax testing.,Country { 0 } is not configured لـ tax testing.
+Country {0} is not supported by the tax plugin console.,Country { 0 } is not supported حسب the tax plugin console.
+Create E-Invoice Queue,Create E - فاتورة Queue
+Create E-Receipt Queue,Create E - Receipt Queue
+Credentials,Credentials
+CSD private key (csd_private_key_pem) is required.,CSD private مفتاح (csd private مفتاح pem) is required.
+csd_certificate_pem (SAT .cer as PEM),csd certificate pem (SAT. cer as PEM)
+csd_private_key_pem in Configuration JSON,csd private مفتاح pem in تهيئة JSON
+CSR (PEM),CSR (PEM)
+CSR / Invoice profile,CSR فاتورة ملف
+CSR Common Name (EGS unit),CSR Common اسم (EGS unit)
+CSR generated,CSR generated
+CSR Invoice Type,CSR فاتورة نوع
+CSR Location Address,CSR Location عنوان
+Customer,العميل
+Customer is required for B2B e-invoice submission.,عميل is required لـ B2B e - فاتورة submission.
+Customization ID (override),Customization معرف (override)
+Date,التاريخ
+dateTimeIssued is required.,تاريخ Time Issued is required.
+Default adapter is mandatory when e-invoice policy is enforced.,افتراضي adapter is mandatory when e - فاتورة سياسة is enforced.
+Default E-Invoice Adapter,افتراضي E - فاتورة Adapter
+Default Peppol Receiver ID,افتراضي Peppol Receiver معرف
+Default Signer Mode,افتراضي Signer Mode
+Details,التفاصيل
+DIAN,DIAN
+DIAN CUFE UAT ready.,DIAN CUFE UAT ready.
+DIAN signing requires lxml.,DIAN signing requires lxml.
+dian_base_url,dian base url
+DigestValue not found in signed XML.,Digest Value not found in signed XML.
+Dispatch to authority,Dispatch إلى authority
+Dispatching…,Dispatching …
+District,District
+Document failed ETA validation; review mapped fields.,مستند فشل ETA تحقق; review mapped fields.
+Document is not a valid ETA e-Invoice JSON.,مستند is not a valid ETA e - فاتورة JSON.
+Document Type,مستند نوع
+Document type,مستند نوع
+Download,Download
+Download and extract the ZIP to a folder (e.g. C:\\OmnexaESigningAgent).,Download و extract the ZIP إلى a folder (e. g. C: \ \ Omnexa ESigning Agent).
+Download Signing Agent ZIP,Download Signing Agent ZIP
+Draft,مسودة
+E Invoice Submission,E فاتورة Submission
+E Invoice Submission {0} not found.,E فاتورة Submission { 0 } not found.
+E-Invoice,E - فاتورة
+E-Invoice auto-send failed,E - فاتورة auto - send فشل
+E-Invoice batch auto-send,E - فاتورة batch auto - send
+E-Invoice enabled,E - فاتورة enabled
+E-Invoice is enabled.,E - فاتورة is enabled.
+E-Invoice is not enabled on Branch {0}. Enable it under Branch → Egypt ETA.,E - فاتورة is not enabled on فرع { 0 }. Enable it under فرع → Egypt ETA.
+E-Invoice is not enabled on branch {0}. Enable it under Branch → Egypt ETA.,E - فاتورة is not enabled on فرع { 0 }. Enable it under فرع → Egypt ETA.
+E-Invoice is not enabled on this branch.,E - فاتورة is not enabled on this فرع.
+E-Invoice must reference Sales Invoice.,E - فاتورة must reference مبيعات فاتورة.
+E-Invoice Print,E - فاتورة Print
+E-Invoice RIN required on Branch.,E - فاتورة RIN required on فرع.
+"E-Invoice sales invoices: sign (USB agent on Windows or server signer), then send to ETA. Submit the Sales Invoice first.","E - فاتورة مبيعات invoices: sign (USB agent on Windows or server signer), then send إلى ETA. اعتماد the مبيعات فاتورة first."
+E-Invoice Signing,E - فاتورة Signing
+E-Invoice: Certificate / Token Reference is required.,E - فاتورة: Certificate Token Reference is required.
+E-Invoice: Client ID and Client Secret are required.,E - فاتورة: Client معرف و Client Secret are required.
+E-Invoice: re-enter Client Secret and save (masked value cannot be used for ETA).,E - فاتورة: re - enter Client Secret و save (masked value cannot be used لـ ETA).
+E-Invoice: Signing Agent URL is required.,E - فاتورة: Signing Agent URL is required.
+E-Invoice: Taxpayer RIN is required.,E - فاتورة: Taxpayer RIN is required.
+E-Invoice: Windows Signer Command is required for USB mode.,E - فاتورة: Windows Signer Command is required لـ USB mode.
+E-Receipt,E - Receipt
+E-Receipt (POS),E - Receipt (POS)
+"E-Receipt API URL must be production ({0}), not preprod.","E - Receipt API URL must be production ({ 0 }), not preprod."
+E-Receipt does not use USB signing.,E - Receipt does not use USB signing.
+E-Receipt enabled,E - Receipt enabled
+E-Receipt is not enabled on branch {0}. Enable it under Branch → Egypt ETA.,E - Receipt is not enabled on فرع { 0 }. Enable it under فرع → Egypt ETA.
+E-Receipt is not enabled on Branch {0}. Enable it under Branch → Egypt ETA.,E - Receipt is not enabled on فرع { 0 }. Enable it under فرع → Egypt ETA.
+E-Receipt must reference POS Invoice/Sales Invoice.,E - Receipt must reference POS فاتورة مبيعات فاتورة.
+E-Receipt payload cannot use e-Invoice signing. Use the E-Receipt path only.,E - Receipt payload cannot use e - فاتورة signing. Use the E - Receipt path only.
+E-Receipt: Activity Code is required.,E - Receipt: نشاط كود is required.
+E-Receipt: Client ID and Client Secret are required.,E - Receipt: Client معرف و Client Secret are required.
+E-Receipt: POS Device Serial is required.,E - Receipt: POS Device Serial is required.
+E-Receipt: Production,E - Receipt: Production
+E-Receipt: re-enter Client Secret and save (masked value cannot be used for ETA).,E - Receipt: re - enter Client Secret و save (masked value cannot be used لـ ETA).
+E-Receipt: Taxpayer RIN is required.,E - Receipt: Taxpayer RIN is required.
+E.g. 0235:100000000000003 (EAS:TIN). Built automatically from TRN if left empty.,E. g. 0235: 100000000000003 (EAS: TIN). Built automatically from TRN if left empty.
+EC Private Key (PEM),EC Private مفتاح (PEM)
+EGS Serial Number,EGS Serial رقم
+EGS serial number,EGS serial رقم
+"Egypt e-Receipt must be sent from ETA E-Receipt Console, not the tax hub.","Egypt e - Receipt must be sent from ETA E - Receipt Console, not the tax hub."
+Egypt ETA,Egypt ETA
+Egypt ETA applies only to branches with Country EG.,Egypt ETA applies only إلى branches with Country EG.
+ei-executive-dashboard,ei - تنفيذي - لوحة معلومات
+"Electronic Receipt invoices appear here (draft, submitted, or cancelled). Submit the Sales Invoice before Send to ETA.","Electronic Receipt invoices appear here (مسودة, submitted, or ملغى). اعتماد the مبيعات فاتورة before Send إلى ETA."
+Empty XML for {0}.,Empty XML لـ { 0 }.
+Enable e-invoice on Branch → Country Tax tab ({0}).,Enable e - فاتورة on فرع → Country Tax tab ({ 0 }).
+Enable e-invoice on Branch → Country Tax tab for {0} ({1}).,Enable e - فاتورة on فرع → Country Tax tab لـ { 0 } ({ 1 }).
+Enable e-invoice on Branch → {0} tab.,Enable e - فاتورة on فرع → { 0 } tab.
+Enable E-Invoice on the Country Tax tab below.,Enable E - فاتورة on the Country Tax tab below.
+Enable Egypt ETA (e-Invoice or E-Receipt) on this branch.,Enable Egypt ETA (e - فاتورة or E - Receipt) on this فرع.
+Enable Live Production when using production API environment.,Enable Live Production when using production API environment.
+Enable only after ASP/government UAT is complete.,Enable only after ASP government UAT is complete.
+Enable ZATCA E-Invoicing,Enable ZATCA E - Invoicing
+Enable ZATCA on Branch → Saudi ZATCA tab for branch {0}.,Enable ZATCA on فرع → Saudi ZATCA tab لـ فرع { 0 }.
+"Enable ZATCA on Branch → Saudi ZATCA tab, or ZATCA Company Settings for {0}.","Enable ZATCA on فرع → Saudi ZATCA tab, or ZATCA شركة إعدادات لـ { 0 }."
+Enable ZATCA on Branch → Saudi ZATCA tab.,Enable ZATCA on فرع → Saudi ZATCA tab.
+Enable ZATCA on the Saudi ZATCA tab below.,Enable ZATCA on the Saudi ZATCA tab below.
+Enable ZATCA on the Saudi ZATCA tab.,Enable ZATCA on the Saudi ZATCA tab.
+Enabled,Enabled
+Endpoint reachable ({0}). {1},Endpoint reachable ({ 0 }). { 1 }
+Ensure epass2003_agent is reachable at {0}.,Ensure epass2003 agent is reachable at { 0 }.
+Environment,Environment
+ERP runs on {0}. Open ERP on the Windows PC with the token; agent uses sign_session to fetch PIN.,ERP runs on { 0 }. مفتوح ERP on the Windows PC with the token; agent uses sign session إلى fetch PIN.
+ERP server OS: {0},ERP server OS: { 0 }
+ERP/branch settings OK. Run «Test cloud ↔ PC signing» on the Windows PC with the USB token (not this server test).,ERP فرع إعدادات OK. Run « Test cloud ↔ PC signing » on the Windows PC with the USB token (not this server test).
+Error,خطأ
+ETA,ETA
+ETA Activity Code,ETA نشاط كود
+ETA Auth,ETA Auth
+ETA authentication failed.,ETA authentication فشل.
+ETA authentication successful.,ETA authentication successful.
+ETA Base URL,ETA Base URL
+ETA Base URL is mandatory for ETA adapter.,ETA Base URL is mandatory لـ ETA adapter.
+ETA Branch Code,ETA فرع كود
+ETA Client ID,ETA Client معرف
+ETA Client ID and Secret are mandatory for ETA adapter.,ETA Client معرف و Secret are mandatory لـ ETA adapter.
+ETA Client Secret,ETA Client Secret
+ETA client_id and client_secret are required.,ETA client معرف و client secret are required.
+ETA Company Trade Name,ETA شركة Trade اسم
+ETA e-Invoice authentication failed.,ETA e - فاتورة authentication فشل.
+ETA e-Invoice authentication successful.,ETA e - فاتورة authentication successful.
+ETA E-Invoice Console,ETA E - فاتورة Console
+ETA E-Invoice Review Queue,ETA E - فاتورة Review Queue
+ETA E-Receipt Console,ETA E - Receipt Console
+ETA E-Receipt Review Queue,ETA E - Receipt Review Queue
+ETA Environment,ETA Environment
+ETA Error Code,ETA خطأ كود
+ETA error {0},ETA خطأ { 0 }
+"ETA operation must be submit, cancel, or download.","ETA operation must be اعتماد, cancel, or download."
+ETA POS Device Serial,ETA POS Device Serial
+ETA POS OS Version,ETA POS OS إصدار
+ETA production authentication successful.,ETA production authentication successful.
+ETA Receipt,ETA Receipt
+ETA rejected the request; check registration and environment.,ETA مرفوض the طلب; فحص registration و environment.
+ETA request blocked (firewall/WAF).,ETA طلب blocked (firewall WAF).
+ETA request blocked (firewall/WAF). Try again from an allowed network.,ETA طلب blocked (firewall WAF). Try again from an allowed network.
+ETA request failed.,ETA طلب فشل.
+ETA signer_mode must be remote or windows_app.,ETA signer mode must be remote or windows app.
+ETA Status,ETA حالة
+"ETA supports document_type values: invoice, receipt, credit_note.","ETA supports مستند نوع values: فاتورة, receipt, ائتمان note."
+ETA token exchange failed ({0}): {1}{2},ETA token exchange فشل ({ 0 }): { 1 } { 2 }
+ETA token request failed: {0},ETA token طلب فشل: { 0 }
+ETA token response missing access_token.,ETA token response missing وصول token.
+External Reference,External Reference
+Extra Payload (JSON),Extra Payload (JSON)
+Extra Payload must be a JSON object.,Extra Payload must be a JSON object.
+Extra Payload must be valid JSON.,Extra Payload must be valid JSON.
+failed,فشل
+fatturapa_private_key_pem,fatturapa private مفتاح pem
+Fix failed checks and Save Branch.,Fix فشل checks و Save فرع.
+"Fix the items marked ✗, Save the branch, then run the test again. No call was made to the local agent.","Fix the items marked ✗, Save the فرع, then run the test again. No call was made إلى the local agent."
+Floor,Floor
+Flow ID,تدفق معرف
+"For e-Receipt: verify Client ID/Secret, environment (prod), and POS Device Serial on Branch.","لـ e - Receipt: verify Client معرف Secret, environment (prod), و POS Device Serial on فرع."
+"For e-Receipt: wrong Client ID/Secret, or preprod credentials used on production.","لـ e - Receipt: wrong Client معرف Secret, or preprod credentials used on production."
+"For live production, enable Live Production and API credentials.","لـ live production, enable Live Production و API credentials."
+France PDP,France PDP
+France PDP error ({0}): {1},France PDP خطأ ({ 0 }): { 1 }
+France PDP sandbox OK (mock).,France PDP sandbox OK (mock).
+frappe,frappe
+From Date,From تاريخ
+Further,Further
+gateway_base_url,gateway base url
+Generate CSR,Generate CSR
+Generate CSR / onboarding certificate on the ZATCA tab.,Generate CSR onboarding certificate on the ZATCA tab.
+Germany XRechnung,Germany XRechnung
+Germany XRechnung error ({0}): {1},Germany XRechnung خطأ ({ 0 }): { 1 }
+Germany XRechnung sandbox OK (mock).,Germany XRechnung sandbox OK (mock).
+Governate,Governate
+GSP endpoint reachable ({0}). Ready for IRN UAT.,GSP endpoint reachable ({ 0 }). Ready لـ IRN UAT.
+gsp_base_url or API Base URL,gsp base url or API Base URL
+"gsp_client_id + client_secret, or asp_api_key","gsp client معرف + client secret, or asp api مفتاح"
+GST IRN JSON for {0} missing required key: {1},GST IRN JSON لـ { 0 } missing required مفتاح: { 1 }
+GST IRN payload must be a JSON object.,GST IRN payload must be a JSON object.
+gstin (or Branch Tax Registration Number),gstin (or فرع Tax Registration رقم)
+Hash,Hash
+header.dateTimeIssued is required.,header. تاريخ Time Issued is required.
+Health check,صحة فحص
+http://127.0.0.1:5002 on this PC. Start epass2003_agent.py with USB token inserted.,http: 127. 0. 0. 1: 5002 on this PC. بداية epass2003 agent. py with USB token inserted.
+HTTPS cloud ERP — PIN travels in browser→agent payload (no agent callback to ERP).,HTTPS cloud ERP — PIN travels in browser → agent payload (no agent callback إلى ERP).
+ICV Counter,ICV Counter
+Idempotency Key,Idempotency مفتاح
+In ERP: Branch → Egypt ETA → Signing Agent URL = http://127.0.0.1:5002 and USB PIN + Chilkat key.,In ERP: فرع → Egypt ETA → Signing Agent URL = http: 127. 0. 0. 1: 5002 و USB PIN + Chilkat مفتاح.
+India GSP,India GSP
+India GSP error ({0}): {1},India GSP خطأ ({ 0 }): { 1 }
+India GSP sandbox OK (mock IRN).,India GSP sandbox OK (mock IRN).
+India GST,India GST
+India live GSP requires: {0},India live GSP requires: { 0 }
+India Phase 1 output must be valid GST JSON.,India Phase 1 output must be valid GST JSON.
+Industry / Business Category,Industry أعمال فئة
+Install cryptography: pip install cryptography,Install cryptography: pip install cryptography
+Install ePass2003 / token drivers if not already installed.,Install e Pass2003 token drivers if not already installed.
+Install on the Windows PC that has the USB token. No Python required on that PC after install.,Install on the Windows PC that has the USB token. No Python required on that PC after install.
+Integration,تكامل
+Integration hub updated,تكامل hub updated
+Integration Message,تكامل Message
+Internal ID,Internal معرف
+internalID is required for ETA invoice.,internal معرف is required لـ ETA فاتورة.
+International e-Invoice,International e - فاتورة
+International Tax Console,International Tax Console
+Invalid dateTimeIssued format.,Invalid تاريخ Time Issued format.
+Invalid document signature; check e-seal / signer.,Invalid مستند signature; فحص e - seal signer.
+Invalid GST JSON for {0}: {1},Invalid GST JSON لـ { 0 }: { 1 }
+Invalid GST JSON: {0},Invalid GST JSON: { 0 }
+Invalid invoice document.,Invalid فاتورة مستند.
+Invalid signed_document_json from signing agent.,Invalid signed مستند json from signing agent.
+Invalid USB PIN from Branch settings. Re-enter PIN on Branch and Save.,Invalid USB PIN from فرع إعدادات. Re - enter PIN on فرع و Save.
+Invoice,فاتورة
+Invoice accepted by ETA.,فاتورة accepted حسب ETA.
+Invoice chain (PIH / ICV),فاتورة chain (PIH ICV)
+Invoice dateTimeIssued must be within one hour of current UTC time.,فاتورة تاريخ Time Issued must be within one hour of current UTC time.
+Invoice Hash,فاتورة Hash
+Invoice is not signed yet.,فاتورة is not signed yet.
+Invoice JSON,فاتورة JSON
+Invoice must contain at least one line.,فاتورة must contain at least one line.
+Invoice rejected by ETA.,فاتورة مرفوض حسب ETA.
+Invoice rejected.,فاتورة مرفوض.
+Invoice signature must use signatureType (not type).,فاتورة signature must use signature نوع (not نوع).
+"Invoice totals mismatch: net + tax = {0}, total = {1}.","فاتورة totals mismatch: net + tax = { 0 }, إجمالي = { 1 }."
+Invoice Type Code,فاتورة نوع كود
+Italy SDI,Italy SDI
+Italy SDI error ({0}): {1},Italy SDI خطأ ({ 0 }): { 1 }
+Italy SDI sandbox OK (mock).,Italy SDI sandbox OK (mock).
+JoFotara,Jo Fotara
+JoFotara error ({0}): {1},Jo Fotara خطأ ({ 0 }): { 1 }
+JoFotara ready for ISTD UAT.,Jo Fotara ready لـ ISTD UAT.
+JoFotara sandbox OK (mock).,Jo Fotara sandbox OK (mock).
+jofotara_base_url,jofotara base url
+"JSON object merged into the adapter payload (e.g. taxpayer_rin, signer_mode, csid_reference, authority_uuid, phase).","JSON object merged into the adapter payload (e. g. taxpayer rin, signer mode, csid reference, authority uuid, phase)."
+Key Rotation Date,مفتاح Rotation تاريخ
+KoSIT / XRechnung UAT ready.,Ko SIT XRechnung UAT ready.
+KSeF,KSe F
+KSeF error ({0}): {1},KSe F خطأ ({ 0 }): { 1 }
+KSeF No.,KSe F No.
+KSeF ready for FA(2) UAT.,KSe F ready لـ FA (2) UAT.
+KSeF sandbox OK (mock).,KSe F sandbox OK (mock).
+KSeF signing requires lxml.,KSe F signing requires lxml.
+ksef token (asp_api_key) or ksef_private_key_pem,ksef token (asp api مفتاح) or ksef private مفتاح pem
+ksef token or ksef_private_key_pem,ksef token or ksef private مفتاح pem
+KSeF XML must contain FA root.,KSe F XML must contain FA root.
+ksef_base_url,ksef base url
+LAN ERP — agent may fetch PIN via sign_session from ERP.,LAN ERP — agent may fetch PIN via sign session from ERP.
+Landmark,Landmark
+leitweg_id,leitweg معرف
+Line {0}: T1 amount {1} does not match net × rate ({2}).,Line { 0 }: T1 مبلغ { 1 } does not match net × معدل ({ 2 }).
+Line {0}: T1 tax amount {1} does not match netSale × rate ({2}).,Line { 0 }: T1 tax مبلغ { 1 } does not match net Sale × معدل ({ 2 }).
+Line {0}: total must equal netSale + T1 amount.,Line { 0 }: إجمالي must equal net Sale + T1 مبلغ.
+Line {0}: total must equal netTotal + T1 tax.,Line { 0 }: إجمالي must equal net إجمالي + T1 tax.
+Live Production,Live Production
+Live production requires: {0},Live production requires: { 0 }
+Loading…,Loading …
+Local agent at 127.0.0.1 signs with the USB token,Local agent at 127. 0. 0. 1 signs with the USB token
+Malformed XML for {0}: {1},Malformed XML لـ { 0 }: { 1 }
+Mexico CSD,Mexico CSD
+Mexico CSD signing requires: pip install cryptography lxml,Mexico CSD signing requires: pip install cryptography lxml
+Mexico live production requires csd_certificate_pem in Configuration JSON.,Mexico live production requires csd certificate pem in تهيئة JSON.
+Mexico live production requires csd_private_key_pem in Configuration JSON.,Mexico live production requires csd private مفتاح pem in تهيئة JSON.
+Mexico live production requires pac_base_url in Configuration JSON or API Base URL.,Mexico live production requires pac base url in تهيئة JSON or API Base URL.
+Mexico PAC,Mexico PAC
+Mexico PAC error ({0}): {1},Mexico PAC خطأ ({ 0 }): { 1 }
+Mexico PAC sandbox OK (mock timbrado).,Mexico PAC sandbox OK (mock timbrado).
+Missing: {0},Missing: { 0 }
+New E-Invoice,جديد E - فاتورة
+New E-Receipt Invoice,جديد E - Receipt فاتورة
+nif,nif
+nip,nip
+nit,nit
+No branch found for company {0}. Configure Branch → Egypt ETA.,No فرع found لـ شركة { 0 }. Configure فرع → Egypt ETA.
+No e-invoice sales invoices match the filters.,No e - فاتورة مبيعات invoices match the filters.
+No e-receipt invoices match the filters.,No e - receipt invoices match the filters.
+No ETA submission for regular invoices.,No ETA submission لـ regular invoices.
+No Invoice/LatamTaxInvoice to sign.,No فاتورة Latam Tax فاتورة إلى sign.
+No local agent on this PC (ports 5002–5005).,No local agent on this PC (ports 5002 – 5005).
+No tax dispatch handler for country {0} (provider {1}).,No tax dispatch handler لـ country { 0 } (provider { 1 }).
+No tax provider registered for country {0}.,No tax provider registered لـ country { 0 }.
+Not an E-Invoice submission.,Not an E - فاتورة submission.
+Not an E-Receipt submission.,Not an E - Receipt submission.
+Not tested from Linux server (127.0.0.1 is on your PC). Use Branch → Test cloud ↔ PC signing in Chrome on Windows.,Not tested from Linux server (127. 0. 0. 1 is on your PC). Use فرع → Test cloud ↔ PC signing in Chrome on Windows.
+OK,OK
+Omnexa Einvoice,Omnexa Einvoice
+On a Windows build machine,On a Windows build machine
+"On the PC with the USB token: start epass2003_agent.py, insert the token, verify PIN on Branch, then retry.","On the PC with the USB token: بداية epass2003 agent. py, insert the token, verify PIN on فرع, then retry."
+Only Draft/Failed submission can be signed.,Only مسودة فشل submission can be signed.
+Only Sales Invoice and POS Invoice are supported.,Only مبيعات فاتورة و POS فاتورة are supported.
+Only submissions in Draft can be dispatched.,Only submissions in مسودة can be dispatched.
+Open E-Invoice workspace,مفتوح E - فاتورة مساحة العمل
+Open Egypt ETA tab → enable e-Invoice and/or E-Receipt.,مفتوح Egypt ETA tab → enable e - فاتورة و or E - Receipt.
+Open ERP in Chrome/Edge on that same PC. Signing from RDP on the cloud VM only works if the USB token is on the VM.,مفتوح ERP in Chrome Edge on that same PC. Signing from RDP on the cloud VM only works if the USB token is on the VM.
+Open ERP on the Windows PC where the USB token is inserted. The external server never talks to 127.0.0.1 — only your browser does.,مفتوح ERP on the Windows PC where the USB token is inserted. The external server never talks إلى 127. 0. 0. 1 — only your browser does.
+Open ZATCA Submission Log,مفتوح ZATCA Submission سجل
+Operation,Operation
+"Optional external signer command. If empty, built-in fallback signer will be used.","Optional external signer command. If empty, built - in fallback signer will be used."
+Optional for mock: add A1 PEMs before homologação UAT.,Optional لـ mock: إضافة A1 PEMs before homologa o UAT.
+Optional for mock: add CSD PEMs before SAT UAT.,Optional لـ mock: إضافة CSD PEMs before SAT UAT.
+Optional for mock: ASP URL + signing key before accredited ASP UAT.,Optional لـ mock: ASP URL + signing مفتاح before accredited ASP UAT.
+Optional for mock: complete API URL and credentials before authority UAT.,Optional لـ mock: complete API URL و credentials before authority UAT.
+Optional for mock: complete GSP URL and credentials before NIC UAT.,Optional لـ mock: complete GSP URL و credentials before NIC UAT.
+"Optional ISO 3166-1 alpha-2 code (e.g. EG, SA).","Optional ISO 3166 - 1 alpha - 2 كود (e. g. EG, SA)."
+Optional: copy chilkat_config.json.example to chilkat_config.json and set your Chilkat v10 unlock code.,Optional: copy chilkat config. json. example إلى chilkat config. json و set your Chilkat v10 unlock كود.
+Organization,Organization
+Organization name,Organization اسم
+Organization Name (AR),Organization اسم (عربي)
+Organization Name (EN),Organization اسم (EN)
+Organization Unit (EGS branch),Organization Unit (EGS فرع)
+OTP from Fatoora portal,OTP from Fatoora بوابة
+Overview,نظرة عامة
+PAC URL configured; complete CSD before live timbrado.,PAC URL configured; complete CSD before live timbrado.
+PAC URL reachable ({0}). CSD keys present — ready for timbrado UAT.,PAC URL reachable ({ 0 }). CSD keys present — ready لـ timbrado UAT.
+pac_base_url or API Base URL,pac base url or API Base URL
+Package not available.,Package not متاح.
+partita_iva,partita iva
+Pass branch=BRANCH_NAME for server-side test.,Pass فرع = فرع اسم لـ server - side test.
+Payload,Payload
+PDP / Factur-X UAT ready.,PDP Factur - X UAT ready.
+pdp_base_url,pdp base url
+Pending / Failed,معلق فشل
+Pending sign,معلق sign
+Peppol Sender Participant ID,Peppol Sender Participant معرف
+peppol_sender_id or uae_peppol_sender_id,peppol sender معرف or uae peppol sender معرف
+Phase,Phase
+Phase 1 (XML + QR),Phase 1 (XML + QR)
+"Phase 1: XML generation, scaffold signing, archive. Phase 2: authority API (or queue). Egypt and Saudi use their own consoles.","Phase 1: XML generation, scaffold signing, archive. Phase 2: authority API (or queue). Egypt و Saudi use their own consoles."
+Phase 2 (API),Phase 2 (API)
+Phase 2 requires Production CSID. Complete onboarding first.,Phase 2 requires Production CSID. Complete onboarding first.
+Policy,سياسة
+POS Device Serial is required on Branch {0} (Egypt ETA tab).,POS Device Serial is required on فرع { 0 } (Egypt ETA tab).
+POS Device Serial is required on Branch {0} for e-Receipt authentication.,POS Device Serial is required on فرع { 0 } لـ e - Receipt authentication.
+POS device serial sent as posserial header to ETA.,POS device serial sent as posserial header إلى ETA.
+POS Invoice DocType is not installed on this site.,POS فاتورة Doc نوع is not installed on this موقع.
+POS Sales Invoice,فاتورة مبيعات نقطة البيع (POS)
+POS Serial,POS Serial
+Postal Code,Postal كود
+Posting,Posting
+Prepare,Prepare
+Prepare E-Receipt (UUID),Prepare E - Receipt (UUID)
+Preparing receipts…,Preparing receipts …
+Preparing receipt…,Preparing receipt …
+Preparing signing…,Preparing signing …
+Preview,Preview
+Preview + UUID,Preview + UUID
+Previous Invoice Hash (PIH),Previous فاتورة Hash (PIH)
+Private key PEM is required for XML-DSig.,Private مفتاح PEM is required لـ XML - DSig.
+Production,Production
+Production CSID,Production CSID
+Production CSID saved,Production CSID saved
+Production CSID Secret,Production CSID Secret
+Production CSID Token,Production CSID Token
+Production CSID token/secret missing on ZATCA Company Settings.,Production CSID token secret missing on ZATCA شركة إعدادات.
+Production e-Receipt cannot use a preprod API URL.,Production e - Receipt cannot use a preprod API URL.
+Profile ID (override),ملف معرف (override)
+"Provide Client ID + Client Secret, ASP API Key, or api_key in Configuration JSON for {0}.","Provide Client معرف + Client Secret, ASP API مفتاح, or api مفتاح in تهيئة JSON لـ { 0 }."
+Provider Reference,Provider Reference
+Provider Reference is mandatory when status is Completed.,Provider Reference is mandatory when حالة is مكتمل.
+Public Key (base64),Public مفتاح (base64)
+QR (base64 TLV),QR (base64 TLV)
+QR TLV generated but image could not be rendered. Check server package: qrcode.,QR TLV generated but image could not be rendered. فحص server package: qrcode.
+Queued for ETA send (Live mode),Queued لـ ETA send (Live mode)
+Ready for UAT.,Ready لـ UAT.
+Ready to send,Ready إلى send
+Receipt accepted by ETA.,Receipt accepted حسب ETA.
+Receipt dateTimeIssued must be within one hour of current UTC time.,Receipt تاريخ Time Issued must be within one hour of current UTC time.
+Receipt documentType.receiptType must be 's'.,Receipt مستند نوع. receipt نوع must be ' s '.
+Receipt JSON,Receipt JSON
+Receipt must contain at least one item.,Receipt must contain at least one صنف.
+Receipt rejected by ETA.,Receipt مرفوض حسب ETA.
+Receipt Source,Receipt Source
+"Receipt totals mismatch: expected {0}, got {1}.","Receipt totals mismatch: expected { 0 }, got { 1 }."
+Receipt UUID must be a 64-character lowercase SHA256 hex string.,Receipt UUID must be a 64 - character lowercase SHA256 hex string.
+Reference,Reference
+Reference DocType,Reference Doc نوع
+Reference DocType and Reference Name are required.,Reference Doc نوع و Reference اسم are required.
+Reference document does not exist.,Reference مستند does not exist.
+Reference Name,Reference اسم
+Reference Name is mandatory for submit/cancel operations.,Reference اسم is mandatory لـ اعتماد cancel عمليات.
+reference_name is required for ETA submission.,reference اسم is required لـ ETA submission.
+reference_name is required for ZATCA submission.,reference اسم is required لـ ZATCA submission.
+reference_name is required for {0}.,reference اسم is required لـ { 0 }.
+reference_name is required.,reference اسم is required.
+Refresh,Refresh
+Registro,Registro
+Related accounting,Related محاسبة
+"Release ZIP not uploaded yet. Build on Windows with signing_agent/build_signing_agent_exe.bat, then bench build.","Release ZIP not uploaded yet. Build on Windows with signing agent build signing agent exe. bat, then bench build."
+Reload ERP (Ctrl+Shift+R) after omnexa_einvoice update.,Reload ERP (Ctrl + Shift + R) after omnexa einvoice تحديث.
+Remarks,Remarks
+Reporting Status,Reporting حالة
+Request,طلب
+Require E-Invoice Before Sales Invoice Submit,Require E - فاتورة Before مبيعات فاتورة اعتماد
+Required invoice field missing: {0},Required فاتورة field missing: { 0 }
+Required receipt field empty: {0},Required receipt field empty: { 0 }
+Required receipt field missing: {0},Required receipt field missing: { 0 }
+Response,Response
+Result,Result
+Result Data (JSON),Result بيانات (JSON)
+Review before send,Review before send
+Room,Room
+Run <b>Omnexa Signing Agent</b> on the Windows PC where the USB token is inserted (not on the cloud server unless the token is there).,Run < b > Omnexa Signing Agent < b > on the Windows PC where the USB token is inserted (not on the cloud server unless the token is there).
+Run compliance CSID onboarding first.,Run امتثال CSID onboarding first.
+Run Phase 1,Run Phase 1
+Run Phase 2 (queue),Run Phase 2 (queue)
+Run Phase 2 (sync in test),Run Phase 2 (sync in test)
+Run Start_Omnexa_ESigning_Agent.bat and keep the window open.,Run بداية Omnexa ESigning Agent. bat و keep the window مفتوح.
+Sales Invoice,فاتورة بيع
+Sales Invoice must be submitted before e-invoice sign/send.,مبيعات فاتورة must be submitted before e - فاتورة sign send.
+Sales Invoice must be submitted before sending e-receipt.,مبيعات فاتورة must be submitted before sending e - receipt.
+Sales Invoice must be submitted.,مبيعات فاتورة must be submitted.
+Sales Invoice {0} not found.,مبيعات فاتورة { 0 } not found.
+SAT UUID,SAT UUID
+Saudi ZATCA,Saudi ZATCA
+Saudi ZATCA e-invoicing — Phase 1 local generation and Phase 2 API clearance/reporting.,Saudi ZATCA e - invoicing — Phase 1 local generation و Phase 2 API clearance reporting.
+Save the branch first.,Save the فرع first.
+"Save the branch, then run the test again.","Save the فرع, then run the test again."
+Save the branch.,Save the فرع.
+SDI ID,SDI معرف
+SDI ready for FatturaPA UAT.,SDI ready لـ Fattura PA UAT.
+sdi_base_url,sdi base url
+Seeded {0} UAT branches on company {1}.,Seeded { 0 } UAT branches on شركة { 1 }.
+SEFAZ,SEFAZ
+SEFAZ error ({0}): {1},SEFAZ خطأ ({ 0 }): { 1 }
+SEFAZ sandbox OK (mock authorization).,SEFAZ sandbox OK (mock authorization).
+SEFAZ URL reachable ({0}). A1 keys present — ready for homologação UAT.,SEFAZ URL reachable ({ 0 }). A1 keys present — ready لـ homologa o UAT.
+sefaz_base_url or API Base URL,sefaz base url or API Base URL
+Select a Branch filter first.,Select a فرع filter first.
+Select a branch first,Select a فرع first
+"Select a Branch on the invoice, or set a default branch for the user.","Select a فرع on the فاتورة, or set a افتراضي فرع لـ the مستخدم."
+Select a branch or company.,Select a فرع or شركة.
+Select a branch.,Select a فرع.
+Select a company or branch first.,Select a شركة or فرع first.
+Select all,Select all
+Select at least one invoice.,Select at least one فاتورة.
+Select page,Select page
+Seller Branch Address,Seller فرع عنوان
+Seller Legal Name (Arabic),Seller Legal اسم (Arabic)
+Seller tax registration is required on the invoice.,Seller tax registration is required on the فاتورة.
+Seller TRN,Seller TRN
+Seller TRN is required for UAE e-Invoicing.,Seller TRN is required لـ UAE e - Invoicing.
+Send,Send
+Send failed,Send فشل
+Send selected to ETA,Send selected إلى ETA
+Send to ETA,Send إلى ETA
+Sending from cloud ERP to ETA…,Sending from cloud ERP إلى ETA …
+Sending to ETA…,Sending إلى ETA …
+Sending...,Sending...
+Sending…,Sending …
+"Sent as pososversion (os for preprod, windows for production).","Sent as pososversion (os لـ preprod, windows لـ production)."
+Sent to ETA,Sent إلى ETA
+Sent to ETA (Live mode),Sent إلى ETA (Live mode)
+Server checks passed.,Server checks passed.
+session_id is required.,session معرف is required.
+Set API Base URL and Tax Registration Number.,Set API Base URL و Tax Registration رقم.
+Set Country Code to EG.,Set Country كود إلى EG.
+Set GSTIN on Branch → Country Tax (Tax Registration Number or configuration_json.gstin).,Set GSTIN on فرع → Country Tax (Tax Registration رقم or تهيئة json. gstin).
+Set Jordan TIN on Branch tax registration.,Set Jordan TIN on فرع tax registration.
+Set NIF on tax registration or configuration_json.nif.,Set NIF on tax registration or تهيئة json. nif.
+Set NIP on Branch tax registration or configuration_json.nip.,Set NIP on فرع tax registration or تهيئة json. nip.
+Set NIT on tax registration or configuration_json.nit.,Set NIT on tax registration or تهيئة json. nit.
+Set Partita IVA on Branch tax registration or configuration_json.partita_iva.,Set Partita IVA on فرع tax registration or تهيئة json. partita iva.
+Set SIRET on tax registration or configuration_json.siret.,Set SIRET on tax registration or تهيئة json. siret.
+Set UAE seller TIN / tax registration on Branch Country Tax tab.,Set UAE seller TIN tax registration on فرع Country Tax tab.
+Set {0} on Branch tax registration.,Set { 0 } on فرع tax registration.
+Setup,الإعداد
+Sign,Sign
+Sign / Send E-Invoice from the browser on the same Windows PC.,Sign Send E - فاتورة from the browser on the same Windows PC.
+Sign E-Invoice (ETA JSON),Sign E - فاتورة (ETA JSON)
+Sign selected,Sign selected
+Sign the invoice first (USB agent on Windows PC).,Sign the فاتورة first (USB agent on Windows PC).
+Signature preview,Signature preview
+Signature Value,Signature Value
+Signed,Signed
+Signed submission is missing signature.,Signed submission is missing signature.
+Signed via {0} before send.,Signed via { 0 } before send.
+Signed via {0}.,Signed via { 0 }.
+Signed — ready to send,Signed — ready إلى send
+Signer,Signer
+Signer Configuration,Signer تهيئة
+Signer mode must be Signing Agent (current: {0}).,Signer mode must be Signing Agent (current: { 0 }).
+Signing,Signing
+Signing Agent,Signing Agent
+Signing agent failed,Signing agent فشل
+Signing Agent mode is selected.,Signing Agent mode is selected.
+Signing agent returned no signature,Signing agent returned no signature
+Signing agent returned success but no signature.,Signing agent returned success but no signature.
+Signing Agent URL must start with http:// or https:// (got: {0}).,Signing Agent URL must بداية with http: or https: (got: { 0 }).
+Signing before ETA send…,Signing before ETA send …
+Signing bridge release {0} (web worker).,Signing bridge release { 0 } (web worker).
+Signing E-Invoice…,Signing E - فاتورة …
+Signing failed.,Signing فشل.
+Signing Family,Signing Family
+Signing flow (cloud server),Signing تدفق (cloud server)
+Signing Mode,Signing Mode
+Signing on this PC — returning to cloud ERP…,Signing on this PC — returning إلى cloud ERP …
+Signing on this PC…,Signing on this PC …
+Signing Profile,ملف التوقيع الإلكتروني
+Signing Secret,Signing Secret
+Signing session expired. Click Sign E-Invoice again.,Signing session expired. Click Sign E - فاتورة again.
+"Signing session missing. bench update omnexa_einvoice, build, clear-cache, Ctrl+Shift+R.","Signing session missing. bench تحديث omnexa einvoice, build, clear - cache, Ctrl + Shift + R."
+"Signing session missing. Run bench update + build omnexa_einvoice, clear cache, Ctrl+Shift+R.","Signing session missing. Run bench تحديث + build omnexa einvoice, clear cache, Ctrl + Shift + R."
+Signing…,Signing …
+Simplified invoice validated,Simplified فاتورة validated
+siret,siret
+Smoke sample (fast),Smoke sample (fast)
+Smoke test all countries,Smoke test all countries
+Spain AEAT,Spain AEAT
+Spain AEAT error ({0}): {1},Spain AEAT خطأ ({ 0 }): { 1 }
+Spain AEAT sandbox OK (mock).,Spain AEAT sandbox OK (mock).
+Standard invoice validated,Standard فاتورة validated
+Status,الحالة
+Street,Street
+Submission,Submission
+Submission Channel,Submission Channel
+Submission Channel is mandatory.,Submission Channel is mandatory.
+Submission ID,Submission معرف
+Submission Kind,Submission Kind
+Submission Log,Submission سجل
+Submission must be in Signed/Draft/Failed state before send.,Submission must be in Signed مسودة فشل state before send.
+Submissions,إرسالات
+Submit,اعتماد
+Submitted,Submitted
+Tax,Tax
+Tax API error ({0}): {1},Tax API خطأ ({ 0 }): { 1 }
+Tax API request failed.,Tax API طلب فشل.
+Tax API request failed: {0},Tax API طلب فشل: { 0 }
+Tax Authority Name,Tax Authority اسم
+Tax Authority Profile,ملف الربط بمصلحة الضرائب
+Tax connection,Tax connection
+Tax connection test,Tax connection test
+Tax Console,Tax Console
+Tax country,Tax country
+Tax Phase 1,Tax Phase 1
+Tax Phase 2,Tax Phase 2
+Tax Plugin,Tax Plugin
+Tax plugin is not enabled for {0}.,Tax plugin is not enabled لـ { 0 }.
+Tax Production,Tax Production
+Tax Provider,Tax Provider
+Tax Registration Number (TRN),Tax Registration رقم (TRN)
+Tax Registration Number is required for {0}.,Tax Registration رقم is required لـ { 0 }.
+Tax Signing,Tax Signing
+Tax submission,Tax submission
+Tax Validation,Tax تحقق
+Taxpayer registration / national ID required by ETA and similar authorities.,Taxpayer registration national معرف required حسب ETA و similar authorities.
+Taxpayer Registration ID (RIN),Taxpayer Registration معرف (RIN)
+Taxpayer Registration ID is mandatory for ETA/ZATCA adapters.,Taxpayer Registration معرف is mandatory لـ ETA ZATCA adapters.
+Taxpayer RIN is required on Branch (E-Invoice).,Taxpayer RIN is required on فرع (E - فاتورة).
+Taxpayer RIN is required on Branch {0} (Egypt ETA tab).,Taxpayer RIN is required on فرع { 0 } (Egypt ETA tab).
+Taxpayer RIN is set.,Taxpayer RIN is set.
+taxpayer_rin is required for ETA submission.,taxpayer rin is required لـ ETA submission.
+Technical JSON,Technical JSON
+Test Brazil SEFAZ connection,Test Brazil SEFAZ connection
+Test cloud ↔ PC signing,Test cloud ↔ PC signing
+Test Colombia DIAN connection,Test Colombia DIAN connection
+Test ETA connection,Test ETA connection
+Test ETA e-Invoice connection,Test ETA e - فاتورة connection
+Test ETA E-Receipt connection,Test ETA E - Receipt connection
+Test failed,Test فشل
+Test France PDP connection,Test France PDP connection
+Test Germany XRechnung connection,Test Germany XRechnung connection
+Test India GSP / IRN connection,Test India GSP IRN connection
+Test internalID,Test internal معرف
+Test Italy SDI connection,Test Italy SDI connection
+Test Mexico PAC connection,Test Mexico PAC connection
+Test on this PC:,Test on this PC:
+Test Poland KSeF connection,Test Poland KSe F connection
+Test Spain AEAT connection,Test Spain AEAT connection
+Test tax connection,Test tax connection
+Test UAE ASP connection,Test UAE ASP connection
+Test ZATCA connection,Test ZATCA connection
+Test {0} connection,Test { 0 } connection
+Testing cloud ↔ local signing connection…,Testing cloud ↔ local signing connection …
+Testing tax connection…,Testing tax connection …
+Then,Then
+This branch uses USB Signing Agent. Sign from this PC with the local agent running (browser flow).,This فرع uses USB Signing Agent. Sign from this PC with the local agent running (browser تدفق).
+"This invoice is Electronic Invoice. Use E-Invoice submission, not E-Receipt.","This فاتورة is Electronic فاتورة. Use E - فاتورة submission, not E - Receipt."
+"This invoice is Electronic Receipt. Use E-Receipt submission, not E-Invoice.","This فاتورة is Electronic Receipt. Use E - Receipt submission, not E - فاتورة."
+This receipt was already accepted by ETA. Use force=1 only to resubmit after a rejection.,This receipt was already accepted حسب ETA. Use force = 1 only إلى resubmit after a rejection.
+This was a local test only; nothing was sent to ETA.,This was a local test only; nothing was sent إلى ETA.
+tin,tin
+To Date,إلى تاريخ
+Token URL,Token URL
+Tracking,Tracking
+Trial sign on this PC failed.,Trial sign on this PC فشل.
+Tried,Tried
+Turn on <b>Live Production</b> on Branch when {0} API environment is production.,Turn on < b > Live Production < b > on فرع when { 0 } API environment is production.
+Turn on intl_tax_enabled on the Country Tax tab.,Turn on intl tax enabled on the Country Tax tab.
+UAE,UAE
+UAE (PINT AE / Peppol),UAE (PINT AE Peppol)
+UAE ASP,UAE ASP
+UAE ASP error ({0}): {1},UAE ASP خطأ ({ 0 }): { 1 }
+UAE ASP sandbox OK (mock).,UAE ASP sandbox OK (mock).
+UAE e-Invoice,UAE e - فاتورة
+UAE e-Invoicing,UAE e - Invoicing
+UAE FTA / Peppol PINT AE,UAE FTA Peppol PINT AE
+UAE live ASP requires: {0},UAE live ASP requires: { 0 }
+UAE Phase 1 (PINT UBL),UAE Phase 1 (PINT UBL)
+UAE Phase 2 (ASP),UAE Phase 2 (ASP)
+UAE PINT,UAE PINT
+UAE seller TIN / tax registration,UAE seller TIN tax registration
+UAE TRN must be 15 digits for live production.,UAE TRN must be 15 digits لـ live production.
+UAE TRN must be exactly 15 digits.,UAE TRN must be exactly 15 digits.
+Unexpected compliance CSID response from ZATCA.,Unexpected امتثال CSID response from ZATCA.
+Unexpected production CSID response from ZATCA.,Unexpected production CSID response from ZATCA.
+Unknown country code {0}.,Unknown country كود { 0 }.
+Unknown error,Unknown خطأ
+Unreachable,Unreachable
+Unsupported country code {0}.,Unsupported country كود { 0 }.
+Unsupported LATAM authority country: {0},Unsupported LATAM authority country: { 0 }
+Unsupported signer mode “{0}” on branch {1}.,Unsupported signer mode “ { 0 } ” on فرع { 1 }.
+"Update the agent from E-Invoice workspace (includes Private Network Access fix), restart the agent, then hard-refresh ERP (Ctrl+Shift+R).","تحديث the agent from E - فاتورة مساحة العمل (includes Private Network وصول fix), restart the agent, then hard - refresh ERP (Ctrl + Shift + R)."
+USB Agent,USB Agent
+USB agent did not return a signature.,USB agent did not return a signature.
+USB agent signed document is missing signature.,USB agent signed مستند is missing signature.
+USB PIN missing in signing session.,USB PIN missing in signing session.
+USB Signing Agent,USB Signing Agent
+USB Signing Agent (Windows),USB Signing Agent (Windows)
+USB signing runs on this PC (agent :5002).,USB signing runs on this PC (agent: 5002).
+USB Signing Test,USB Signing Test
+USB Signing Test — agent error,USB Signing Test — agent خطأ
+USB Signing Test — configuration failed,USB Signing Test — تهيئة فشل
+USB Signing Test — success,USB Signing Test — success
+USB Token PIN is empty. Set Branch → USB Token PIN.,USB Token PIN is empty. Set فرع → USB Token PIN.
+USB Token PIN is missing on Branch {0}. Enter it under Egypt ETA → USB Token PIN and Save.,USB Token PIN is missing on فرع { 0 }. Enter it under Egypt ETA → USB Token PIN و Save.
+"USB Token PIN is not set on Branch. Open Branch → Egypt ETA → USB Token PIN, enter it once, Save, then Ctrl+Shift+R.","USB Token PIN is not set on فرع. مفتوح فرع → Egypt ETA → USB Token PIN, enter it once, Save, then Ctrl + Shift + R."
+"USB Token PIN is not set on Branch. Open Branch → Egypt ETA → USB Token PIN, enter it once, Save, then Ctrl+Shift+R. Sign/Send will not ask for PIN.","USB Token PIN is not set on فرع. مفتوح فرع → Egypt ETA → USB Token PIN, enter it once, Save, then Ctrl + Shift + R. Sign Send will not ask لـ PIN."
+USB Token PIN is saved.,USB Token PIN is saved.
+USB Token PIN missing on Branch.,USB Token PIN missing on فرع.
+"USB Token PIN was not returned from ERP. Hard-refresh (Ctrl+Shift+R), re-save Branch PIN, then retry.","USB Token PIN was not returned from ERP. Hard - refresh (Ctrl + Shift + R), re - save فرع PIN, then retry."
+Use Branch ETA settings for Egypt or ZATCA Company Settings for Saudi Arabia.,Use فرع ETA إعدادات لـ Egypt or ZATCA شركة إعدادات لـ Saudi Arabia.
+Use Egypt ETA or Saudi ZATCA signing — not the international plugin signer.,Use Egypt ETA or Saudi ZATCA signing — not the international plugin signer.
+Use internalID only; remove internalId from invoice JSON.,Use internal معرف only; remove internal معرف from فاتورة JSON.
+Used when building e-invoice payloads (ETA remote API vs Windows signing agent).,Used when building e - فاتورة payloads (ETA remote API vs Windows signing agent).
+UUID,UUID
+uuid and invoice_hash_b64 are required when XML has no DigestValue.,uuid و فاتورة hash b64 are required when XML has no Digest Value.
+UUID is generated automatically before each send.,UUID is generated automatically before each send.
+UUID not found in signed XML.,UUID not found in signed XML.
+Valid test invoice ({0}).,Valid test فاتورة ({ 0 }).
+Validate compliance invoices,Validate امتثال invoices
+validate_xsd is enabled for {0} ({1}) but xsd_path is missing in Configuration JSON.,validate xsd is enabled لـ { 0 } ({ 1 }) but xsd path is missing in تهيئة JSON.
+VAT,VAT
+VAT registration number,VAT registration رقم
+VAT Registration Number,VAT Registration رقم
+VAT Registration Number is required when ZATCA is enabled.,VAT Registration رقم is required when ZATCA is enabled.
+Version,إصدار
+"When Chrome asks to access devices on your local network, click <b>Allow</b>.","When Chrome asks إلى وصول devices on your local network, click < b > Allow < b >."
+"When enabled, Sales Invoice cannot be submitted until an E Invoice Submission exists in Queued or Completed state for this invoice.","When enabled, مبيعات فاتورة cannot be submitted until an E فاتورة Submission exists in Queued or مكتمل state لـ this فاتورة."
+Windows Signer Command,Windows Signer Command
+Windows Signer Command is not configured on branch {0}.,Windows Signer Command is not configured on فرع { 0 }.
+Windows signer returned empty signature.,Windows signer returned empty signature.
+Wrong Client ID/Secret or wrong environment (preprod vs prod).,Wrong Client معرف Secret or wrong environment (preprod vs prod).
+XML has no element local-name()='{0}' to sign.,XML has no element local - اسم () = ' { 0 } ' إلى sign.
+XML must contain a CFDI Comprobante root.,XML must contain a CFDI Comprobante root.
+XML validation failed for {0}: {1},XML تحقق فشل لـ { 0 }: { 1 }
+XML-DSig signing requires: pip install cryptography lxml,XML - DSig signing requires: pip install cryptography lxml
+XSD validation requires lxml on the server: {0},XSD تحقق requires lxml on the server: { 0 }
+Your PC browser receives the signing payload (HTTPS),Your PC browser receives the signing payload (HTTPS)
+ZATCA,ZATCA
+ZATCA API error ({0}): {1},ZATCA API خطأ ({ 0 }): { 1 }
+ZATCA API request failed: {0},ZATCA API طلب فشل: { 0 }
+ZATCA API returned unexpected status {0}.,ZATCA API returned unexpected حالة { 0 }.
+ZATCA branch configuration looks valid. Use Sales Invoice → ZATCA Phase 1 for a live API test.,ZATCA فرع تهيئة looks valid. Use مبيعات فاتورة → ZATCA Phase 1 لـ a live API test.
+ZATCA Company Settings,ZATCA شركة إعدادات
+ZATCA Company Settings not found for {0}. Create settings under ZATCA workspace.,ZATCA شركة إعدادات not found لـ { 0 }. Create إعدادات under ZATCA مساحة العمل.
+ZATCA Company Settings phase is not Phase 2 — API submit may fail without CSID.,ZATCA شركة إعدادات phase is not Phase 2 — API اعتماد may fail without CSID.
+ZATCA Compliance,ZATCA امتثال
+ZATCA Compliance CSID,ZATCA امتثال CSID
+ZATCA Console,ZATCA Console
+ZATCA credentials rejected (401). Renew CSID tokens.,ZATCA credentials مرفوض (401). Renew CSID tokens.
+"ZATCA CSR invoice type: 1100 standard+simplified, 1000 standard, 0100 simplified.","ZATCA CSR فاتورة نوع: 1100 standard + simplified, 1000 standard, 0100 simplified."
+ZATCA enabled on branch,ZATCA enabled on فرع
+ZATCA Environment,ZATCA Environment
+ZATCA Errors,ZATCA Errors
+ZATCA internal server error (500). Retry later.,ZATCA internal server خطأ (500). Retry later.
+ZATCA is not enabled for company {0}.,ZATCA is not enabled لـ شركة { 0 }.
+ZATCA Onboarding,ZATCA Onboarding
+ZATCA payload parsing requires lxml.,ZATCA payload parsing requires lxml.
+ZATCA Phase,ZATCA Phase
+ZATCA Phase 1,ZATCA Phase 1
+ZATCA Phase 1 (XML + QR),ZATCA Phase 1 (XML + QR)
+ZATCA Phase 1 completed locally.,ZATCA Phase 1 مكتمل locally.
+ZATCA Phase 2 queued (awaiting company CSID configuration).,ZATCA Phase 2 queued (awaiting شركة CSID تهيئة).
+ZATCA Phase 2 queued.,ZATCA Phase 2 queued.
+ZATCA Phase 2 requires company or csid_reference in the payload.,ZATCA Phase 2 requires شركة or csid reference in the payload.
+ZATCA phase must be phase1 or phase2.,ZATCA phase must be phase1 or phase2.
+ZATCA private key missing. Run CSR / onboarding.,ZATCA private مفتاح missing. Run CSR onboarding.
+ZATCA QR,ZATCA QR
+ZATCA QR Code,ZATCA QR كود
+ZATCA Reporting Phase,ZATCA Reporting Phase
+ZATCA Reporting Phase is mandatory for ZATCA adapter.,ZATCA Reporting Phase is mandatory لـ ZATCA adapter.
+ZATCA signing requires: pip install cryptography lxml,ZATCA signing requires: pip install cryptography lxml
+ZATCA Status,ZATCA حالة
+ZATCA Submission Failed,ZATCA Submission فشل
+ZATCA Submission Log,ZATCA Submission سجل
+ZATCA submissions must reference Sales Invoice.,ZATCA submissions must reference مبيعات فاتورة.
+"ZATCA supports document_type values: tax_invoice, simplified_invoice, credit_note.","ZATCA supports مستند نوع values: tax فاتورة, simplified فاتورة, ائتمان note."
+ZATCA validation failed.,ZATCA تحقق فشل.
+ZATCA Warnings,ZATCA Warnings
+{0} branch settings validated for Phase 1.,{ 0 } فرع إعدادات validated لـ Phase 1.
+{0} does not support POS yet.,{ 0 } does not support POS yet.
+"{0} e-invoice enabled"", [code]), ""green","{ 0 } e - فاتورة enabled "", [ كود ]), "" green"
+{0} error ({1}): {2},{ 0 } خطأ ({ 1 }): { 2 }
+{0} is not fully integrated yet. Create <b>Country Tax Settings</b> for {1} / {2}.,{ 0 } is not fully integrated yet. Create < b > Country Tax إعدادات < b > لـ { 1 } { 2 }.
+{0} Phase 1 (PINT AE UBL) completed.,{ 0 } Phase 1 (PINT AE UBL) مكتمل.
+{0} Phase 1 ({1}) completed.,{ 0 } Phase 1 ({ 1 }) مكتمل.
+{0} Phase 1 completed.,{ 0 } Phase 1 مكتمل.
+{0} ready for authority UAT.,{ 0 } ready لـ authority UAT.
+{0} sandbox OK (mock).,{ 0 } sandbox OK (mock).
+{0} settings found; API integration pending.,{ 0 } إعدادات found; API تكامل معلق.
+{0} submission queued (configure Country Tax Settings).,{ 0 } submission queued (configure Country Tax إعدادات).
+{0} submissions must reference Sales Invoice.,{ 0 } submissions must reference مبيعات فاتورة.
+{0} supports document_type: {1}.,{ 0 } supports مستند نوع: { 1 }.
+{0}: enable e-invoice on Branch → Country Tax tab for this branch.,{ 0 }: enable e - فاتورة on فرع → Country Tax tab لـ this فرع.

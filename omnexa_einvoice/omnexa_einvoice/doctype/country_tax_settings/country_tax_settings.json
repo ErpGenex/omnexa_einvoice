@@ -1,0 +1,243 @@
+{
+	"actions": [],
+	"allow_rename": 0,
+	"autoname": "format:{company}-{country_code}",
+	"creation": "2026-05-19 12:00:00",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"company",
+		"country_code",
+		"enabled",
+		"live_production",
+		"auto_submit_on_si_submit",
+		"tax_authority_name",
+		"section_production",
+		"signing_mode",
+		"section_api",
+		"api_environment",
+		"api_base_url",
+		"tax_registration_number",
+		"section_uae",
+		"uae_seller_tin",
+		"uae_peppol_sender_id",
+		"uae_peppol_receiver_id",
+		"column_break_uae",
+		"uae_legal_name_ar",
+		"uae_invoice_type_code",
+		"uae_asp_submit_path",
+		"uae_customization_id",
+		"uae_profile_id",
+		"section_credentials",
+		"client_id",
+		"client_secret",
+		"section_notes",
+		"configuration_json",
+		"remarks"
+	],
+	"fields": [
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Company",
+			"options": "Company",
+			"reqd": 1
+		},
+		{
+			"fieldname": "country_code",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"label": "Country Code",
+			"options": "AE\nAR\nBE\nBH\nBR\nCL\nCN\nCO\nDE\nDK\nES\nFI\nFR\nID\nIN\nIT\nJO\nJP\nKE\nKR\nKW\nMX\nNL\nNO\nOM\nPE\nPL\nPT\nQA\nRO\nSE\nSG\nTR\nUG\nZA",
+			"reqd": 1
+		},
+		{
+			"default": "0",
+			"fieldname": "enabled",
+			"fieldtype": "Check",
+			"label": "Enabled"
+		},
+		{
+			"default": "0",
+			"depends_on": "eval:doc.enabled",
+			"description": "Required for api_environment=production — confirms ASP credentials are live.",
+			"fieldname": "live_production",
+			"fieldtype": "Check",
+			"label": "Live Production"
+		},
+		{
+			"default": "0",
+			"depends_on": "eval:doc.enabled",
+			"fieldname": "auto_submit_on_si_submit",
+			"fieldtype": "Check",
+			"label": "Auto-submit on Sales Invoice Submit"
+		},
+		{
+			"fieldname": "tax_authority_name",
+			"fieldtype": "Data",
+			"label": "Tax Authority Name"
+		},
+		{
+			"depends_on": "eval:doc.enabled",
+			"fieldname": "section_production",
+			"fieldtype": "Section Break",
+			"label": "Production"
+		},
+		{
+			"default": "scaffold",
+			"depends_on": "eval:doc.enabled",
+			"fieldname": "signing_mode",
+			"fieldtype": "Select",
+			"label": "Signing Mode",
+			"options": "scaffold\ncertificate"
+		},
+		{
+			"fieldname": "section_api",
+			"fieldtype": "Section Break",
+			"label": "API"
+		},
+		{
+			"default": "sandbox",
+			"fieldname": "api_environment",
+			"fieldtype": "Select",
+			"label": "Environment",
+			"options": "sandbox\nsimulation\nproduction"
+		},
+		{
+			"fieldname": "api_base_url",
+			"fieldtype": "Data",
+			"label": "API Base URL"
+		},
+		{
+			"fieldname": "tax_registration_number",
+			"fieldtype": "Data",
+			"label": "Tax Registration Number (TRN)"
+		},
+		{
+			"depends_on": "eval:doc.country_code=='AE'",
+			"fieldname": "section_uae",
+			"fieldtype": "Section Break",
+			"label": "UAE (PINT AE / Peppol)"
+		},
+		{
+			"depends_on": "eval:doc.country_code=='AE'",
+			"description": "15-digit UAE Tax Registration Number (TIN). Copied to Tax Registration if empty on save.",
+			"fieldname": "uae_seller_tin",
+			"fieldtype": "Data",
+			"label": "Seller TRN"
+		},
+		{
+			"depends_on": "eval:doc.country_code=='AE'",
+			"description": "E.g. 0235:100000000000003 (EAS:TIN). Built automatically from TRN if left empty.",
+			"fieldname": "uae_peppol_sender_id",
+			"fieldtype": "Data",
+			"label": "Peppol Sender Participant ID"
+		},
+		{
+			"depends_on": "eval:doc.country_code=='AE'",
+			"fieldname": "uae_peppol_receiver_id",
+			"fieldtype": "Data",
+			"label": "Default Peppol Receiver ID"
+		},
+		{
+			"depends_on": "eval:doc.country_code=='AE'",
+			"fieldname": "column_break_uae",
+			"fieldtype": "Column Break"
+		},
+		{
+			"depends_on": "eval:doc.country_code=='AE'",
+			"fieldname": "uae_legal_name_ar",
+			"fieldtype": "Data",
+			"label": "Seller Legal Name (Arabic)"
+		},
+		{
+			"default": "380",
+			"depends_on": "eval:doc.country_code=='AE'",
+			"fieldname": "uae_invoice_type_code",
+			"fieldtype": "Select",
+			"label": "Invoice Type Code",
+			"options": "380\n381\n480"
+		},
+		{
+			"default": "/einvoice/v1/submit",
+			"depends_on": "eval:doc.country_code=='AE'",
+			"fieldname": "uae_asp_submit_path",
+			"fieldtype": "Data",
+			"label": "ASP Submit Path"
+		},
+		{
+			"depends_on": "eval:doc.country_code=='AE'",
+			"fieldname": "uae_customization_id",
+			"fieldtype": "Small Text",
+			"label": "Customization ID (override)"
+		},
+		{
+			"depends_on": "eval:doc.country_code=='AE'",
+			"fieldname": "uae_profile_id",
+			"fieldtype": "Data",
+			"label": "Profile ID (override)"
+		},
+		{
+			"fieldname": "section_credentials",
+			"fieldtype": "Section Break",
+			"label": "Credentials"
+		},
+		{
+			"fieldname": "client_id",
+			"fieldtype": "Data",
+			"label": "Client ID"
+		},
+		{
+			"fieldname": "client_secret",
+			"fieldtype": "Password",
+			"label": "Client Secret"
+		},
+		{
+			"fieldname": "asp_api_key",
+			"fieldtype": "Password",
+			"label": "ASP API Key (Bearer)"
+		},
+		{
+			"fieldname": "section_notes",
+			"fieldtype": "Section Break",
+			"label": "Configuration"
+		},
+		{
+			"fieldname": "configuration_json",
+			"fieldtype": "Long Text",
+			"label": "Configuration JSON"
+		},
+		{
+			"fieldname": "remarks",
+			"fieldtype": "Small Text",
+			"label": "Remarks"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-05-19 12:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Einvoice",
+	"name": "Country Tax Settings",
+	"naming_rule": "By fieldname",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1
+}

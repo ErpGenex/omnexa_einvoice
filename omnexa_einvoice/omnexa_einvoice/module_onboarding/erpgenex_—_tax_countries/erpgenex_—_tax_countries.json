@@ -1,0 +1,41 @@
+{
+ "allow_roles": [
+  {
+   "role": "Desk User"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "creation": "2026-05-19 17:59:13.624038",
+ "docstatus": 0,
+ "doctype": "Module Onboarding",
+ "documentation_url": "https://frappe.io/framework",
+ "idx": 0,
+ "is_complete": 0,
+ "modified": "2026-07-11 14:37:34.521744",
+ "modified_by": "Administrator",
+ "module": "Omnexa Einvoice",
+ "name": "ERPGENEX \u2014 Tax Countries",
+ "owner": "Administrator",
+ "steps": [
+  {
+   "step": "ERPGENEX-WS-tax_countries-01-country_tax_settings"
+  },
+  {
+   "step": "ERPGENEX-WS-tax_countries-02-zatca_company_settings"
+  },
+  {
+   "step": "ERPGENEX-WS-tax_countries-03-page-zatca_console"
+  },
+  {
+   "step": "ERPGENEX-WS-tax_countries-04-page-international_tax_console"
+  },
+  {
+   "step": "ERPGENEX-WS-tax_countries-home"
+  }
+ ],
+ "subtitle": "Guided setup for this workspace.",
+ "success_message": "You are ready to work in Tax Countries.",
+ "title": "Tax Countries"
+}

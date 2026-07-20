@@ -1,0 +1,291 @@
+{
+	"actions": [],
+	"allow_rename": 0,
+	"autoname": "field:company",
+	"creation": "2026-05-19 00:00:00",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"company",
+		"enabled",
+		"zatca_phase",
+		"zatca_environment",
+		"section_org",
+		"vat_registration_number",
+		"organization_name",
+		"organization_name_ar",
+		"street",
+		"building_number",
+		"city",
+		"district",
+		"postal_code",
+		"country_code",
+		"section_csr",
+		"csr_invoice_type",
+		"egs_serial_number",
+		"organization_unit_name",
+		"csr_common_name",
+		"industry_business_category",
+		"location_address",
+		"csr_pem",
+		"section_compliance",
+		"standard_invoice_validated",
+		"simplified_invoice_validated",
+		"compliance_validated",
+		"section_credentials",
+		"private_key",
+		"certificate_pem",
+		"public_key_pem",
+		"compliance_security_token",
+		"compliance_secret",
+		"compliance_request_id",
+		"production_security_token",
+		"production_secret",
+		"section_chain",
+		"icv_counter",
+		"last_invoice_hash"
+	],
+	"fields": [
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Company",
+			"options": "Company",
+			"reqd": 1,
+			"unique": 1
+		},
+		{
+			"default": "0",
+			"fieldname": "enabled",
+			"fieldtype": "Check",
+			"label": "Enable ZATCA E-Invoicing"
+		},
+		{
+			"default": "Phase 1",
+			"fieldname": "zatca_phase",
+			"fieldtype": "Select",
+			"label": "ZATCA Phase",
+			"options": "Phase 1\nPhase 2"
+		},
+		{
+			"default": "sandbox",
+			"fieldname": "zatca_environment",
+			"fieldtype": "Select",
+			"label": "ZATCA Environment",
+			"options": "sandbox\nsimulation\nproduction"
+		},
+		{
+			"fieldname": "section_org",
+			"fieldtype": "Section Break",
+			"label": "Organization"
+		},
+		{
+			"fieldname": "vat_registration_number",
+			"fieldtype": "Data",
+			"label": "VAT Registration Number",
+			"reqd": 1
+		},
+		{
+			"fieldname": "organization_name",
+			"fieldtype": "Data",
+			"label": "Organization Name (EN)",
+			"reqd": 1
+		},
+		{
+			"fieldname": "organization_name_ar",
+			"fieldtype": "Data",
+			"label": "Organization Name (AR)",
+			"reqd": 1
+		},
+		{
+			"fieldname": "street",
+			"fieldtype": "Data",
+			"label": "Street"
+		},
+		{
+			"fieldname": "building_number",
+			"fieldtype": "Data",
+			"label": "Building Number"
+		},
+		{
+			"fieldname": "city",
+			"fieldtype": "Data",
+			"label": "City"
+		},
+		{
+			"fieldname": "district",
+			"fieldtype": "Data",
+			"label": "District"
+		},
+		{
+			"fieldname": "postal_code",
+			"fieldtype": "Data",
+			"label": "Postal Code"
+		},
+		{
+			"default": "SA",
+			"fieldname": "country_code",
+			"fieldtype": "Data",
+			"label": "Country Code"
+		},
+		{
+			"fieldname": "section_csr",
+			"fieldtype": "Section Break",
+			"label": "CSR / Invoice profile"
+		},
+		{
+			"default": "1100",
+			"description": "ZATCA CSR invoice type: 1100 standard+simplified, 1000 standard, 0100 simplified.",
+			"fieldname": "csr_invoice_type",
+			"fieldtype": "Select",
+			"label": "CSR Invoice Type",
+			"options": "1100\n1000\n0100"
+		},
+		{
+			"fieldname": "egs_serial_number",
+			"fieldtype": "Data",
+			"label": "EGS Serial Number"
+		},
+		{
+			"fieldname": "organization_unit_name",
+			"fieldtype": "Data",
+			"label": "Organization Unit (EGS branch)"
+		},
+		{
+			"fieldname": "csr_common_name",
+			"fieldtype": "Data",
+			"label": "CSR Common Name (EGS unit)"
+		},
+		{
+			"fieldname": "industry_business_category",
+			"fieldtype": "Data",
+			"label": "Industry / Business Category"
+		},
+		{
+			"fieldname": "location_address",
+			"fieldtype": "Small Text",
+			"label": "CSR Location Address"
+		},
+		{
+			"fieldname": "csr_pem",
+			"fieldtype": "Long Text",
+			"label": "CSR (PEM)",
+			"read_only": 1
+		},
+		{
+			"fieldname": "section_compliance",
+			"fieldtype": "Section Break",
+			"label": "Compliance validation"
+		},
+		{
+			"default": "0",
+			"fieldname": "standard_invoice_validated",
+			"fieldtype": "Check",
+			"label": "Standard invoice validated",
+			"read_only": 1
+		},
+		{
+			"default": "0",
+			"fieldname": "simplified_invoice_validated",
+			"fieldtype": "Check",
+			"label": "Simplified invoice validated",
+			"read_only": 1
+		},
+		{
+			"default": "0",
+			"fieldname": "compliance_validated",
+			"fieldtype": "Check",
+			"label": "Compliance checks complete",
+			"read_only": 1
+		},
+		{
+			"fieldname": "section_credentials",
+			"fieldtype": "Section Break",
+			"label": "Certificates (encrypted)"
+		},
+		{
+			"fieldname": "private_key",
+			"fieldtype": "Password",
+			"label": "EC Private Key (PEM)"
+		},
+		{
+			"fieldname": "certificate_pem",
+			"fieldtype": "Long Text",
+			"label": "Certificate (PEM body, no headers)"
+		},
+		{
+			"fieldname": "public_key_pem",
+			"fieldtype": "Long Text",
+			"label": "Public Key (base64)"
+		},
+		{
+			"fieldname": "compliance_security_token",
+			"fieldtype": "Password",
+			"label": "Compliance CSID Token"
+		},
+		{
+			"fieldname": "compliance_secret",
+			"fieldtype": "Password",
+			"label": "Compliance CSID Secret"
+		},
+		{
+			"fieldname": "compliance_request_id",
+			"fieldtype": "Data",
+			"label": "Compliance Request ID"
+		},
+		{
+			"fieldname": "production_security_token",
+			"fieldtype": "Password",
+			"label": "Production CSID Token"
+		},
+		{
+			"fieldname": "production_secret",
+			"fieldtype": "Password",
+			"label": "Production CSID Secret"
+		},
+		{
+			"fieldname": "section_chain",
+			"fieldtype": "Section Break",
+			"label": "Invoice chain (PIH / ICV)"
+		},
+		{
+			"default": "0",
+			"fieldname": "icv_counter",
+			"fieldtype": "Int",
+			"label": "ICV Counter",
+			"non_negative": 1
+		},
+		{
+			"fieldname": "last_invoice_hash",
+			"fieldtype": "Small Text",
+			"label": "Previous Invoice Hash (PIH)"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-05-19 00:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Einvoice",
+	"name": "ZATCA Company Settings",
+	"naming_rule": "By fieldname",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1
+}

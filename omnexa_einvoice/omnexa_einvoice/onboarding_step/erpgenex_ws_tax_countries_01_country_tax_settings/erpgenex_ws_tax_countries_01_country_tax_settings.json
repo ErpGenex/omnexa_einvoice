@@ -1,0 +1,21 @@
+{
+ "action": "Create Entry",
+ "action_label": "Create",
+ "creation": "2026-05-19 17:59:13.604970",
+ "description": "Create or review your first **Country Tax Settings** record from this workspace.",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2026-07-11 14:37:34.478747",
+ "modified_by": "Administrator",
+ "name": "ERPGENEX-WS-tax_countries-01-country_tax_settings",
+ "owner": "Administrator",
+ "reference_document": "Country Tax Settings",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "Get started with Country Tax Settings",
+ "validate_action": 1
+}

@@ -1,0 +1,21 @@
+{
+ "action": "Go to Page",
+ "action_label": "Open",
+ "creation": "2026-06-13 04:08:23.243203",
+ "description": "Jump to the **ETA E-Invoice Console** page.",
+ "docstatus": 0,
+ "doctype": "Onboarding Step",
+ "idx": 0,
+ "is_complete": 0,
+ "is_single": 0,
+ "is_skipped": 0,
+ "modified": "2026-07-11 14:37:24.395017",
+ "modified_by": "Administrator",
+ "name": "ERPGENEX-WS-e_invoice-02-page-eta_einvoice_console",
+ "owner": "Administrator",
+ "path": "eta-einvoice-console",
+ "show_form_tour": 0,
+ "show_full_form": 0,
+ "title": "Open ETA E-Invoice Console",
+ "validate_action": 1
+}

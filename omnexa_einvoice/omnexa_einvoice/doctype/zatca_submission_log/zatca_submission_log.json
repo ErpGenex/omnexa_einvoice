@@ -1,0 +1,151 @@
+{
+	"actions": [],
+	"allow_rename": 0,
+	"autoname": "hash",
+	"creation": "2026-05-19 00:00:00",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"company",
+		"reference_name",
+		"document_type",
+		"phase",
+		"status",
+		"uuid",
+		"invoice_hash",
+		"qr_base64",
+		"column_break_1",
+		"zatca_status",
+		"clearance_status",
+		"reporting_status",
+		"section_payload",
+		"request_payload",
+		"response_payload",
+		"error_message",
+		"archive_paths"
+	],
+	"fields": [
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Company",
+			"options": "Company",
+			"reqd": 1
+		},
+		{
+			"fieldname": "reference_name",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Reference",
+			"reqd": 1
+		},
+		{
+			"fieldname": "document_type",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"label": "Document Type",
+			"options": "tax_invoice\nsimplified_invoice\ncredit_note",
+			"reqd": 1
+		},
+		{
+			"fieldname": "phase",
+			"fieldtype": "Select",
+			"label": "Phase",
+			"options": "phase1\nphase2"
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"label": "Status",
+			"options": "Draft\nSigned\nSubmitted\nCleared\nReported\nFailed",
+			"reqd": 1
+		},
+		{
+			"fieldname": "uuid",
+			"fieldtype": "Data",
+			"label": "UUID"
+		},
+		{
+			"fieldname": "invoice_hash",
+			"fieldtype": "Small Text",
+			"label": "Invoice Hash"
+		},
+		{
+			"fieldname": "qr_base64",
+			"fieldtype": "Long Text",
+			"label": "QR (base64 TLV)"
+		},
+		{
+			"fieldname": "column_break_1",
+			"fieldtype": "Column Break"
+		},
+		{
+			"fieldname": "zatca_status",
+			"fieldtype": "Data",
+			"label": "ZATCA Status"
+		},
+		{
+			"fieldname": "clearance_status",
+			"fieldtype": "Data",
+			"label": "Clearance Status"
+		},
+		{
+			"fieldname": "reporting_status",
+			"fieldtype": "Data",
+			"label": "Reporting Status"
+		},
+		{
+			"fieldname": "section_payload",
+			"fieldtype": "Section Break",
+			"label": "Payload"
+		},
+		{
+			"fieldname": "request_payload",
+			"fieldtype": "Long Text",
+			"label": "Request"
+		},
+		{
+			"fieldname": "response_payload",
+			"fieldtype": "Long Text",
+			"label": "Response"
+		},
+		{
+			"fieldname": "error_message",
+			"fieldtype": "Small Text",
+			"label": "Error"
+		},
+		{
+			"fieldname": "archive_paths",
+			"fieldtype": "Small Text",
+			"label": "Archive Paths"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-05-19 00:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Einvoice",
+	"name": "ZATCA Submission Log",
+	"naming_rule": "Random",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1
+}

@@ -1,0 +1,182 @@
+{# ERPGENEX — country-specific e-invoice print (Sales Invoice) #}
+{% set p = einvoice_print_context(doc) %}
+{% set d = p.design_dict %}
+<style>
+.einv-wrap {
+  font-family: "Cairo", "Inter", "Noto Sans", Arial, sans-serif;
+  font-size: 11px;
+  color: #1E293B;
+  max-width: 210mm;
+  margin: 0 auto;
+}
+.einv-header {
+  background: {{ d.header_bg }};
+  border-left: 6px solid {{ d.primary_color }};
+  padding: 14px 16px;
+  margin-bottom: 16px;
+  border-radius: 4px;
+}
+.einv-badge {
+  display: inline-block;
+  background: {{ d.primary_color }};
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 10px;
+  border-radius: 3px;
+}
+.einv-country {
+  font-size: 18px;
+  font-weight: 700;
+  color: {{ d.primary_color }};
+  margin: 8px 0 4px;
+}
+.einv-framework { font-size: 11px; color: #5A6B85; }
+.einv-title {
+  font-size: 22px;
+  font-weight: 700;
+  color: {{ d.accent_color }};
+  margin: 12px 0 8px;
+  text-align: center;
+}
+.einv-meta { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+.einv-meta td { padding: 4px 8px; vertical-align: top; }
+.einv-meta .lbl { color: #5A6B85; width: 28%; font-weight: 600; }
+.einv-parties { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+.einv-parties td {
+  width: 50%; vertical-align: top; padding: 10px;
+  background: #F8FAFC; border: 1px solid #E2E8F0;
+}
+.einv-parties h4 { margin: 0 0 8px; color: {{ d.primary_color }}; font-size: 12px; }
+.einv-table { width: 100%; border-collapse: collapse; margin-bottom: 14px; }
+.einv-table th {
+  background: {{ d.primary_color }}; color: #fff; padding: 8px 10px;
+  text-align: {{ 'right' if p.rtl else 'left' }}; font-size: 10px;
+}
+.einv-table td { padding: 7px 10px; border-bottom: 1px solid #E2E8F0; }
+.einv-table tr:nth-child(even) td { background: #FBFDFF; }
+.einv-totals {
+  width: 42%;
+  margin-{{ 'left' if p.rtl else 'right' }}: auto;
+  margin-{{ 'right' if p.rtl else 'left' }}: 0;
+  border-collapse: collapse;
+}
+.einv-totals td { padding: 5px 10px; }
+.einv-totals .grand {
+  font-weight: 700; font-size: 13px;
+  background: {{ d.header_bg }}; color: {{ d.primary_color }};
+}
+.einv-qr {
+  text-align: center; margin: 18px 0; padding: 12px;
+  border: 2px dashed {{ d.accent_color }}; border-radius: 8px;
+}
+.einv-qr img { max-width: 180px; height: auto; }
+.einv-footer {
+  margin-top: 16px; padding-top: 10px;
+  border-top: 2px solid {{ d.primary_color }};
+  font-size: 9px; color: #5A6B85; text-align: center;
+}
+</style>
+
+<div class="einv-wrap einv-family-{{ d.template_family }}" dir="{{ p.dir }}">
+  <div class="einv-header">
+    <span class="einv-badge">{{ d.authority }} · {{ p.country_code }}</span>
+    <div class="einv-country">{{ p.country_label }}</div>
+    <div class="einv-framework">{{ p.framework }} — {{ p.tax_provider }}</div>
+  </div>
+
+  <div class="einv-title">{{ p.title }}</div>
+
+  <table class="einv-meta">
+    <tr>
+      <td class="lbl">{{ _("Invoice No.") }}</td>
+      <td><b>{{ doc.name }}</b></td>
+      <td class="lbl">{{ _("Date") }}</td>
+      <td>{{ p.posting_date }}</td>
+    </tr>
+    {% if p.branch %}
+    <tr>
+      <td class="lbl">{{ _("Branch") }}</td>
+      <td>{{ p.branch }}</td>
+      <td class="lbl">{{ _("Currency") }}</td>
+      <td>{{ p.currency }}</td>
+    </tr>
+    {% endif %}
+    {% if p.tax.irn %}
+    <tr>
+      <td class="lbl">IRN</td>
+      <td colspan="3" style="font-size:9px;word-break:break-all;">{{ p.tax.irn }}</td>
+    </tr>
+    {% elif p.tax.uuid %}
+    <tr>
+      <td class="lbl">UUID</td>
+      <td colspan="3" style="font-size:9px;word-break:break-all;">{{ p.tax.uuid }}</td>
+    </tr>
+    {% endif %}
+    {% if p.tax.invoice_hash %}
+    <tr>
+      <td class="lbl">{{ _("Hash") }}</td>
+      <td colspan="3" style="font-size:9px;word-break:break-all;">{{ p.tax.invoice_hash }}</td>
+    </tr>
+    {% endif %}
+    {% if p.tax.status %}
+    <tr>
+      <td class="lbl">{{ _("Tax status") }}</td>
+      <td>{{ p.tax.status }}{% if p.tax.authority_status %} / {{ p.tax.authority_status }}{% endif %}</td>
+    </tr>
+    {% endif %}
+  </table>
+
+  <table class="einv-parties">
+    <tr>
+      <td>
+        <h4>{{ _("Seller") }}</h4>
+        <div><b>{{ p.seller.name }}</b></div>
+        {% if p.seller.tax_id %}<div>{{ _("Tax ID") }}: {{ p.seller.tax_id }}</div>{% endif %}
+      </td>
+      <td>
+        <h4>{{ _("Buyer") }}</h4>
+        <div><b>{{ p.buyer.name or doc.customer_name or "—" }}</b></div>
+        {% if p.buyer.tax_id %}<div>{{ _("Tax ID") }}: {{ p.buyer.tax_id }}</div>{% endif %}
+      </td>
+    </tr>
+  </table>
+
+  <table class="einv-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>{{ _("Description") }}</th>
+        <th>{{ _("Qty") }}</th>
+        <th>{{ _("Rate") }}</th>
+        <th>{{ _("Amount") }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for line in p.lines %}
+      <tr>
+        <td>{{ line.idx }}</td>
+        <td>{{ line.description }}</td>
+        <td>{{ line.qty }}</td>
+        <td>{{ frappe.utils.fmt_money(line.rate, currency=p.currency) }}</td>
+        <td>{{ frappe.utils.fmt_money(line.amount, currency=p.currency) }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <table class="einv-totals">
+    <tr><td>{{ _("Net Total") }}</td><td class="text-right">{{ frappe.utils.fmt_money(p.net_total, currency=p.currency) }}</td></tr>
+    <tr><td>{{ _("Tax") }}</td><td class="text-right">{{ frappe.utils.fmt_money(p.tax_total, currency=p.currency) }}</td></tr>
+    <tr class="grand"><td>{{ _("Grand Total") }}</td><td class="text-right">{{ frappe.utils.fmt_money(p.grand_total, currency=p.currency) }}</td></tr>
+  </table>
+
+  {% if p.tax.qr_image_base64 %}
+  <div class="einv-qr">
+    <div style="font-weight:700;margin-bottom:8px;color:{{ d.primary_color }};">{{ _("Scan QR Code") }}</div>
+    <img src="data:image/png;base64,{{ p.tax.qr_image_base64 }}" alt="QR" />
+  </div>
+  {% endif %}
+
+  <div class="einv-footer">{{ p.footer }}</div>
+</div>

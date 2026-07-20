@@ -1,0 +1,155 @@
+{
+	"actions": [],
+	"allow_rename": 0,
+	"autoname": "hash",
+	"creation": "2026-05-19 14:00:00",
+	"doctype": "DocType",
+	"engine": "InnoDB",
+	"field_order": [
+		"company",
+		"country_code",
+		"reference_doctype",
+		"reference_name",
+		"phase",
+		"status",
+		"uuid",
+		"invoice_hash",
+		"idempotency_key",
+		"signing_family",
+		"authority_status",
+		"section_payload",
+		"response_payload",
+		"error_message",
+		"archive_paths"
+	],
+	"fields": [
+		{
+			"fieldname": "company",
+			"fieldtype": "Link",
+			"in_list_view": 1,
+			"label": "Company",
+			"options": "Company",
+			"reqd": 1
+		},
+		{
+			"fieldname": "country_code",
+			"fieldtype": "Data",
+			"in_list_view": 1,
+			"label": "Country Code",
+			"reqd": 1
+		},
+		{
+			"fieldname": "reference_doctype",
+			"fieldtype": "Link",
+			"label": "Reference DocType",
+			"options": "DocType",
+			"reqd": 1
+		},
+		{
+			"fieldname": "reference_name",
+			"fieldtype": "Dynamic Link",
+			"in_list_view": 1,
+			"label": "Reference",
+			"options": "reference_doctype",
+			"reqd": 1
+		},
+		{
+			"fieldname": "phase",
+			"fieldtype": "Select",
+			"label": "Phase",
+			"options": "phase1\nphase2"
+		},
+		{
+			"fieldname": "status",
+			"fieldtype": "Select",
+			"in_list_view": 1,
+			"label": "Status",
+			"options": "Draft\nSigned\nSubmitted\nAccepted\nRejected\nFailed\nCancelled",
+			"reqd": 1
+		},
+		{
+			"fieldname": "uuid",
+			"fieldtype": "Data",
+			"label": "UUID"
+		},
+		{
+			"fieldname": "invoice_hash",
+			"fieldtype": "Small Text",
+			"label": "Invoice Hash"
+		},
+		{
+			"fieldname": "idempotency_key",
+			"fieldtype": "Data",
+			"label": "Idempotency Key",
+			"read_only": 1
+		},
+		{
+			"fieldname": "signing_family",
+			"fieldtype": "Data",
+			"label": "Signing Family",
+			"read_only": 1
+		},
+		{
+			"fieldname": "authority_status",
+			"fieldtype": "Data",
+			"label": "Authority Status"
+		},
+		{
+			"fieldname": "section_payload",
+			"fieldtype": "Section Break",
+			"label": "Payload"
+		},
+		{
+			"fieldname": "response_payload",
+			"fieldtype": "Long Text",
+			"label": "Response"
+		},
+		{
+			"fieldname": "error_message",
+			"fieldtype": "Small Text",
+			"label": "Error"
+		},
+		{
+			"fieldname": "archive_paths",
+			"fieldtype": "Small Text",
+			"label": "Archive Paths"
+		}
+	],
+	"index_web_pages_for_search": 1,
+	"links": [],
+	"modified": "2026-05-19 14:00:00",
+	"modified_by": "Administrator",
+	"module": "Omnexa Einvoice",
+	"name": "Country Tax Submission Log",
+	"naming_rule": "Random",
+	"owner": "Administrator",
+	"permissions": [
+		{
+			"create": 1,
+			"delete": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "System Manager",
+			"share": 1,
+			"write": 1
+		},
+		{
+			"create": 1,
+			"email": 1,
+			"export": 1,
+			"print": 1,
+			"read": 1,
+			"report": 1,
+			"role": "Accounts Manager",
+			"share": 1,
+			"write": 1
+		}
+	],
+	"sort_field": "modified",
+	"sort_order": "DESC",
+	"states": [],
+	"track_changes": 1
+}

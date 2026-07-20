@@ -1,0 +1,16 @@
+{
+ "content": null,
+ "docstatus": 0,
+ "doctype": "Page",
+ "icon": "file",
+ "module": "Omnexa Einvoice",
+ "name": "eta-einvoice-console",
+ "page_name": "eta-einvoice-console",
+ "roles": [
+  {"role": "System Manager"},
+  {"role": "Accounts Manager"},
+  {"role": "Accounts User"}
+ ],
+ "standard": "Yes",
+ "title": "ETA E-Invoice Console"
+}

@@ -1,0 +1,41 @@
+{
+ "allow_roles": [
+  {
+   "role": "Desk User"
+  },
+  {
+   "role": "System Manager"
+  }
+ ],
+ "creation": "2026-05-02 01:05:25.234286",
+ "docstatus": 0,
+ "doctype": "Module Onboarding",
+ "documentation_url": "https://frappe.io/framework",
+ "idx": 0,
+ "is_complete": 0,
+ "modified": "2026-07-11 14:37:24.435022",
+ "modified_by": "Administrator",
+ "module": "Omnexa Einvoice",
+ "name": "ERPGENEX \u2014 E-Invoice",
+ "owner": "Administrator",
+ "steps": [
+  {
+   "step": "ERPGENEX-WS-e_invoice-01-page-ei_executive_dashboard"
+  },
+  {
+   "step": "ERPGENEX-WS-e_invoice-02-page-eta_einvoice_console"
+  },
+  {
+   "step": "ERPGENEX-WS-e_invoice-03-page-eta_ereceipt_console"
+  },
+  {
+   "step": "ERPGENEX-WS-e_invoice-04-page-international_tax_console"
+  },
+  {
+   "step": "ERPGENEX-WS-e_invoice-home"
+  }
+ ],
+ "subtitle": "Guided setup for this workspace.",
+ "success_message": "You are ready to work in E-Invoice.",
+ "title": "E-Invoice"
+}

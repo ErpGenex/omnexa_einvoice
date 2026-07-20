@@ -1,0 +1,16 @@
+{
+	"doctype": "Page",
+	"module": "Omnexa Einvoice",
+	"name": "ei-executive-dashboard",
+	"page_name": "ei-executive-dashboard",
+	"standard": "Yes",
+	"title": "Executive Dashboard",
+	"roles": [
+		{
+			"role": "System Manager"
+		},
+		{
+			"role": "All"
+		}
+	]
+}

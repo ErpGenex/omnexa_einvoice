@@ -1,0 +1,16 @@
+.DS_Store
+*.pyc
+*.egg-info
+*.swp
+tags
+node_modules
+__pycache__
+*.egg-info/
+dist/
+build/
+.env
+.venv
+
+# PyInstaller output (sources + release ZIP are committed under omnexa_einvoice/)
+omnexa_einvoice/signing_agent/dist/
+omnexa_einvoice/signing_agent/build/
