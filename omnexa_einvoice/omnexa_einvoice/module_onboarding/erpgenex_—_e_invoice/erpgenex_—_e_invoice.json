@@ -7,13 +7,13 @@
    "role": "System Manager"
   }
  ],
- "creation": "2026-05-02 01:05:25.234286",
+ "creation": "2026-07-20 01:45:27.145290",
  "docstatus": 0,
  "doctype": "Module Onboarding",
  "documentation_url": "https://frappe.io/framework",
  "idx": 0,
  "is_complete": 0,
- "modified": "2026-07-11 14:37:24.435022",
+ "modified": "2026-07-25 15:05:02.609669",
  "modified_by": "Administrator",
  "module": "Omnexa Einvoice",
  "name": "ERPGENEX \u2014 E-Invoice",
