@@ -1,3 +1,4 @@
+# i18n:managed-catalog — bilingual/regional catalog; UI via ar.csv
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """

@@ -1,3 +1,4 @@
+# i18n:managed-catalog — bilingual/regional catalog; UI via ar.csv
 # -*- coding: utf-8 -*-
 """
 Chilkat unlock — dynamic key (never hardcode your license in git).

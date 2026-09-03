@@ -1,0 +1,20 @@
+{
+ "add_total_row": 0,
+ "columns": [],
+ "disabled": 0,
+ "doctype": "Report",
+ "filters": [],
+ "is_standard": "Yes",
+ "module": "Omnexa Einvoice",
+ "name": "ZATCA Submission Log Register",
+ "prepared_report": 0,
+ "query": "",
+ "ref_doctype": "ZATCA Submission Log",
+ "report_name": "ZATCA Submission Log Register",
+ "report_type": "Script Report",
+ "roles": [
+  {
+   "role": "System Manager"
+  }
+ ]
+}
